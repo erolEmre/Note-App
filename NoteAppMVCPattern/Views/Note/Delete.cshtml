@@ -1,0 +1,22 @@
+﻿@model NoteAppMVCPattern.Models.Note
+
+@{
+    ViewData["Title"] = "Not Sil";
+}
+
+<h2>Not Sil</h2>
+
+<h4>Notu silmek istediğinize emin misiniz?</h4>
+
+<div>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Başlık:</strong> @Model.Content</p>
+    <p><strong>İçerik:</strong> @Model.Title</p>
+
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button> |
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

@@ -1,0 +1,14 @@
+﻿@model NoteAppMVCPattern.Models.AppUser
+
+@{
+    ViewData["Title"] = "Kullanıcı Detayları";
+}
+
+<h2>Kullanıcı Detayları</h2>
+
+<div>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>UserName:</strong> @Model.UserName</p>
+</div>
+
+<a asp-action="Index" class="btn btn-primary">Geri Dön</a>

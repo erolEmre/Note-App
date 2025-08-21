@@ -1,0 +1,15 @@
+﻿@model NoteAppMVCPattern.Models.Note
+
+@{
+    ViewData["Title"] = "Not Detayları";
+}
+
+<h2>Not Detayları</h2>
+
+<div>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Username:</strong> @Model.Content</p>
+    <p><strong>Username:</strong> @Model.Title</p>
+</div>
+
+<a asp-action="Index" class="btn btn-primary">Geri Dön</a>

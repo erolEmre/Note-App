@@ -1,0 +1,205 @@
+﻿@using NoteAppMVCPattern.Models.ViewModel
+@model List<NoteAppMVCPattern.Models.Note>
+@*  <div class="text-center">
+     	<h2>Not Listesi</h2>
+    
+</div> *@
+@{
+    ViewData["Title"] = "Notları Listesi";
+<div class="container py-4">
+
+    @if (Model.Count == 0)
+    {
+        <!-- Empty State -->
+        <div class="text-center mt-5">
+                <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+                <p class="lead">Hiç notun yok.</p>
+                <a asp-action="Create" class="btn btn-lg btn-primary">
+                    <i class="bi bi-journal-plus"></i>
+                    İlk Notunu Ekle
+                </a>
+
+        </div>
+    }
+    else
+    {
+        <!-- Dolu Liste ve Küçük Buton -->
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-journal-plus"></i> Yeni Not
+            </a>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var note in Model)
+            {
+                    <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="card h-100 text-white bg-dark border-4">
+                        <div class="card-body">
+                            <h5 class="card-title ">@note.Title</h5>
+                            <p class="card-text text-truncate">@note.Content</p>
+                        </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <a asp-action="Update" asp-route-id="@note.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                </a>
+                               <form asp-action="Delete" asp-route-id="@note.Id" method="post" style="display: inline;"
+                                onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash3"></i> Sil
+                                    </button>
+                            </form>
+                            </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    }
+
+</div>
+}
+
+@if (TempData["Message"] != null)
+{
+	<div id="successMsg" class="alert alert-success mt-3">
+		@TempData["Message"]
+	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			setTimeout(function() {
+				var msg = document.getElementById('successMsg');
+				if (msg) {
+					msg.style.transition = 'opacity 0.5s ease';
+					msg.style.opacity = '0';
+					setTimeout(function() {
+						msg.remove();
+					}, 500);
+				}
+			}, 2000);
+		});
+	</script>
+}
+
+@* <a asp-action="Create" class="btn btn-primary">Yeni Kullanıcı</a>
+@if (TempData["Message"] != null)
+{
+    <div id="successMsg" class="alert alert-success mt-3">
+        @TempData["Message"]
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#successMsg').fadeOut(500, function () {
+                    // Burada istersen başka işlemler de yapabilirsin
+                });
+            }, 2000);
+        });
+    </script>
+} *@
+// <table class="table">
+// 	<thead>
+// 		<tr>
+// 			<th>Not İsmi</th>
+// 			<th>Not İçeriği</th>
+// 		</tr>
+// 	</thead>
+// 	<tbody>
+// 		@foreach (var note in Model)
+// 		{
+// 			<tr>
+// 				<td>@note.Title</td>
+// 				<td>@note.Content</td>
+// 				<td>
+// 					<a asp-action="Create" class="btn btn-primary btn-sm">Yeni Not Ekle</a>
+
+// 					<a asp-action="Update" asp-route-id="@note.Id" class="btn btn-primary btn-sm">Düzenle</a>
+
+// 					<!-- Basit JavaScript Confirm ile Silme -->
+// 					<form asp-action="Delete" asp-route-id="@note.Id" method="post" style="display: inline;"
+// 						  onsubmit="return confirm('@note.Title notunu silmek istediğinizden emin misiniz?')">
+// 						<button type="submit" class="btn btn-danger btn-sm">Sil</button>
+// 					</form>
+
+// 				</td>
+// 			</tr>
+// 		}
+// 	</tbody>
+// </table>
+
+
+
+
+
+@* <table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>İsim</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Düzenle</a>
+                    <button type="button" class="btn btn-danger btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            data-user-id="@user.Id"
+                            data-user-name="@user.UserName">
+                        Sil
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+ *@
+@* <!-- Silme Onay Modalı -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Silme Onayı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span id="deleteUserName"></span> kullanıcısını silmek istediğinizden emin misiniz?
+                <br><small class="text-muted">Bu işlem geri alınamaz.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <!-- Form ile POST request gönder -->
+                <form id="deleteForm" asp-action="Delete" asp-controller="User" method="post" style="display: inline;">
+                    <input type="hidden" id="deleteUserId" name="id" value="" />
+                    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+@* <script>
+    // Modal açıldığında kullanıcı bilgilerini ayarla
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var userId = button.getAttribute('data-user-id');
+            var userName = button.getAttribute('data-user-name');
+
+            var userNameSpan = deleteModal.querySelector('#deleteUserName');
+            var deleteForm = deleteModal.querySelector('#deleteForm');
+            var userIdInput = deleteModal.querySelector('#deleteUserId');
+
+            userNameSpan.textContent = userName;
+            userIdInput.value = userId;
+        });
+    });
+</script> *@

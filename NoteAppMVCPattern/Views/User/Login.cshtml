@@ -1,0 +1,27 @@
+﻿@using NoteAppMVCPattern.Models.ViewModel
+@model LoginViewModel
+
+<h2>Giriş Yap</h2>
+
+<form asp-action="Login" method="post">
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+</form>
+
+@section Scripts {
+@{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        Layout = "_Layout";
+    }
+}
