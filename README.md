@@ -20,8 +20,8 @@ Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve sile
 ## 📷 Ekran Görüntüleri
 
 ![Login Sayfası](https://i.imgur.com/mQztYSs.png)
-![Not Listesi](https://i.imgur.com/M7xhgsy.png)
 ![İlk Giriş](https://i.imgur.com/2QJj8FW.png)
+![Not Listesi](https://i.imgur.com/M7xhgsy.png)
 
 ## ⚙️ Kurulum
 
