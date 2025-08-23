@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,14 +24,26 @@ namespace NoteAppMVCPattern.Controllers
             _userManager = userManager;
         }
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string tag)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var notes = await _dbContext.Notes
                 .Where(n => n.UserId == userId)
                 .Include(n => n.User)
+                .OrderByDescending(cd => cd.updatedDate)
+            // Son düzenlemeye göre notları sırala -- Yapıldı
                 .ToListAsync();
-            // Son düzenlemeye göre notları sırala
+
+            var tags = await _dbContext.Notes
+                .Where(x => x.UserId == userId && x.Tag != null)
+                .Select(x => x.Tag)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToListAsync();
+
+            ViewBag.Tags = tags;
+            ViewBag.CurrentTag = tag;
+
             return View(notes);
 
         }
@@ -48,12 +61,13 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
 
+            note.Tag = "#$inan Engin";
             var match = Regex.Match(note.Content, @"#(\w+)");
             if (match.Success)
             {
                 note.Tag = match.Groups[1].Value;
             }
-            note.Tag = "#$inan Engin";
+
 
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
@@ -73,7 +87,12 @@ namespace NoteAppMVCPattern.Controllers
             {
                 existedValue.Title = note.Title;
                 existedValue.Content = note.Content;
-                note.updatedDate = DateTime.Now;
+                var match = Regex.Match(note.Content, @"#(\w+)");
+                if (match.Success)
+                {
+                    existedValue.Tag = match.Groups[1].Value;
+                }
+                existedValue.updatedDate = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Index");
@@ -103,7 +122,7 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
 
         }
-        [HttpGet] 
+        [HttpGet]
         public IActionResult FilterByTag(string tag)
         {
             var filteredNotes = _dbContext.Notes

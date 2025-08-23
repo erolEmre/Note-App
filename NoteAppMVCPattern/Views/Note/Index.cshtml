@@ -23,11 +23,27 @@
     }
     else
     {
-        <!-- Dolu Liste ve Küçük Buton -->
-        <div class="d-flex justify-content-end mb-3">
+       
+        <div class="d-flex justify-content-end gap-2 mb-3 ms-2">
             <a asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-journal-plus"></i> Yeni Not
             </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle me-3" data-bs-toggle="dropdown">
+                        Sırala
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?sortOrder=date_desc">Tarih: Yeniden → Eskiye</a></li>
+                        <li><a class="dropdown-item" href="?sortOrder=date_asc">Tarih: Eskiden → Yeniye</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="dropdown-header">Tag'e Göre</li>
+                        @foreach (var tag in ViewBag.Tags as List<string>)
+                        {
+                            <li><a class="dropdown-item" href="?tag=@tag">@tag</a></li>
+                        }
+                    </ul>
+                </div>
+
         </div>
             
         <div class="row g-3">
@@ -35,26 +51,30 @@
             {
                     <div class="col-12 col-sm-6 col-md-3 mb-4">
                         <div class="card h-100 text-white bg-dark border-4">
+                            @if (!string.IsNullOrEmpty(note.Tag))
+                            {
+                                <span class="badge bg-info text-dark">#@note.Tag</span>
+                            }
                         <div class="card-body">
                             <h5 class="card-title ">@note.Title</h5>
                             <p class="card-text text-truncate">@note.Content</p>
+                                <p class="card-subtitle text-white-50  text-end">@note.CreateDate.ToShortDateString()</p>
                         </div>
-                            <div class="card-footer d-flex justify-content-between">
-                                <a asp-action="Update" asp-route-id="@note.Id" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-pencil-square me-1"></i> Düzenle
-                                </a>
-                               <form asp-action="Delete" asp-route-id="@note.Id" method="post" style="display: inline;"
-                                onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash3"></i> Sil
-                                    </button>
-                                    <!-- Burayı düzenle -->
-                                    <a href="@Url.Action("FilterByTag", "Note", new { tag = note.Tag })" 
-                                    class="btn btn-outline-info btn-sm">
-                                        #@note.Tag
-                                    </a>
-                            </form>
-                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <form asp-action="Update" asp-route-id="@note.Id" method="get">
+                                        <button type="submit" class="btn btn-primary btn-sm me-3">
+                                            <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                        </button>
+                                    </form>
+                                    <form asp-action="Delete" asp-route-id="@note.Id" method="post" style="display: inline;"
+                                          onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
+                                        <button type="submit" class="btn btn-danger btn-sm me-3">
+                                            <i class="bi bi-trash3"></i> Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>                           
                     </div>
                 </div>
 
