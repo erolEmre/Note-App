@@ -8,6 +8,9 @@ namespace NoteAppMVCPattern.Models
         public int Id { get; set; }
         public string Content { get; set; }
         public string Title { get; set; }
+        public DateTime CreateDate {  get; set; }
+        public string? Tag { get; set; }
+        public DateTime updatedDate { get; set; }
 
         public string? UserId { get; set; } // foreign key
         public virtual AppUser? User { get; set; } // navigation property

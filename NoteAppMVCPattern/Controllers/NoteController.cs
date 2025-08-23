@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NoteAppMVCPattern.Migrations;
 using NoteAppMVCPattern.Models;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 
 namespace NoteAppMVCPattern.Controllers
@@ -21,28 +24,47 @@ namespace NoteAppMVCPattern.Controllers
             _userManager = userManager;
         }
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string tag)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notes = await _dbContext.Notes
-                .Where(n => n.UserId == userId)
-                .Include( n => n.User)
+            var notesQuery = _dbContext.Notes
+            .Where(x => x.UserId == userId);
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                notesQuery = notesQuery.Where(x => x.Tag == tag);
+            }
+
+            var notes = await notesQuery
+                .Include(x => x.User)
                 .ToListAsync();
 
+            ViewBag.CurrentTag = tag;
             return View(notes);
 
         }
 
+        // Son düzenlemeye göre notları sırala
+
+
         public IActionResult Create()
         {
-            return View();
+            return View(new Note());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Note note)
         {
+            note.CreateDate = DateTime.Now;
+            note.updatedDate = DateTime.Now;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
+
+            var match = Regex.Match(note.Content, @"#(\w+)");
+            if (match.Success)
+            {
+                note.Tag = match.Groups[1].Value;
+            }
+            note.Tag = "#$inan Engin";
 
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
@@ -51,7 +73,7 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
 
         }
-       
+
 
         [HttpPost]
         [Authorize]
@@ -62,8 +84,8 @@ namespace NoteAppMVCPattern.Controllers
             {
                 existedValue.Title = note.Title;
                 existedValue.Content = note.Content;
+                note.updatedDate = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
-                
             }
             return RedirectToAction("Index");
         }
@@ -77,7 +99,7 @@ namespace NoteAppMVCPattern.Controllers
             }
             return View(existedValue);
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -90,6 +112,16 @@ namespace NoteAppMVCPattern.Controllers
             await _dbContext.SaveChangesAsync();
             TempData["msg"] = "Not başarıyla silindi";
             return RedirectToAction("Index");
+
+        }
+        [HttpGet] 
+        public IActionResult FilterByTag(string tag)
+        {
+            var filteredNotes = _dbContext.Notes
+                .Where(n => n.Tag == tag)
+                .ToList();
+
+            return View("Index", filteredNotes);
 
         }
     }
