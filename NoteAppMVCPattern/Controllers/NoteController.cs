@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,27 +23,17 @@ namespace NoteAppMVCPattern.Controllers
             _userManager = userManager;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string tag)
+        public async Task<IActionResult> Index()
         {
-            var notesQuery = _dbContext.Notes
-            .Where(x => x.UserId == userId);
-
-            if (!string.IsNullOrEmpty(tag))
-            {
-                notesQuery = notesQuery.Where(x => x.Tag == tag);
-            }
-
-            var notes = await notesQuery
-                .Include(x => x.User)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var notes = await _dbContext.Notes
+                .Where(n => n.UserId == userId)
+                .Include(n => n.User)
                 .ToListAsync();
-
-            ViewBag.CurrentTag = tag;
+            // Son düzenlemeye göre notları sırala
             return View(notes);
 
         }
-
-        // Son düzenlemeye göre notları sırala
-
 
         public IActionResult Create()
         {
