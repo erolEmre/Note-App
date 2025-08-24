@@ -24,15 +24,48 @@ namespace NoteAppMVCPattern.Controllers
             _userManager = userManager;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string tag)
+        //public async Task<IActionResult> Index(string tag)
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var notes = await _dbContext.Notes
+        //        .Where(n => n.UserId == userId)
+        //        .Include(n => n.User)
+        //        .OrderByDescending(cd => cd.updatedDate)
+        //    // Son düzenlemeye göre notları sırala -- Yapıldı
+        //        .ToListAsync();
+
+        //    var tags = await _dbContext.Notes
+        //        .Where(x => x.UserId == userId && x.Tag != null)
+        //        .Select(x => x.Tag)
+        //        .Distinct()
+        //        .OrderBy(x => x)
+        //        .ToListAsync();
+
+        //    ViewBag.Tags = tags;
+        //    ViewBag.CurrentTag = tag;
+
+        //    return View(notes);
+
+        //}
+        public async Task<IActionResult> Index(string tag, string sortOrder)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notes = await _dbContext.Notes
-                .Where(n => n.UserId == userId)
-                .Include(n => n.User)
-                .OrderByDescending(cd => cd.updatedDate)
-            // Son düzenlemeye göre notları sırala -- Yapıldı
-                .ToListAsync();
+            var notesQuery = _dbContext.Notes.Where(n => n.UserId == userId);
+
+            if (!string.IsNullOrEmpty(tag))
+                notesQuery = notesQuery.Where(n => n.Tag.Contains(tag));
+
+            notesQuery = sortOrder switch
+            {
+                "null" => notesQuery.OrderBy(x=> x.updatedDate),
+                "date_asc" => notesQuery.OrderBy(n => n.updatedDate),
+                "date_desc" => notesQuery.OrderByDescending(n => n.updatedDate),
+                _ => notesQuery.OrderByDescending(n => n.updatedDate)
+            };
+
+            var notes = await notesQuery.Include(n => n.User).ToListAsync();
+
+            var colorPalette = new[] { "primary", "success", "danger", "warning", "info" };
 
             var tags = await _dbContext.Notes
                 .Where(x => x.UserId == userId && x.Tag != null)
@@ -41,13 +74,19 @@ namespace NoteAppMVCPattern.Controllers
                 .OrderBy(x => x)
                 .ToListAsync();
 
+            // Her tag’e sabit ama rastgele renk ata
+            var tagColors = tags.ToDictionary(
+                tag => tag,
+                tag => colorPalette[Math.Abs(tag.GetHashCode()) % colorPalette.Length]
+            );
+
+            ViewBag.TagColors = tagColors;
             ViewBag.Tags = tags;
             ViewBag.CurrentTag = tag;
+            ViewBag.CurrentSort = sortOrder;
 
             return View(notes);
-
         }
-
         public IActionResult Create()
         {
             return View(new Note());
@@ -61,8 +100,7 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
 
-            note.Tag = "#$inan Engin";
-            var match = Regex.Match(note.Content, @"#(\w+)");
+            var match = Regex.Match(note.Content, @"#([a-zA-Z0-9]+)");
             if (match.Success)
             {
                 note.Tag = match.Groups[1].Value;
@@ -87,10 +125,11 @@ namespace NoteAppMVCPattern.Controllers
             {
                 existedValue.Title = note.Title;
                 existedValue.Content = note.Content;
-                var match = Regex.Match(note.Content, @"#(\w+)");
+                var match = Regex.Match(note.Content, @"#([a-zA-Z0-9]+)");
                 if (match.Success)
                 {
-                    existedValue.Tag = match.Groups[1].Value;
+                    var rawTag = match.Groups[1].Value;
+                    existedValue.Tag = rawTag;
                 }
                 existedValue.updatedDate = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
