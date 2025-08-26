@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Migrations;
 using NoteAppMVCPattern.Models;
@@ -24,7 +25,7 @@ namespace NoteAppMVCPattern.Controllers
             _userManager = userManager;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string tag)
+        public async Task<IActionResult> Index(string tag,string sortOrder)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var notes = await _dbContext.Notes
@@ -40,6 +41,20 @@ namespace NoteAppMVCPattern.Controllers
                 .Distinct()
                 .OrderBy(x => x)
                 .ToListAsync();
+
+            //var notesQuery = _dbContext.Notes
+            //    .Where(n => n.UserId == userId)
+            //    .Include(n => n.User)
+            //    .Include(n => n.Tag);
+
+            //notesQuery = sortOrder switch
+            //{
+            //    "date_desc" => notesQuery.OrderByDescending(x => x.updatedDate),
+            //    "date_asc"  => notesQuery.OrderBy(x => x.updatedDate),
+            //    _ => notesQuery.OrderByDescending(x => x.updatedDate)
+            //};
+
+            //var notes = await notesQuery.ToListAsync();
 
             ViewBag.Tags = tags;
             ViewBag.CurrentTag = tag;
@@ -61,13 +76,11 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
 
-            note.Tag = "#$inan Engin";
             var match = Regex.Match(note.Content, @"#(\w+)");
             if (match.Success)
             {
                 note.Tag = match.Groups[1].Value;
             }
-
 
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
@@ -76,7 +89,6 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
 
         }
-
 
         [HttpPost]
         [Authorize]
