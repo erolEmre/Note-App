@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NoteAppMVCPattern")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccb90ad29e79a99b2d6115f1417ed06d500b9ce8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4c59b8fe07a9925abb42d334c6d05a408d081cd5")]
 [assembly: System.Reflection.AssemblyProductAttribute("NoteAppMVCPattern")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NoteAppMVCPattern")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
