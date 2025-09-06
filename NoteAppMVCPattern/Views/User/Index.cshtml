@@ -1,4 +1,6 @@
 ﻿@model List<NoteAppMVCPattern.Models.AppUser>
+@await Html.PartialAsync("_TempDataMessage")
+
 
 <div class="text-center">
     <br />
@@ -8,12 +10,12 @@
     <br />
     <h2 class="text-center">Welcome to the Note App</h2>
 
-    <a asp-controller="User" asp-action="Register" class="btn btn-primary fw-bold">Register</a>
-    <a asp-controller="User" asp-action="Login" class="btn btn-success fw-bold">Login</a>
+    <a asp-controller="User" asp-action="Register" class="btn btn-primary fw-bold">Kayıt Ol</a>
+    <a asp-controller="User" asp-action="Login" class="btn btn-success fw-bold">Giriş Yap</a>
 </div>
 
 
-@if (TempData["Message"] != null)
+@* @if (TempData["Message"] != null)
 {
     <div id="successMsg" class="alert alert-success mt-3">
         @TempData["Message"]
@@ -32,8 +34,38 @@
             }, 2000);
         });
     </script>
-}
+} *@
+@* @if (TempData["Message"] != null)
+{
 
+var type = TempData["MessageType"]?.ToString() ?? "info";
+    var alertClass = type switch
+    {
+        "success" => "alert-success",
+        "error" => "alert-danger",
+        "info" => "alert-info",
+        _ => "alert-secondary"
+    };
+  
+    <div class="alert @alertClass alert-dismissible fade show text-center" id="Message" role="alert">        
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var msg = document.getElementById('Message');
+                if (msg) {
+                    msg.style.transition = 'opacity 0.5s ease';
+                    msg.style.opacity = '0';
+                    setTimeout(function() {
+                        msg.remove();
+                    }, 500);
+                }
+            }, 2000);
+        });
+    </script>
+} *@
 
 @* <a asp-action="Create" class="btn btn-primary">Yeni Kullanıcı</a>
 @if (TempData["Message"] != null)

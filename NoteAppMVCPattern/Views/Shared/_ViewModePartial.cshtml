@@ -1,44 +1,10 @@
-﻿@using NoteAppMVCPattern.Models.ViewModel;
-@model NoteIndexVM;
-<div class="d-flex gap-2 mb-3">
-    <a asp-action="Index" asp-route-viewMode="grid" class="btn btn-primary">Grid</a>
-    <a asp-action="Index" asp-route-viewMode="list" class="btn btn-secondary">Liste</a>
-    <a asp-action="Index" asp-route-viewMode="compact" class="btn btn-info">Compact</a>
-</div>
+﻿@model string  // sadece görünüm tipini alacak (grid, list, compact)
 
-@if (Model.ViewMode == "grid")
-{
-    <div class="row g-3">
-        @foreach (var note in Model.Notes)
-        {
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>@note.Title</h5>
-                        <p>@note.Content</p>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
-else if (Model.ViewMode == "list")
-{
-    <ul class="list-group">
-        @foreach (var note in Model.Notes)
-        {
-            <li class="list-group-item">
-                <strong>@note.Title:</strong> @note.Content
-            </li>
-        }
-    </ul>
-}
-else if (Model.ViewMode == "compact")
-{
-    <ul class="list-inline">
-        @foreach (var note in Model.Notes)
-        {
-            <li class="list-inline-item badge bg-secondary m-1">@note.Title</li>
-        }
-    </ul>
-}
+<div class="btn-group mb-3">
+    <a asp-action="Index" asp-route-viewMode="grid"
+       class="btn btn-sm @(Model == "grid" ? "btn-primary" : "btn-outline-primary")"> <i class="bi bi-grid"></i> Grid</a>
+
+    <a asp-action="Index" asp-route-viewMode="list"
+       class="btn btn-sm @(Model == "list" ? "btn-primary" : "btn-outline-primary")"><i class="bi bi-list-ol"></i> Liste</a>
+  
+</div>

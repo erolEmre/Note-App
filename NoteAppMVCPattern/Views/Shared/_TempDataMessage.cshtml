@@ -1,0 +1,47 @@
+﻿@{
+    var type = TempData["MessageType"]?.ToString() ?? "info";
+    var alertClass = type switch
+    {
+        "success" => "alert-success",
+        "error" => "alert-danger",
+        "info" => "alert-info",
+        _ => "alert-secondary"
+    };
+
+    var iconClass = type switch
+    {
+        "success" => "bi-check-circle",
+        "error" => "bi-x-circle",
+        "info" => "bi-info-circle",
+        _ => "bi-question-circle"
+    };
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert @alertClass alert-dismissible fade show text-center" role="alert" id="Message">
+                    <i class="bi @iconClass me-2"></i>
+                    @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var msg = document.getElementById('Message');
+                if (msg) {
+                    msg.style.transition = 'opacity 0.5s ease';
+                    msg.style.opacity = '0';
+                    setTimeout(function() {
+                        msg.remove();
+                    }, 500);
+                }
+            }, 2000);
+        });
+    </script>
+}

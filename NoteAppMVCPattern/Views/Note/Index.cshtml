@@ -4,7 +4,8 @@
 @{
     ViewData["Title"] = "Notlar";
 }
-
+@await Html.PartialAsync("_ViewModePartial", Model.ViewMode)
+@await Html.PartialAsync("_TempDataMessage")
 <div class="container py-4">
 
     @if (Model.Notes.Count == 0)
@@ -15,12 +16,22 @@
             <p class="lead">Hiç notun yok.</p>
             <a asp-action="Create" class="btn btn-lg btn-primary">
                 <i class="bi bi-journal-plus"></i> İlk Notunu Ekle
+                
             </a>
         </div>
     }
     else
-    {
+    {   @* <div>
+        @if (Model.CurrentTag != null)
+        {
+            <a class="btn btn-danger" asp-action="Index"> Filtreyi Kaldır </a>
+        }
+        </div> *@
         <div class="d-flex justify-content-end gap-2 mb-3 ms-2">
+            @if (Model.CurrentTag != null)
+            {
+                <a class="btn btn-danger" asp-action="Index"> Filtreyi Kaldır </a>
+            }
             <a asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-journal-plus"></i> Yeni Not
             </a>
@@ -36,115 +47,144 @@
                     <li class="dropdown-header">Tag'e Göre</li>
                     @foreach (var tag in Model.Tags)
                     {
-                        <li><a class="dropdown-item" asp-action="Index" asp-route-tag="@tag">@tag</a></li>
-                    }
+                        <li><a class="dropdown-item" asp-action="Index" asp-route-tag="@tag">@tag</a></li>                        
+                    }                  
                 </ul>
             </div>
         </div>
-
+        // View Modes
         <div class="row g-3">
-            @foreach (var note in Model.Notes)
+           @if(Model.ViewMode == "grid")
+           { 
+               @foreach (var note in Model.Notes)
             {
-                <div class="col-12 col-sm-6 col-md-4 mb-4">
-                    <div class="card h-100 text-white bg-dark border-4">
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                        <div class="card h-100 text-white bg-dark border-4">
 
-                        @if (!string.IsNullOrEmpty(note.Tag))
-                        {
-                            <span class="badge bg-info text-dark">#@note.Tag</span>
-                        }
+                            @if (!string.IsNullOrEmpty(note.Tag))
+                            {
+                                <span class="badge bg-info text-dark">#@note.Tag</span>
+                            }
 
-                        <div class="card-body">
-                            <h5 class="card-title">@note.Title</h5>
-                            <p class="card-text text-truncate">@note.Content</p>
-                            <p class="card-subtitle text-white-50 text-end">@note.CreateDate.ToShortDateString()</p>
-                        </div>
-
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-
-                            <div class="btn-group">
-                                <form asp-action="Update" asp-route-id="@note.Id" method="get">
-                                    <button type="submit" class="btn btn-primary btn-sm me-3">
-                                        <i class="bi bi-pencil-square me-1"></i> Düzenle
-                                    </button>
-                                </form>
-                                <form asp-action="Delete" asp-route-id="@note.Id" method="post"
-                                      onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger btn-sm me-3">
-                                        <i class="bi bi-trash3"></i> Sil
-                                    </button>
-                                </form>
+                            <div class="card-body">
+                                <h5 class="card-title">@note.Title</h5>
+                                <p class="card-text text-truncate">@note.Content</p>
+                                <p class="card-subtitle text-white-50 text-end text-break">@note.CreateDate.ToShortDateString()</p>
                             </div>
 
-                            <div class="dropdown d-inline-block">
-                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" style="min-width: 120px;">
-                                    <i class="bi bi-gear"></i> Seçenekler
-                                </button>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
 
-                                <ul class="dropdown-menu p-0 w-120" style="min-width: 120px;">
-                                    <li class="px-1 py-1">
-                                        @if (string.IsNullOrEmpty(note.Tag))
-                                        {
-                                            <form asp-action="AddTag" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@note.Id" />
-                                                <input type="text" name="tag" class="form-control form-control-sm mb-2"
-                                                       placeholder="Tag gir" style="max-width: 150px; margin: auto;" />
-                                                <button type="submit" class="btn btn-info btn-sm w-100">
-                                                    <i class="bi bi-bookmark-plus"></i> Ekle
-                                                </button>
-                                            </form>
-                                        }
-                                    </li>
+                                <div class="btn-group">
+                                    <form asp-action="Update" asp-route-id="@note.Id" method="get">
+                                        <button type="submit" class="btn btn-primary btn-sm me-2">
+                                            <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                        </button>
+                                    </form>
+                                    <form asp-action="Delete" asp-route-id="@note.Id" method="post"
+                                          onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm me-2">
+                                            <i class="bi bi-trash3"></i> Sil
+                                        </button>
+                                    </form>
+                                </div>
 
-                                    @if (!string.IsNullOrEmpty(note.Tag))
-                                    {
-                                        <li class="px-1 py-1">
-                                            <form asp-action="DeleteTag" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@note.Id" />
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">
-                                                    <i class="bi bi-bookmark-x"></i> Tag'i Sil
-                                                </button>
-                                            </form>
-                                        </li>
-                                    }
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                            data-bs-toggle="dropdown" style="min-width: 50px">
+                                        <i class="bi bi-gear"></i> Seçenekler
+                                    </button>
 
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li class="dropdown-header">Bu Tag’e Ekle</li>
-                                    @if (string.IsNullOrEmpty(note.Tag))
-                                    {
-                                        @foreach (var tag in Model.Tags)
-                                        {
-                                            <li>
-                                                <form asp-action="AddTag" method="post" style="display:inline;">
+                                    <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 180px; max-width: 200px;">
+                                        <li class="mb-2">
+                                            @if (string.IsNullOrEmpty(note.Tag))
+                                            {
+                                                <form asp-action="AddTag" method="post">
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="id" value="@note.Id" />
-                                                    <input type="hidden" name="tag" value="@tag" />
-                                                    <button type="submit" class="dropdown-item">@tag</button>
+                                                    <input type="text" name="tag" class="form-control form-control-sm mb-2"
+                                                           placeholder="Tag gir" />
+                                                    <button type="submit" class="btn btn-info btn-sm w-100">
+                                                        <i class="bi bi-bookmark-plus"></i> Ekle
+                                                    </button>
+                                                </form>
+                                            }
+                                        </li>
+
+                                        @if (!string.IsNullOrEmpty(note.Tag))
+                                        {
+                                            <li class="mb-2">
+                                                <form asp-action="DeleteTag" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@note.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                                                        <i class="bi bi-bookmark-x"></i> Tag'i Sil
+                                                    </button>
                                                 </form>
                                             </li>
                                         }
-                                    }
-                                </ul>
-                            </div>
 
+                                        
+                                        
+                                        @if (string.IsNullOrEmpty(note.Tag))
+                                        {
+                                            <li><hr class="dropdown-divider my-2"></li>
+                                            <li class="dropdown-header">Bu Tag'e Ekle</li>
+                                            @foreach (var tag in Model.Tags)
+                                            {
+                                                <li>
+                                                    <form asp-action="AddTag" method="post" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@note.Id" />
+                                                        <input type="hidden" name="tag" value="@tag" />
+                                                        <button type="submit" class="dropdown-item text-truncate">@tag</button>
+                                                    </form>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+                // List View Mode
+            } else if(Model.ViewMode == "list")
+            {               
+                    <ul class="list-group">
+                        
+                        @for (int i = 0; i<Model.Notes.Count; i++)
+                        {
+                        <li class="list-group-item d-flex align-items-start">
+                            <!-- Numara -->
+                            <div class="me-2 text-muted fw-bold display-6">
+                                @(i + 1)
+                            </div>
+
+                            <!-- Not içeriği -->
+                            <div>
+                                <h5 class="mb-1">@Model.Notes[i].Title</h5>
+                                <p class="mb-0 text-muted small">@Model.Notes[i].Content</p>                                
+                            </div>
+                            @* <div class="text-end">@Model.Notes[i].CreateDate.ToShortDateString()</div>
+                            <span class="align-text-top">merhaba</span> *@
+                        </li>
+                        }
+                    </ul>
             }
         </div>
     }
-
+    
 </div>
 
-<div class="d-flex gap-2 mb-3">
+@* <div class="d-flex gap-2 mb-3">
     <a asp-action="Index" asp-route-viewMode="grid" class="btn btn-primary">Grid</a>
     <a asp-action="Index" asp-route-viewMode="list" class="btn btn-secondary">Liste</a>
     <a asp-action="Index" asp-route-viewMode="compact" class="btn btn-info">Compact</a>
-</div>
+</div> 
 
-@await Html.PartialAsync("_ViewModePartial", Model)
+
 
 
 @if (TempData["Message"] != null)
@@ -166,7 +206,7 @@
 			}, 2000);
 		});
 	</script>
-}
+} 
 
 @* <a asp-action="Create" class="btn btn-primary">Yeni Kullanıcı</a>
 @if (TempData["Message"] != null)
@@ -184,10 +224,10 @@
             }, 2000);
         });
     </script>
-} *@
+} 
 // <table class="table">
 // 	<thead>
-@*
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('AddTag').addEventListener('click', submitTag);
@@ -218,7 +258,8 @@
     }
 </script>
 
-*@
+*@ 
+@*
 // 		<tr>
 // 			<th>Not İsmi</th>
 // 			<th>Not İçeriği</th>
@@ -247,7 +288,7 @@
 // 	</tbody>
 // </table>
 
-
+*@
 
 
 

@@ -61,7 +61,10 @@ namespace NoteAppMVCPattern.Controllers
                 CurrentTag = tag,
                 SortOrder = sortOrder
             };
-
+            if (tag != null)
+            {
+            
+            }
             return View(vm);
         }
 
@@ -122,6 +125,7 @@ namespace NoteAppMVCPattern.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Note note)
         {
+            
             note.CreateDate = DateTime.Now;
             note.updatedDate = DateTime.Now;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -136,7 +140,8 @@ namespace NoteAppMVCPattern.Controllers
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
 
-            TempData["msg"] = "Not başarıyla eklendi";
+            TempData["Message"] = "Not başarıyla eklendi";
+            TempData["MessageType"] = "success";
             return RedirectToAction("Index");
 
         }
@@ -166,7 +171,8 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["msg"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["MessageType"] = "info";
             }
             return View(existedValue);
         }
@@ -177,11 +183,13 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["msg"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["MessageType"] = "info";
             }
             _dbContext.Notes.Remove(existedValue);
             await _dbContext.SaveChangesAsync();
-            TempData["msg"] = "Not başarıyla silindi";
+            TempData["Message"] = "Not başarıyla silindi";
+            TempData["MessageType"] = "success";
             return RedirectToAction("Index");
 
         }
@@ -201,6 +209,7 @@ namespace NoteAppMVCPattern.Controllers
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if(note != null) note.Tag = null;
             TempData["Message"] = "Tag Silindi!";
+            TempData["MessageType"] = "error";
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -210,6 +219,7 @@ namespace NoteAppMVCPattern.Controllers
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (note != null) note.Tag = tag;
             TempData["Message"] = "Tag eklendi!";
+            TempData["MessageType"] = "success";
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

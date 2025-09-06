@@ -47,13 +47,16 @@ namespace NoteAppMVCPattern.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["Message"] = "Kayıt başarılı.";
+                    TempData["MessageType"] = "success"; 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Note");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    TempData["Message"] = error.Description;
+                    TempData["MessageType"] = "error";
                 }
             }
 
@@ -82,10 +85,12 @@ namespace NoteAppMVCPattern.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["Message"] = "Giriş Başarılı";
+                    TempData["MessageType"] = "success";
                     return RedirectToAction("Index", "Note");
                 }
 
-                ModelState.AddModelError("", "Geçersiz giriş bilgileri.");
+                ModelState.AddModelError("", "Geçersiz giriş bilgileri.");              
             }
 
             return View(model);
@@ -117,7 +122,7 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["msg"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "Böyle bir değer bulunamadı";
             }
             return View(existedValue);
         }
@@ -129,7 +134,7 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["msg"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "Böyle bir değer bulunamadı";
             }
             _dbContext.Users.Remove(existedValue);
             await _dbContext.SaveChangesAsync();

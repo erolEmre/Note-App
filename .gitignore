@@ -4,3 +4,8 @@
 
 *.vsidx
 *vs/
+bin/
+obj/
+*.dll
+*.cache
+*.json
