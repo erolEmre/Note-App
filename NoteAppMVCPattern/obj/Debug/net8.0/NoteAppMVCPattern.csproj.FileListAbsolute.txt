@@ -181,3 +181,4 @@ C:\Users\Emre\source\repos\NoteAppMVCPattern\NoteAppMVCPattern\obj\Debug\net8.0\
 C:\Users\Emre\source\repos\NoteAppMVCPattern\NoteAppMVCPattern\obj\Debug\net8.0\ref\NoteAppMVCPattern.dll
 C:\Users\Emre\source\repos\NoteAppMVCPattern\NoteAppMVCPattern\bin\Debug\net8.0\LinqKit.Core.dll
 C:\Users\Emre\source\repos\NoteAppMVCPattern\NoteAppMVCPattern\bin\Debug\net8.0\LinqKit.Microsoft.EntityFrameworkCore.dll
+C:\Users\Emre\source\repos\NoteAppMVCPattern\NoteAppMVCPattern\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

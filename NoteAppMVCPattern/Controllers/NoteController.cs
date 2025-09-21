@@ -60,11 +60,7 @@ namespace NoteAppMVCPattern.Controllers
                 ViewMode = viewMode,
                 CurrentTag = tag,
                 SortOrder = sortOrder
-            };
-            if (tag != null)
-            {
-            
-            }
+            };           
             return View(vm);
         }
 
@@ -218,8 +214,10 @@ namespace NoteAppMVCPattern.Controllers
         {
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (note != null) note.Tag = tag;
+            
             TempData["Message"] = "Tag eklendi!";
             TempData["MessageType"] = "success";
+            
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

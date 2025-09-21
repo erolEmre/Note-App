@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
 using System;
+using System.Security.Claims;
 using static NoteAppMVCPattern.Models.ViewModel.AppUserVM;
 
 namespace NoteAppMVCPattern.Controllers
@@ -65,6 +66,7 @@ namespace NoteAppMVCPattern.Controllers
 
         // GET: /Account/Login
         [AllowAnonymous]
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -84,7 +86,7 @@ namespace NoteAppMVCPattern.Controllers
                     );
 
                 if (result.Succeeded)
-                {
+                {                  
                     TempData["Message"] = "Giriş Başarılı";
                     TempData["MessageType"] = "success";
                     return RedirectToAction("Index", "Note");

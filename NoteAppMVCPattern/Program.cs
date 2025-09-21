@@ -1,10 +1,14 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Repo;
 using NoteAppMVCPattern.Services;
+using System.Text;
 
 namespace NoteAppMVCPattern
 {
@@ -15,7 +19,7 @@ namespace NoteAppMVCPattern
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            
+
 
             builder.Services.AddSingleton<IUserRepository, UserRepository>();
             builder.Services.AddSingleton<UserService>();
@@ -29,12 +33,31 @@ namespace NoteAppMVCPattern
             })
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
-            
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/User/Login";
+            });
             builder.Services.AddDbContext<AppDBContext>(opt =>
             opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddControllersWithViews().
                 AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
-                       
+
+            builder.Services.AddAuthentication()
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+        options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            };
+        });
+
 
             var app = builder.Build();
 
