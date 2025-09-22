@@ -38,17 +38,16 @@ namespace NoteAppMVCPattern
                 options.LoginPath = "/User/Login";
             });
             
-            var env = builder.Environment.EnvironmentName;
-            if (env == "Development")
-            {
-                builder.Services.AddDbContext<AppDBContext>(opt =>
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            }
-            else
-            {
+            //var env = builder.Environment.EnvironmentName;
+            //if (env == "Development")
+            //{
+            //    builder.Services.AddDbContext<AppDBContext>(opt =>
+            //    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //}
+           
                 builder.Services.AddDbContext<AppDBContext>(opt =>
                  opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-            }
+
                 
             builder.Services.AddControllersWithViews().
                 AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
