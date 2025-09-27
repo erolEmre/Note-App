@@ -4,24 +4,23 @@
 <h2>Kayıt Ol</h2>
 
 <form asp-action="Register" method="post">
-    <div class="form-group">
-        <label asp-for="UserName" class="text-center"></label>
+    <div class="form-group mt-4">
+        <label asp-for="UserName" class="text-center fw-bold"></label>
         <input asp-for="UserName" class="form-control w-50" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Password" class="text-center"></label>
+    <br />
+    <div class="form-group mb-4">
+        <label asp-for="Password" class="text-center fw-bold"></label>
         <input asp-for="Password" class="form-control w-50" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="btn-group">
-        <button type="submit" class="btn btn-primary me-3">Kayıt Ol</button>
-      
- @*    <div class="btn-group"> *@
-        <a asp-controller="User" asp-action="Index" class="btn btn-info me-3">Geri dön</a>
-    
-        <a asp-controller="User" asp-action="Login" class="btn btn-info me-3">Zaten üyeyim</a>
+        <button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
+
+        <a asp-controller="User" asp-action="Index" class="btn btn-info me-3 rounded">Geri dön</a>
+
+        <a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
     </div>
 </form>
 

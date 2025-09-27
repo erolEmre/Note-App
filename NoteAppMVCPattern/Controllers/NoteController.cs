@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using NoteAppMVCPattern.Migrations;
 using NoteAppMVCPattern.Models;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
@@ -122,8 +121,8 @@ namespace NoteAppMVCPattern.Controllers
         public async Task<IActionResult> Create(Note note)
         {
             
-            note.CreateDate = DateTime.Now;
-            note.updatedDate = DateTime.Now;
+            note.CreateDate = DateTime.UtcNow;
+            note.updatedDate = DateTime.UtcNow;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
 
@@ -156,7 +155,7 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     existedValue.Tag = match.Groups[1].Value;
                 }
-                existedValue.updatedDate = DateTime.Now;
+                existedValue.updatedDate = DateTime.UtcNow;
                 await _dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Index");
