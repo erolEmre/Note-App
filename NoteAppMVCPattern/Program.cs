@@ -20,6 +20,9 @@ namespace NoteAppMVCPattern
 
             // Add services to the container.
 
+            builder.Configuration
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("MYappsettings.json", optional: false, reloadOnChange: true);
 
             builder.Services.AddSingleton<IUserRepository, UserRepository>();
             builder.Services.AddSingleton<UserService>();
