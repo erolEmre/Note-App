@@ -6,7 +6,9 @@ namespace NoteAppMVCPattern.Models
     {
         [Key]
         public int Id { get; set; }
+        [Display(Name = "Başlık")]
         public string Content { get; set; }
+        [Display(Name = "İçerik")]
         public string Title { get; set; }
         public DateTime CreateDate {  get; set; }
         public string? Tag { get; set; }
