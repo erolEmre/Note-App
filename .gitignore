@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-Myappsettings.json
+MYappsettings.json
 *.vsidx
 *vs/
 bin/
