@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Repo;
 using NoteAppMVCPattern.Services;
+using System;
 using System.Text;
 
 namespace NoteAppMVCPattern
@@ -24,8 +26,8 @@ namespace NoteAppMVCPattern
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("MYappsettings.json", optional: false, reloadOnChange: true);
 
-            builder.Services.AddSingleton<IUserRepository, UserRepository>();
-            builder.Services.AddSingleton<UserService>();
+            //builder.Services.AddSingleton<IUserRepository, UserRepository>();
+            //builder.Services.AddSingleton<UserService>();
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -36,40 +38,49 @@ namespace NoteAppMVCPattern
             })
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
+
+           // FluentValidation kaydý
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddScoped<IValidator<AppUser>, UserValidator>();
+            builder.Services.AddScoped<IValidator<Note>, NoteValidator>();
+
+            // Identity’ye FluentValidation adaptörü ekle
+            builder.Services.AddScoped<IUserValidator<AppUser>, FluentUserValidator>();
+
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login";
             });
-            
+
             //var env = builder.Environment.EnvironmentName;
             //if (env == "Development")
             //{
             //    builder.Services.AddDbContext<AppDBContext>(opt =>
             //    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //}
-           
-                builder.Services.AddDbContext<AppDBContext>(opt =>
-                 opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-                
+            builder.Services.AddDbContext<AppDBContext>(opt =>
+             opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
             builder.Services.AddControllersWithViews().
-                AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+            AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
             builder.Services.AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-        options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-            };
-        });
+         {
+             options.TokenValidationParameters = new TokenValidationParameters
+             {
+                 ValidateIssuer = true,
+                 ValidateAudience = true,
+                 ValidateLifetime = true,
+                 ValidateIssuerSigningKey = true,
+                 ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                 ValidAudience = builder.Configuration["Jwt:Audience"],
+                 IssuerSigningKey = new SymmetricSecurityKey(
+                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+             };
+         });
 
 
             var app = builder.Build();

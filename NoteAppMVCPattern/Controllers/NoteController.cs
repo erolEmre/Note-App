@@ -162,20 +162,34 @@ namespace NoteAppMVCPattern.Controllers
         [Authorize]
         public async Task<IActionResult> Update(Note note)
         {
-            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == note.Id);
-            if (existedValue != null)
+            NoteValidator validator = new NoteValidator();
+            var result = validator.Validate(note);
+
+            if (!result.IsValid)
             {
-                existedValue.Title = note.Title;
-                existedValue.Content = note.Content;
-                var match = Regex.Match(note.Content, @"#(\w+)");
-                if (match.Success)
-                {
-                    existedValue.Tag = match.Groups[1].Value;
-                }
-                existedValue.updatedDate = DateTime.UtcNow;
-                await _dbContext.SaveChangesAsync();
+                return BadRequest(result.Errors.Select(e => e.ErrorMessage));
             }
-            return RedirectToAction("Index");
+            else
+            {
+                var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == note.Id);
+                if (existedValue != null)
+                {
+                    existedValue.Title = note.Title;
+                    existedValue.Content = note.Content;
+                    if (existedValue.Content != null)
+                    {
+                        var match = Regex.Match(note.Content, @"#(\w+)");
+                        if (match.Success)
+                        {
+                            existedValue.Tag = match.Groups[1].Value;
+                        }
+                    }
+                    else existedValue.Content = "";
+                    existedValue.updatedDate = DateTime.UtcNow;
+                    await _dbContext.SaveChangesAsync();
+                }
+                return RedirectToAction("Index");
+            }
         }
         [HttpGet]
         public async Task<IActionResult> Update(int id)
