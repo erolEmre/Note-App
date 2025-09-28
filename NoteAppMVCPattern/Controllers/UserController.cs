@@ -8,6 +8,7 @@ using NoteAppMVCPattern.Models.ViewModel;
 using System;
 using System.Security.Claims;
 using static NoteAppMVCPattern.Models.ViewModel.AppUserVM;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NoteAppMVCPattern.Controllers
 {
@@ -56,12 +57,11 @@ namespace NoteAppMVCPattern.Controllers
 
                 foreach (var error in result.Errors)
                 {
-                    TempData["Message"] = error.Description;
-                    TempData["MessageType"] = "error";
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
         // GET: /Account/Login
@@ -86,12 +86,12 @@ namespace NoteAppMVCPattern.Controllers
                     );
 
                 if (result.Succeeded)
-                {                  
+                {
                     TempData["Message"] = "Giriş Başarılı";
                     TempData["MessageType"] = "success";
                     return RedirectToAction("Index", "Note");
                 }
-
+               
                 ModelState.AddModelError("", "Geçersiz giriş bilgileri.");              
             }
 

@@ -115,9 +115,25 @@ namespace NoteAppMVCPattern.Controllers
 
         public IActionResult Create()
         {
-            return View(new Note());
-        }
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId != null)
+                {
+                    var user = _dbContext.Users
+                        .Include(u => u.Notes)
+                        .FirstOrDefault(u => u.Id == Guid.Parse(userId).ToString());
 
+                    var note = new Note
+                    {
+                        User = user
+                    };
+
+                    return View(note);
+                }
+            }
+            return View(new Note()); // fallback
+        }
         [HttpPost]
         public async Task<IActionResult> Create(Note note)
         {

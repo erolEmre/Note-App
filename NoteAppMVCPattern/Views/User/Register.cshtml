@@ -16,13 +16,14 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="btn-group">
-        <button type="submit" class="btn btn-primary me-3">Kayıt Ol</button>
+        <button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
       
- @*    <div class="btn-group"> *@
-        <a asp-controller="User" asp-action="Index" class="btn btn-info me-3">Geri dön</a>
+        <a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
+
+        <a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
     
-        <a asp-controller="User" asp-action="Login" class="btn btn-info me-3">Zaten üyeyim</a>
     </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
 </form>
 
 
