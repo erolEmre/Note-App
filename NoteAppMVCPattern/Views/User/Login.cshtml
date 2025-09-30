@@ -1,7 +1,7 @@
 ﻿@using NoteAppMVCPattern.Models.ViewModel
 @model LoginViewModel
 
-<h2>Giriş Yap</h2>
+<h2>Sign In</h2>
 
 <form asp-action="Login" method="post">
     <div class="mb-3">
@@ -16,7 +16,7 @@
         <span asp-validation-for="Password" class="text-danger"></span>        
     </div>
     <div asp-validation-summary="All" class="text-danger"></div>
-    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+    <button type="submit" class="btn btn-primary">Login</button>
 </form>
 
 @section Scripts {

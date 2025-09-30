@@ -1,7 +1,7 @@
 ﻿@using NoteAppMVCPattern.Models.ViewModel
 @model RegisterViewModel
 
-<h2>Kayıt Ol</h2>
+<h2>Sign Up</h2>
 
 <form asp-action="Register" method="post">
     <div class="form-group">
@@ -16,11 +16,11 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="btn-group">
-        <button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
+        <button type="submit" class="btn btn-primary me-3 rounded">Sign Up!</button>
       
-        <a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
+        <a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">I'm already a user</a>
 
-        <a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
+        <a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Go back</a>
     
     </div>
     <div asp-validation-summary="All" class="text-danger"></div>

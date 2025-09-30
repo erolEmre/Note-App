@@ -152,7 +152,7 @@ namespace NoteAppMVCPattern.Controllers
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
 
-            TempData["Message"] = "Not başarıyla eklendi";
+            TempData["Message"] = "Note has been added.";
             TempData["MessageType"] = "success";
             return RedirectToAction("Index");
 
@@ -197,7 +197,7 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "We searched everywhere, but couldn't find anything.";
                 TempData["MessageType"] = "info";
             }
             return View(existedValue);
@@ -209,12 +209,12 @@ namespace NoteAppMVCPattern.Controllers
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "We searched everywhere, but couldn't find anything.";
                 TempData["MessageType"] = "info";
             }
             _dbContext.Notes.Remove(existedValue);
             await _dbContext.SaveChangesAsync();
-            TempData["Message"] = "Not başarıyla silindi";
+            TempData["Message"] = "Note has been deleted.";
             TempData["MessageType"] = "success";
             return RedirectToAction("Index");
 
@@ -234,8 +234,8 @@ namespace NoteAppMVCPattern.Controllers
         {
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if(note != null) note.Tag = null;
-            TempData["Message"] = "Tag Silindi!";
-            TempData["MessageType"] = "error";
+            TempData["Message"] = "Tag has been deleted.";
+            TempData["MessageType"] = "success";
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -244,8 +244,8 @@ namespace NoteAppMVCPattern.Controllers
         {
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
             if (note != null) note.Tag = tag;
-            
-            TempData["Message"] = "Tag eklendi!";
+
+            TempData["Message"] = "Note has been added.";
             TempData["MessageType"] = "success";
             
             await _dbContext.SaveChangesAsync();

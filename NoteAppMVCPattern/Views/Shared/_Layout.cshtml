@@ -30,15 +30,14 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
               
-
-                    <!-- Sağdaki Çıkış Butonu -->
+                   
                     @if (User.Identity.IsAuthenticated)
                     {
                         <form asp-controller="User" asp-action="Logout" method="post"
                               class="d-flex align-items-center ms-auto">
                             <button type="submit" class="btn btn-link d-flex align-items-center">
                                 <i class="bi bi-box-arrow-left me-1"></i>
-                                Çıkış
+                                Logout
                             </button>
                         </form>
                     }
