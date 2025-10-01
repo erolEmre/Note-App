@@ -2,7 +2,7 @@
 
 Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve silebildiği basit bir ASP.NET Core MVC uygulaması.
 
-🚀 Özellikler
+## 🚀 Özellikler
 
 🔑 Kullanıcı Yönetimi: ASP.NET Core Identity ile kullanıcı kaydı ve giriş.
 
@@ -18,7 +18,7 @@ Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve sile
 
 🛡 Authentication: Cookie Authentication (MVC) + JWT (API için hazır).
 
-🛠 Kullanılan Teknolojiler
+## 🛠 Kullanılan Teknolojiler
 
 ASP.NET Core MVC
 
@@ -32,7 +32,7 @@ JWT Authentication (API için hazır altyapı)
 
 Bootstrap 5 (UI için)
 
-⚙️ Kurulum & Çalıştırma
+## ⚙️ Kurulum & Çalıştırma
 1. Bağımlılıklar
 
 .NET 9 SDK
@@ -48,10 +48,10 @@ dotnet run
 
 Uygulama varsayılan olarak https://localhost:5001 adresinde çalışır.
 
-🌍 Deploy
+## 🌍 Deploy
 
 Proje AWS Elastic Beanstalk üzerine deploy edilmiştir.
-👉 Demo Link: NoteApp AWS
+👉 Demo Link: NoteApp AWS [Link Text](http://noteapp-dev.eba-psh22n6f.eu-north-1.elasticbeanstalk.com)
 
 ⚠️ HTTPS sertifikası için ACM yapılandırması devam ediyor. Şu an uygulama HTTP üzerinden erişilebilir.
 
