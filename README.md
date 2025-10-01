@@ -79,8 +79,8 @@ Proje AWS Elastic Beanstalk üzerine deploy edilmiştir.
 ![İlk Giriş](https://i.imgur.com/2QJj8FW.png)
 ![Not Listesi](https://i.imgur.com/5RCurAP.png)
 ![Kayıt Sayfası](https://i.imgur.com/Qw8WdV1.png)
+![Özellikler](https://i.imgur.com/0bf2oQL.png) 
 ![](https://i.imgur.com/iWNEcA6.png)![](https://i.imgur.com/0bVrB0n.png)
-![Özellikler](https://i.imgur.com/0bf2oQL.png)
 ![Özellikler](https://i.imgur.com/g5HjIP0.png)![](https://i.imgur.com/HPoeoi1.png)
 ![](https://i.imgur.com/g13sRka.png)
 
