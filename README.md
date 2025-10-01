@@ -2,7 +2,7 @@
 
 Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve silebildiği basit bir ASP.NET Core MVC uygulaması.
 
-👉 Demo Link: NoteApp AWS [Here](http://noteapp-dev.eba-psh22n6f.eu-north-1.elasticbeanstalk.com)
+👉 Demo Link: [NoteApp](http://noteapp-dev.eba-psh22n6f.eu-north-1.elasticbeanstalk.com)
 
 ## 🚀 Özellikler
 
