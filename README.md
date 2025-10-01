@@ -61,17 +61,17 @@ Proje AWS Elastic Beanstalk üzerine deploy edilmiştir.
 
 🗺 Yol Haritası
 
- Kullanıcı kimlik doğrulama (Identity)
+ ++ Kullanıcı kimlik doğrulama (Identity)
 
- Not CRUD işlemleri
+ ++ Not CRUD işlemleri
 
- Etiketleme sistemi (#hashtag extraction)
+ ++ Etiketleme sistemi (#hashtag extraction)
 
- Not paylaşma özelliği (Share action)
+ -- Not paylaşma özelliği (Share action)
 
- REST API ile mobil uyumlu hale getirme (JWT kullanarak)
+ -- REST API ile mobil uyumlu hale getirme (JWT kullanarak)
 
- Unit Test eklenmesi
+ -- Unit Test eklenmesi
 
 📷 Ekran Görüntüleri
 
