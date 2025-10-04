@@ -199,17 +199,21 @@ namespace NoteAppMVCPattern.Controllers
 
         public async Task<IActionResult> DeleteTag(int id)
         {
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = null;
+            
             TempData["Message"] = "Tag has been deleted.";
             TempData["MessageType"] = "success";
+            
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> AddTag(int id, string tag)
         {
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = tag;
 
             TempData["Message"] = "Note has been added.";
