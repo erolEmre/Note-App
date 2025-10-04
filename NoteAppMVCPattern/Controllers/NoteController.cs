@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using LinqKit;
 using NoteAppMVCPattern.Models.ViewModel;
+using FluentValidation;
 
 namespace NoteAppMVCPattern.Controllers
 {
@@ -19,11 +20,13 @@ namespace NoteAppMVCPattern.Controllers
     {
         private readonly AppDBContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IValidator<Note> _validator;
 
-        public NoteController(AppDBContext dbContext, UserManager<AppUser> userManager)
+        public NoteController(AppDBContext dbContext, UserManager<AppUser> userManager, IValidator<Note> validator)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _validator = validator; 
         }
         [Authorize]
         public async Task<IActionResult> Index(string viewMode = "grid", string tag = null, string sortOrder = null)
@@ -136,15 +139,14 @@ namespace NoteAppMVCPattern.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> Create(Note note)
-        {
-            
+        {           
             note.CreateDate = DateTime.UtcNow;
             note.updatedDate = DateTime.UtcNow;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             note.UserId = userId;
 
             var match = Regex.Match(note.Content, @"#(\w+)");
-            if (match.Success)
+            if (note.Content != null && match.Success)
             {
                 note.Tag = match.Groups[1].Value;
             }
@@ -162,8 +164,7 @@ namespace NoteAppMVCPattern.Controllers
         [Authorize]
         public async Task<IActionResult> Update(Note note)
         {
-            NoteValidator validator = new NoteValidator();
-            var result = validator.Validate(note);
+            var result = _validator.Validate(note);
 
             if (!result.IsValid)
             {
@@ -171,11 +172,14 @@ namespace NoteAppMVCPattern.Controllers
             }
             else
             {
-                var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == note.Id);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
+                var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
+                    (x => x.Id == note.Id && x.UserId == userId);
                 if (existedValue != null)
                 {
                     existedValue.Title = note.Title;
                     existedValue.Content = note.Content;
+                    
                     if (existedValue.Content != null)
                     {
                         var match = Regex.Match(note.Content, @"#(\w+)");
@@ -194,7 +198,10 @@ namespace NoteAppMVCPattern.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
+            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
+                (x => x.Id == id && x.UserId == userId);
+            
             if (existedValue == null)
             {
                 TempData["Message"] = "We searched everywhere, but couldn't find anything.";
@@ -206,16 +213,22 @@ namespace NoteAppMVCPattern.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
+            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
+                (x => x.Id == id && x.UserId == userId);
+            
             if (existedValue == null)
             {
                 TempData["Message"] = "We searched everywhere, but couldn't find anything.";
                 TempData["MessageType"] = "info";
             }
+            
             _dbContext.Notes.Remove(existedValue);
             await _dbContext.SaveChangesAsync();
+            
             TempData["Message"] = "Note has been deleted.";
             TempData["MessageType"] = "success";
+            
             return RedirectToAction("Index");
 
         }
@@ -226,7 +239,10 @@ namespace NoteAppMVCPattern.Controllers
                 .Where(n => n.Tag == tag)
                 .ToList();
 
-            return View("Index", filteredNotes);
+            NoteIndexVM noteIndexVM = new NoteIndexVM();
+            noteIndexVM.Notes = filteredNotes;
+
+            return View("Index", noteIndexVM);
 
         }
         
