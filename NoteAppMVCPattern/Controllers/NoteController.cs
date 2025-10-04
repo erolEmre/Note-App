@@ -63,58 +63,9 @@ namespace NoteAppMVCPattern.Controllers
                 ViewMode = viewMode,
                 CurrentTag = tag,
                 SortOrder = sortOrder
-            };           
+            };
             return View(vm);
         }
-
-        //public async Task<IActionResult> Index(string tag, string sortOrder)
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    // 1. Başlangıçta tüm kullanıcı notlarını seç
-        //    var predicate = PredicateBuilder.New<Note>(n => n.UserId == userId);
-
-        //    // 2. Tag filtresi varsa ekle
-        //    if (!string.IsNullOrEmpty(tag))
-        //        predicate = predicate.And(n => n.Tag == tag);
-
-        //    // 3. Query oluştur
-        //    var notesQuery = _dbContext.Notes.AsExpandable().Where(predicate);
-
-        //    // 4. Sıralama uygula
-        //    notesQuery = sortOrder switch
-        //    {
-        //        "date_asc" => notesQuery.OrderBy(n => n.updatedDate),
-        //        "date_desc" => notesQuery.OrderByDescending(n => n.updatedDate),
-        //        _ => notesQuery.OrderByDescending(n => n.updatedDate)
-        //    };
-
-        //    // 5. Veriyi çek
-        //    var notes = await notesQuery.ToListAsync();
-
-        //    // 6. Tag listesi oluştur
-        //    var tags = await _dbContext.Notes
-        //        .Where(n => n.UserId == userId && n.Tag != null)
-        //        .Select(n => n.Tag)
-        //        .Distinct()
-        //        .OrderBy(name => name)
-        //        .ToListAsync();
-
-        //    // 7. ViewBag ile View'a aktar
-        //    ViewBag.Tags = tags;
-        //    ViewBag.CurrentTag = tag;
-        //    ViewBag.CurrentSort = sortOrder;
-
-        //    var vm = new NoteIndexVM
-        //    {
-        //        Notes = notes,
-        //        Tags = tags,
-        //        CurrentTag = tag,
-        //        SortOrder = sortOrder
-        //    };
-        //    return View(vm);
-        //}
-
 
         public IActionResult Create()
         {
@@ -139,7 +90,7 @@ namespace NoteAppMVCPattern.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> Create(Note note)
-        {           
+        {
             note.CreateDate = DateTime.UtcNow;
             note.updatedDate = DateTime.UtcNow;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -179,7 +130,7 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     existedValue.Title = note.Title;
                     existedValue.Content = note.Content;
-                    
+
                     if (existedValue.Content != null)
                     {
                         var match = Regex.Match(note.Content, @"#(\w+)");
@@ -201,7 +152,7 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
                 (x => x.Id == id && x.UserId == userId);
-            
+
             if (existedValue == null)
             {
                 TempData["Message"] = "We searched everywhere, but couldn't find anything.";
@@ -216,19 +167,19 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
             var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
                 (x => x.Id == id && x.UserId == userId);
-            
+
             if (existedValue == null)
             {
                 TempData["Message"] = "We searched everywhere, but couldn't find anything.";
                 TempData["MessageType"] = "info";
             }
-            
+
             _dbContext.Notes.Remove(existedValue);
             await _dbContext.SaveChangesAsync();
-            
+
             TempData["Message"] = "Note has been deleted.";
             TempData["MessageType"] = "success";
-            
+
             return RedirectToAction("Index");
 
         }
@@ -245,122 +196,117 @@ namespace NoteAppMVCPattern.Controllers
             return View("Index", noteIndexVM);
 
         }
-        
+
         public async Task<IActionResult> DeleteTag(int id)
         {
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
-            if(note != null) note.Tag = null;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            if (note != null) note.Tag = null;
+
             TempData["Message"] = "Tag has been deleted.";
             TempData["MessageType"] = "success";
+
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-       
-        public async Task<IActionResult> AddTag(int id,string tag)
+
+        public async Task<IActionResult> AddTag(int id, string tag)
         {
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = tag;
 
             TempData["Message"] = "Note has been added.";
             TempData["MessageType"] = "success";
-            
+
             await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        //public class NoteController : Controller
+        //{
+        //    private readonly AppDBContext _dbContext;
+        //    public NoteController(AppDBContext dbContext)
+        //    {
+        //        _dbContext = dbContext;
+        //    }
+        //    public IActionResult Index()
+        //    {
+        //        var notes = _dbContext.Notes.Include(n => n.User).ToList();
+        //        return View(notes);
+        //    }
+        //    public IActionResult Create()
+        //    {
+        //        ViewBag.UserList = new SelectList(_dbContext.Users, "Id", "Username");
+        //        return View();
+        //    }
+        //    [HttpPost]
+        //    public IActionResult Create(Note note)
+        //    {
+        //        //note.UserId = 1;
+        //        if (!ModelState.IsValid)
+        //        {
+        //            foreach (var key in ModelState.Keys)
+        //            {
+        //                var errors = ModelState[key].Errors;
+        //                foreach (var error in errors)
+        //                {
+        //                    Console.WriteLine($"Field: {key}, Error: {error.ErrorMessage}");
+        //                }
+        //            }
+        //            return View(note);
+        //        }
 
-        public async Task<IActionResult> Share(int id)
-        {
-            return null;
-        }
+        //        _dbContext.Notes.Add(note);
+        //        _dbContext.SaveChanges();
+        //        TempData["msg"] = "Notunuz başarıyla eklendi";
+        //        return RedirectToAction("Index");
+        //    }
+        //    [HttpPost]
+        //    public IActionResult Delete(int id)
+        //    {
+        //        var note = _dbContext.Notes.FirstOrDefault(x=> x.Id == id);
+        //        if (note != null)
+        //        {
+        //            _dbContext.Notes.Remove(note);
+        //            _dbContext.SaveChanges();
+        //            TempData["Message"] = $"{note.Title} silindi.";
+        //        }
+        //        else
+        //        {
+        //            TempData["Message"] = "Not bulunamadı.";
+        //        }
 
-        
+        //        return RedirectToAction("Index");
+        //    }
+        //    [HttpPost]
+        //    public IActionResult Update(Note note)
+        //    {
+        //        var existednote = _dbContext.Notes.FirstOrDefault(x => x.Id == note.Id);
+        //        if (note != null)
+        //        {
+        //            existednote.Title = note.Title;
+        //            existednote.Content = note.Content;
+        //        }
+        //        TempData["msg"] = "Güncelleme başarılı";
+        //        _dbContext.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    public IActionResult Update(int id)
+        //    {
+        //        var note = _dbContext.Notes.FirstOrDefault(u => u.Id == id);
+        //        if (note == null) return NotFound();
+        //        _dbContext.SaveChanges();
+        //        return View(note);
+        //    }
+        //    public IActionResult Details(int id)
+        //    {
+        //        var note = _dbContext.Notes.FirstOrDefault(x=>x.Id == id);
+        //        if (note != null)
+        //        {
+        //            return View(note);
+        //        }
 
+        //        return View(note);
+        //    }       
+        //}
     }
-    //public class NoteController : Controller
-    //{
-    //    private readonly AppDBContext _dbContext;
-    //    public NoteController(AppDBContext dbContext)
-    //    {
-    //        _dbContext = dbContext;
-    //    }
-    //    public IActionResult Index()
-    //    {
-    //        var notes = _dbContext.Notes.Include(n => n.User).ToList();
-    //        return View(notes);
-    //    }
-    //    public IActionResult Create()
-    //    {
-    //        ViewBag.UserList = new SelectList(_dbContext.Users, "Id", "Username");
-    //        return View();
-    //    }
-    //    [HttpPost]
-    //    public IActionResult Create(Note note)
-    //    {
-    //        //note.UserId = 1;
-    //        if (!ModelState.IsValid)
-    //        {
-    //            foreach (var key in ModelState.Keys)
-    //            {
-    //                var errors = ModelState[key].Errors;
-    //                foreach (var error in errors)
-    //                {
-    //                    Console.WriteLine($"Field: {key}, Error: {error.ErrorMessage}");
-    //                }
-    //            }
-    //            return View(note);
-    //        }
-
-    //        _dbContext.Notes.Add(note);
-    //        _dbContext.SaveChanges();
-    //        TempData["msg"] = "Notunuz başarıyla eklendi";
-    //        return RedirectToAction("Index");
-    //    }
-    //    [HttpPost]
-    //    public IActionResult Delete(int id)
-    //    {
-    //        var note = _dbContext.Notes.FirstOrDefault(x=> x.Id == id);
-    //        if (note != null)
-    //        {
-    //            _dbContext.Notes.Remove(note);
-    //            _dbContext.SaveChanges();
-    //            TempData["Message"] = $"{note.Title} silindi.";
-    //        }
-    //        else
-    //        {
-    //            TempData["Message"] = "Not bulunamadı.";
-    //        }
-
-    //        return RedirectToAction("Index");
-    //    }
-    //    [HttpPost]
-    //    public IActionResult Update(Note note)
-    //    {
-    //        var existednote = _dbContext.Notes.FirstOrDefault(x => x.Id == note.Id);
-    //        if (note != null)
-    //        {
-    //            existednote.Title = note.Title;
-    //            existednote.Content = note.Content;
-    //        }
-    //        TempData["msg"] = "Güncelleme başarılı";
-    //        _dbContext.SaveChanges();
-    //        return RedirectToAction("Index");
-    //    }
-    //    public IActionResult Update(int id)
-    //    {
-    //        var note = _dbContext.Notes.FirstOrDefault(u => u.Id == id);
-    //        if (note == null) return NotFound();
-    //        _dbContext.SaveChanges();
-    //        return View(note);
-    //    }
-    //    public IActionResult Details(int id)
-    //    {
-    //        var note = _dbContext.Notes.FirstOrDefault(x=>x.Id == id);
-    //        if (note != null)
-    //        {
-    //            return View(note);
-    //        }
-
-    //        return View(note);
-    //    }       
-    //}
-}
