@@ -26,7 +26,7 @@ namespace NoteAppMVCPattern.Controllers
         {
             _dbContext = dbContext;
             _userManager = userManager;
-            _validator = validator; 
+            _validator = validator;
         }
         [Authorize]
         public async Task<IActionResult> Index(string viewMode = "grid", string tag = null, string sortOrder = null)
@@ -310,3 +310,4 @@ namespace NoteAppMVCPattern.Controllers
         //    }       
         //}
     }
+}
