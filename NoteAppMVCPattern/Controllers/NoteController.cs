@@ -105,7 +105,7 @@ namespace NoteAppMVCPattern.Controllers
             _dbContext.Notes.Add(note);
             await _dbContext.SaveChangesAsync();
 
-            TempData["Message"] = "Note has been added.";
+            TempData["Message"] = "Not eklendi.";
             TempData["MessageType"] = "success";
             return RedirectToAction("Index");
 
@@ -155,7 +155,7 @@ namespace NoteAppMVCPattern.Controllers
 
             if (existedValue == null)
             {
-                TempData["Message"] = "We searched everywhere, but couldn't find anything.";
+                TempData["Message"] = "Aradık,aradık ama bulamadık.";
                 TempData["MessageType"] = "info";
             }
             return View(existedValue);
@@ -170,14 +170,14 @@ namespace NoteAppMVCPattern.Controllers
 
             if (existedValue == null)
             {
-                TempData["Message"] = "We searched everywhere, but couldn't find anything.";
+                TempData["Message"] = "Aradık,aradık ama bulamadık.";
                 TempData["MessageType"] = "info";
             }
 
             _dbContext.Notes.Remove(existedValue);
             await _dbContext.SaveChangesAsync();
 
-            TempData["Message"] = "Note has been deleted.";
+            TempData["Message"] = "Note silindi.";
             TempData["MessageType"] = "success";
 
             return RedirectToAction("Index");
@@ -203,7 +203,7 @@ namespace NoteAppMVCPattern.Controllers
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = null;
             
-            TempData["Message"] = "Tag has been deleted.";
+            TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
             
             await _dbContext.SaveChangesAsync();
@@ -216,7 +216,7 @@ namespace NoteAppMVCPattern.Controllers
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = tag;
 
-            TempData["Message"] = "Note has been added.";
+            TempData["Message"] = "Tag eklendi.";
             TempData["MessageType"] = "success";
 
             await _dbContext.SaveChangesAsync();
