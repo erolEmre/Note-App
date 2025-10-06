@@ -216,7 +216,7 @@ namespace NoteAppMVCPattern.Controllers
             var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (note != null) note.Tag = tag;
 
-            TempData["Message"] = "Note has been added.";
+            TempData["Message"] = "Tag has been added.";
             TempData["MessageType"] = "success";
 
             await _dbContext.SaveChangesAsync();
