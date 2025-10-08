@@ -10,21 +10,26 @@ using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Migrations;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
+using NoteAppMVCPattern.Services;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+
 
 namespace NoteAppMVCPattern.Controllers
 {
     [Authorize]
+    
     public class NoteController : Controller
     {
-        private readonly AppDBContext _dbContext;
+        private readonly INoteService _noteService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IValidator<Note> _validator;
+         
 
-        public NoteController(AppDBContext dbContext, UserManager<AppUser> userManager, IValidator<Note> validator)
+        public NoteController(INoteService noteService, UserManager<AppUser> userManager, IValidator<Note> validator)
         {
-            _dbContext = dbContext;
+            _noteService = noteService;
             _userManager = userManager;
             _validator = validator;
         }
@@ -33,29 +38,10 @@ namespace NoteAppMVCPattern.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Notları filtrele
-            var notesQuery = _dbContext.Notes.Where(n => n.UserId == userId);
-
-            if (!string.IsNullOrEmpty(tag))
-                notesQuery = notesQuery.Where(n => n.Tag == tag);
-
-            notesQuery = sortOrder switch
-            {
-                "date_asc" => notesQuery.OrderBy(n => n.updatedDate),
-                "date_desc" => notesQuery.OrderByDescending(n => n.updatedDate),
-                _ => notesQuery.OrderByDescending(n => n.updatedDate)
-            };
-
-            var notes = await notesQuery.ToListAsync();
-
-            var tags = await _dbContext.Notes
-                .Where(n => n.UserId == userId && n.Tag != null)
-                .Select(n => n.Tag)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToListAsync();
-
-            // ViewModel oluştur
+            // Controller artık sadece service'i çağırıyor.
+            var notes = await _noteService.GetNotes(userId, tag, sortOrder);
+            var tags = await _noteService.GetUserTags(userId);
+           
             var vm = new NoteIndexVM
             {
                 Notes = notes,
@@ -74,7 +60,7 @@ namespace NoteAppMVCPattern.Controllers
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (userId != null)
                 {
-                    var user = _dbContext.Users
+                    var user = _userManager.Users
                         .Include(u => u.Notes)
                         .FirstOrDefault(u => u.Id == Guid.Parse(userId).ToString());
 
@@ -89,21 +75,11 @@ namespace NoteAppMVCPattern.Controllers
             return View(new Note()); // fallback
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Note note)
         {
-            note.CreateDate = DateTime.UtcNow;
-            note.updatedDate = DateTime.UtcNow;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            note.UserId = userId;
-
-            var match = Regex.Match(note.Content, @"#(\w+)");
-            if (note.Content != null && match.Success)
-            {
-                note.Tag = match.Groups[1].Value;
-            }
-
-            _dbContext.Notes.Add(note);
-            await _dbContext.SaveChangesAsync();
+            await _noteService.Add(note, userId);
 
             TempData["Message"] = "Not eklendi.";
             TempData["MessageType"] = "success";
@@ -112,46 +88,32 @@ namespace NoteAppMVCPattern.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(Note note)
         {
-            var result = _validator.Validate(note);
+            var result = await _validator.ValidateAsync(note);
 
             if (!result.IsValid)
             {
-                return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.ErrorCode,item.ErrorMessage);
+                }
+                return View(note);
             }
             else
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-                var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
-                    (x => x.Id == note.Id && x.UserId == userId);
-                if (existedValue != null)
-                {
-                    existedValue.Title = note.Title;
-                    existedValue.Content = note.Content;
-
-                    if (existedValue.Content != null)
-                    {
-                        var match = Regex.Match(note.Content, @"#(\w+)");
-                        if (match.Success)
-                        {
-                            existedValue.Tag = match.Groups[1].Value;
-                        }
-                    }
-                    else existedValue.Content = "";
-                    existedValue.updatedDate = DateTime.UtcNow;
-                    await _dbContext.SaveChangesAsync();
-                }
+                await _noteService.Update(note, userId);                
                 return RedirectToAction("Index");
             }
         }
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
-                (x => x.Id == id && x.UserId == userId);
+            var existedValue = await _noteService.GetNoteById(id, userId);
 
             if (existedValue == null)
             {
@@ -164,62 +126,52 @@ namespace NoteAppMVCPattern.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-            var existedValue = await _dbContext.Notes.FirstOrDefaultAsync
-                (x => x.Id == id && x.UserId == userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _noteService.Delete(id, userId);
 
-            if (existedValue == null)
-            {
-                TempData["Message"] = "Aradık,aradık ama bulamadık.";
-                TempData["MessageType"] = "info";
-            }
-
-            _dbContext.Notes.Remove(existedValue);
-            await _dbContext.SaveChangesAsync();
-
-            TempData["Message"] = "Note silindi.";
+            TempData["Message"] = "Not silindi.";
             TempData["MessageType"] = "success";
 
             return RedirectToAction("Index");
 
         }
         [HttpGet]
-        public IActionResult FilterByTag(string tag)
-        {
-            var filteredNotes = _dbContext.Notes
-                .Where(n => n.Tag == tag)
-                .ToList();
+        //public IActionResult FilterByTag(string tag)
+        //{
 
-            NoteIndexVM noteIndexVM = new NoteIndexVM();
-            noteIndexVM.Notes = filteredNotes;
+        //    var filteredNotes = _noteService.GetUserTags(userId);
 
-            return View("Index", noteIndexVM);
+        //    NoteIndexVM noteIndexVM = new NoteIndexVM();
+        //    noteIndexVM.Notes = filteredNotes;
 
-        }
+        //    return View("Index", noteIndexVM);
 
+        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTag(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
-            if (note != null) note.Tag = null;
-            
+            await _noteService.DeleteTag(id,userId);
+
             TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
+
             
-            await _dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTag(int id, string tag)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var note = await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
-            if (note != null) note.Tag = tag;
+            await _noteService.AddTag(id, tag, userId.ToString());
 
             TempData["Message"] = "Tag eklendi.";
             TempData["MessageType"] = "success";
 
-            await _dbContext.SaveChangesAsync();
+           
             return RedirectToAction("Index");
         }
 
@@ -314,5 +266,7 @@ namespace NoteAppMVCPattern.Controllers
         //        return View(note);
         //    }       
         //}
+       
+        
     }
 }

@@ -62,6 +62,8 @@ namespace NoteAppMVCPattern
             builder.Services.AddDbContext<AppDBContext>(opt =>
              opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
+            builder.Services.AddScoped<INoteService, NoteService>();
 
             builder.Services.AddControllersWithViews().
             AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());

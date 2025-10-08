@@ -46,15 +46,16 @@
                           style="resize: vertical;"
                           placeholder="@placeholderText">
         </textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
     </div>
             
     <button type="submit"
             class="btn btn-success d-inline-flex align-items-center pe-lg-2">
         <i class="bi bi-check-all"></i>
-            <span class="pe-1">Kaydet</span>
-        
+            <span class="pe-1">Kaydet</span>        
     </button>
-
+    <a asp-controller="Note" asp-action="Index" class="btn btn-danger">Geri dön</a>
+    </div>
 </form>
 }
 
