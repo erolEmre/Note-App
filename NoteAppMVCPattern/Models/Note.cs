@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NoteAppMVCPattern.Models
 {
@@ -11,8 +12,8 @@ namespace NoteAppMVCPattern.Models
         [Display(Name = "Başlık")]
         public string? Title { get; set; }
         public DateTime CreateDate {  get; set; }
+        [NotMapped]
         public string? Tag { get; set; }
-        public DateTime updatedDate { get; set; }
 
         public string? UserId { get; set; } // foreign key
         public virtual AppUser? User { get; set; } // navigation property

@@ -21,6 +21,7 @@ namespace NoteAppMVCPattern.Models
                 .WithMany(u => u.Notes)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+           
         }
     }
 }
