@@ -12,6 +12,7 @@ namespace NoteAppMVCPattern.Models
         [Display(Name = "Başlık")]
         public string? Title { get; set; }
         public DateTime CreateDate {  get; set; }
+        public DateTime updatedDate { get; set; }
         [NotMapped]
         public string? Tag { get; set; }
 
