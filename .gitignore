@@ -9,3 +9,4 @@ obj/
 *.dll
 *.cache
 *.json
+/git restore .
