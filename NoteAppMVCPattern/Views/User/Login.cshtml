@@ -6,13 +6,13 @@
 <form asp-action="Login" method="post">
     <div class="mb-3">
         <label asp-for="UserName" class="form-label"></label>
-        <input asp-for="UserName" class="form-control" />
+        <input asp-for="UserName" class="form-control w-50" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" type="password" class="form-control" />
+        <input asp-for="Password" type="password" class="form-control w-50" />
         <span asp-validation-for="Password" class="text-danger"></span>        
     </div>
     <div asp-validation-summary="All" class="text-danger"></div>

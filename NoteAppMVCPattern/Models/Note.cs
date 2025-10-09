@@ -16,5 +16,7 @@ namespace NoteAppMVCPattern.Models
 
         public string? UserId { get; set; } // foreign key
         public virtual AppUser? User { get; set; } // navigation property
+
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
