@@ -34,22 +34,35 @@ namespace NoteAppMVCPattern.Controllers
             _validator = validator;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string viewMode = "grid", string tag = null, string sortOrder = null)
+        public async Task<IActionResult> Index(string viewMode = "grid", string sortOrder = null, List<int> tagIds = null)
         {
+            // 1. Kullanıcı ID'sini al
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Controller artık sadece service'i çağırıyor.
-            var notes = await _noteService.GetNotes(userId, tag, sortOrder);
-            var tags = await _noteService.GetUserTags(userId);
-           
+            // 2. Notları getir (İlişkili Tags koleksiyonları dahil edilmelidir!)
+            // _noteService.GetNotes metodu içinde .Include(n => n.Tags) kullandığınızdan emin olun.
+            var notes = await _noteService.GetNotes(userId, tagIds, sortOrder);
+
+            // 3. Kullanıcının sahip olduğu tüm etiketleri getir (List<Tag> dönmelidir)
+            // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
+            var tags = await _noteService.GetTags(userId);
+
+            // 4. ViewModel oluştur
             var vm = new NoteIndexVM
             {
                 Notes = notes,
+
+                // KRİTİK DÜZELTME: ViewModel'deki List<Tag> özelliğine atama
+                // Eski: Tags = tags, 
+                // Yeni: View model'inizdeki özelliğin adını 'AvailableTags' olarak değiştirdiğinizi varsayıyoruz.
                 Tags = tags,
+
+                SelectedTagIds = tagIds ?? new List<int>(),
                 ViewMode = viewMode,
-                CurrentTag = tag,
                 SortOrder = sortOrder
+                // CurrentTag özelliği artık kullanılmamalıdır.
             };
+
             return View(vm);
         }
 
@@ -149,10 +162,11 @@ namespace NoteAppMVCPattern.Controllers
         //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTag(int id)
+        public async Task<IActionResult> DeleteTag(int noteId,string userId,int tagId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.DeleteTag(id,userId);
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            userId = _userId;
+            await _noteService.DeleteTag(noteId,userId,tagId);
 
             TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
@@ -163,17 +177,26 @@ namespace NoteAppMVCPattern.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTag(int id, string tag)
+        public async Task<IActionResult> AddTag(int noteId, int tagId)
         {
+            // ... mantık: noteId ve tagId ile mevcut Tag'i nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.AddTag(id, tag, userId.ToString());
-
-            TempData["Message"] = "Tag eklendi.";
-            TempData["MessageType"] = "success";
-
-           
+            await _noteService.AddToExistingTag(noteId, tagId, userId); 
+            // ...
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAndAddTag(int noteId, string tagName)
+        {
+            // ... mantık: yeni Tag'i oluştur, sonra noteId ile nota ekle
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _noteService.CreateAndAdd(noteId, tagName, userId);
+            // ...
+            return RedirectToAction("Index");
+        }
+
 
         public async Task<IActionResult> Share(int id)
         {

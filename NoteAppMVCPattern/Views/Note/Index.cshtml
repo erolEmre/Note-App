@@ -1,40 +1,34 @@
 ﻿@model NoteAppMVCPattern.Models.ViewModel.NoteIndexVM
-@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Linq
 
 @{
     ViewData["Title"] = "Notlar";
-    Dictionary<string, int> tagColorPairs = new();
-    List<string> colors = new List<string> { "bg-warning", "bg-primary", "bg-danger", "bg-success", "bg-info" };
-    
+    // Bu dictionary, her Tag adına bir renk atamak için kullanılır.
+    Dictionary<string, string> tagColorPairs = new();
+    List<string> colors = new() { "bg-warning", "bg-primary", "bg-danger", "bg-success", "bg-info" };
+    int colorIndex = 0;
 }
 @await Html.PartialAsync("_TempDataMessage")
-<div class="container py-4">
 
-    @if (Model.Notes.Count == 0)
+<div class="container py-4">
+    @if (Model.Notes == null || Model.Notes.Count == 0)
     {
-        <!-- Empty State -->
         <div class="text-center mt-5">
             <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
             <p class="lead">Hiç notun yok.</p>
             <a asp-action="Create" class="btn btn-lg btn-primary">
                 <i class="bi bi-journal-plus"></i> İlk Notunu Ekle
-                
             </a>
         </div>
     }
     else
-    {   @* <div>
-        @if (Model.CurrentTag != null)
-        {
-            <a class="btn btn-danger" asp-action="Index"> Filtreyi Kaldır </a>
-        }
-        </div> *@
-        @await Html.PartialAsync("_ViewModePartial", Model.ViewMode)
-        <div class="d-flex justify-content-end gap-2 mb-3 ms-2">
-            @if (Model.CurrentTag != null)
+    {
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            @if (Model.SelectedTagIds != null && Model.SelectedTagIds.Any())
             {
-                <a class="btn btn-danger" asp-action="Index"> Filtreyi Kaldır </a>
+                <a class="btn btn-danger" asp-action="Index">Filtreyi Kaldır</a>
             }
+
             <a asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-journal-plus"></i> Yeni Not
             </a>
@@ -44,39 +38,53 @@
                     Sırala
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_desc">Yeniden --> Eskiye</a></li>
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_asc">Eskiden --> Yeniye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li class="dropdown-header">Tag'e Göre</li>
-                    @foreach (var tag in Model.Tags)
+                    <li class="dropdown-header">Tag’e Göre Filtrele</li>
+
+                    @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
+                    @if (Model.Tags != null)
                     {
-                        <li><a class="dropdown-item" asp-action="Index" asp-route-tag="@tag">@tag</a></li>                        
-                    }                  
+                        @foreach (var tag in Model.Tags)
+                        {
+                            @* Filtreleme için Tag ID'sini kullanmak daha güvenlidir *@
+                            <li><a class="dropdown-item" asp-action="Index" asp-route-selectedTagIds="@tag.Id">@tag.TagName</a></li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
-        // View Modes
+
         <div class="row g-3">
-           @if(Model.ViewMode == "grid")
-           { 
-               @foreach (var note in Model.Notes)
+            @if (Model.ViewMode == "grid")
             {
+                @foreach (var note in Model.Notes)
+                {
                     <div class="col-12 col-sm-6 col-md-4 mb-4">
-                        <div class="card h-100 text-white bg-dark border-4">
-                        <!-- Renk Kısmı -->
-                            @if (!string.IsNullOrEmpty(note.Tag))
+                        <div class="card h-100 text-white bg-dark border-4 position-relative">
+
+                            @if (note.Tags != null && note.Tags.Any())
                             {
-                                <!-- Renkler en üstte tanımlı ve toplamda 5 adetler -->
-                                <!-- 0 - Sarı  1 - Kapalı Mavi 2 - Kırmızı 3 - Yeşil 4 - Açık Mavi -->
-                                <!-- Default renk Sarı -->
-                                
-                                int randomColorNumber = 0; // Sarı                               
-                                string color = colors[randomColorNumber];
-                                <span class="badge @color text-dark">#@note.Tag</span>
-                               
+                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
+                                    @foreach (var tag in note.Tags)
+                                    {
+                                        // TagName'e göre renk ataması
+                                        @* if (!tagColorPairs.ContainsKey(tag.TagName))
+                                        {
+                                            tagColorPairs[tag.TagName] = colors[colorIndex % colors.Count];
+                                            colorIndex++;
+                                        } *@
+                                        @* var color = tagColorPairs[tag.TagName]; *@
+                                        @* var color = "bg-primary"; *@
+
+                                        <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
+                                    }
+                                </div>
                             }
 
-                            <div class="card-body">
+                            <div class="card-body mt-4">
+                                @* Badges için üstten biraz boşluk bırakıldı *@
                                 <h5 class="card-title">@note.Title</h5>
                                 <p class="card-text text-truncate">@note.Content</p>
                                 <p class="card-subtitle text-white-50 text-end text-break">@note.CreateDate.ToShortDateString()</p>
@@ -85,15 +93,14 @@
                             <div class="card-footer d-flex justify-content-between align-items-center">
 
                                 <div class="btn-group">
-                                    <form asp-action="Update" asp-route-id="@note.Id" method="get">
-                                        <button type="submit" class="btn btn-primary btn-sm me-2">
-                                            <i class="bi bi-pencil-square me-1"></i> Düzenle
-                                        </button>
-                                    </form>
+                                    <a asp-action="Update" asp-route-id="@note.Id" class="btn btn-primary btn-sm me-2">
+                                        <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                    </a>
+
                                     <form asp-action="Delete" asp-route-id="@note.Id" method="post"
                                           onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-danger btn-sm me-2">
+                                        <button type="submit" class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash3"></i> Sil
                                         </button>
                                     </form>
@@ -106,52 +113,59 @@
                                     </button>
 
                                     <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 180px; max-width: 200px;">
-                                        <li class="mb-2">
-                                            @if (string.IsNullOrEmpty(note.Tag))
-                                            {
-                                                <form asp-action="AddTag" method="post">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="id" value="@note.Id" />
-                                                    <input type="text" name="tag" class="form-control form-control-sm mb-2"
-                                                           placeholder="Tag gir" />
-                                                    <button type="submit" class="btn btn-info btn-sm w-100">
-                                                        <i class="bi bi-bookmark-plus"></i> Ekle
-                                                    </button>
-                                                </form>
-                                            }
-                                        </li>
 
-                                        @if (!string.IsNullOrEmpty(note.Tag))
+                                        @* 1. Notun Mevcut Taglerini Silme *@
+                                        @if (note.Tags != null && note.Tags.Any())
                                         {
-                                            <li class="mb-2">
-                                                <form asp-action="DeleteTag" method="post">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="id" value="@note.Id" />
-                                                    <button type="submit" class="btn btn-danger btn-sm w-100">
-                                                        <i class="bi bi-bookmark-x"></i> Tag'i Sil
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        }
-
-                                        
-                                        
-                                        @if (string.IsNullOrEmpty(note.Tag))
-                                        {
-                                            <li><hr class="dropdown-divider my-2"></li>
-                                            <li class="dropdown-header">Bu Tag'e Ekle</li>
-                                            @foreach (var tag in Model.Tags)
+                                            <li class="dropdown-header">Mevcut Tag'ler (Sil)</li>
+                                            @foreach (var tag in note.Tags)
                                             {
-                                                <li>
-                                                    <form asp-action="AddTag" method="post" style="display:inline;">
+                                                <li class="mb-1">
+                                                    <form asp-controller="Note" asp-action="DeleteTag" method="post" style="display:inline;">
                                                         @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@note.Id" />
-                                                        <input type="hidden" name="tag" value="@tag" />
-                                                        <button type="submit" class="dropdown-item text-truncate">@tag</button>
+                                                        <input type="hidden" name="noteId" value="@note.Id" />
+                                                        <input type="hidden" name="tagId"  value="@tag.Id" /> @* Tag'in ID'sini kullanıyoruz *@                                                                                                             
+                                                        <button type="submit" class="btn btn-danger btn-sm w-100 text-truncate">
+                                                            <i class="bi bi-bookmark-x"></i> Sil (#@tag.TagName)
+                                                        </button>
                                                     </form>
                                                 </li>
                                             }
+                                            <li><hr class="dropdown-divider my-2"></li>
                                         }
+
+                                        @* 2. Var Olan Taglerden Ekleme *@
+                                        @if (Model.Tags != null)
+                                        {
+                                            <li class="dropdown-header">Var Olan Tag’ler (Ekle)</li>
+                                            @foreach (var tag in Model.Tags)
+                                            {
+                                                if (note.Tags == null || !note.Tags.Any(t => t.Id == tag.Id))
+                                                {
+                                                    <li>
+                                                        <form asp-controller="Note" asp-action="AddTag" method="post" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="noteId" value="@note.Id" />
+                                                            <input type="hidden" name="tagId" value="@tag.Id" /> @* **KRİTİK: Tag ID'si** *@
+                                                            <button type="submit" class="dropdown-item text-truncate">@tag.TagName</button>
+                                                        </form>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+
+                                        @* 3. Yeni Tag Oluşturup Ekleme *@
+                                        <li class="mb-2">
+                                            <form asp-controller="Note" asp-action="CreateAndAddTag" method="post">
+                                                @* **AKSIYON ADI DEĞİŞTİ** *@
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="noteId" value="@note.Id" />
+                                                <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="Yeni Tag Adı" required /> @* **KRİTİK: Tag Adı** *@
+                                                <button type="submit" class="btn btn-info btn-sm w-100">
+                                                    <i class="bi bi-bookmark-plus"></i> Oluştur & Ekle
+                                                </button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </div>
 
@@ -159,31 +173,43 @@
                         </div>
                     </div>
                 }
-                // List View Mode
-            } else if(Model.ViewMode == "list")
-            {               
-                    <ul class="list-group">
-                        
-                        @for (int i = 0; i<Model.Notes.Count; i++)
-                        {
-                        <li class="list-group-item d-flex align-items-start">
-                            <!-- Numara -->
-                            <div class="me-2 text-muted fw-bold display-6">
-                                @(i + 1)
+            }
+            @* List View (Sadeleştirilmiş) *@
+            else if (Model.ViewMode == "list")
+            {
+                <ul class="list-group">
+                    @for (int i = 0; i < Model.Notes.Count; i++)
+                    {
+                        var note = Model.Notes[i];
+                        <li class="list-group-item d-flex align-items-start justify-content-between">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3 text-muted fw-bold display-6">@(i + 1)</div>
+                                <div>
+                                    <h5 class="mb-1">@note.Title</h5>
+                                    <p class="mb-0 text-muted small">@note.Content</p>
+                                </div>
                             </div>
 
-                            <!-- Not içeriği -->
-                            <div>
-                                <h5 class="mb-1">@Model.Notes[i].Title</h5>
-                                <p class="mb-0 text-muted small">@Model.Notes[i].Content</p>                                
-                            </div>
-                            @* <div class="text-end">@Model.Notes[i].CreateDate.ToShortDateString()</div>
-                            <span class="align-text-top">merhaba</span> *@
+                            @if (note.Tags != null && note.Tags.Any())
+                            {
+                                <div class="d-flex align-self-center">
+                                    @foreach (var tag in note.Tags)
+                                    {
+                                    @*
+                                        if (!tagColorPairs.ContainsKey(tag.TagName))
+                                        {
+                                            tagColorPairs[tag.TagName] = colors[colorIndex % colors.Count];
+                                            colorIndex++;
+                                        }
+                                        var color = tagColorPairs[tag.TagName]; *@
+                                        <span class="badge @tag.TagColor text-dark align-self-center me-2">#@tag.TagName</span>
+                                    }
+                                </div>
+                            }
                         </li>
-                        }
-                    </ul>
+                    }
+                </ul>
             }
         </div>
     }
-    
 </div>

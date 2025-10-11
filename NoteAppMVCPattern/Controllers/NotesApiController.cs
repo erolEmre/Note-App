@@ -53,7 +53,7 @@ namespace NoteAppMVCPattern.Controllers
 
             note.Title = updated.Title;
             note.Content = updated.Content;
-            note.Tag = updated.Tag;
+            //note.Tag = updated.Tag;
             _context.SaveChanges();
 
             return NoContent();

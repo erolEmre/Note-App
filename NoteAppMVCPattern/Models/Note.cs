@@ -14,7 +14,7 @@ namespace NoteAppMVCPattern.Models
         public DateTime CreateDate {  get; set; }
         public DateTime updatedDate { get; set; }
         [NotMapped]
-        public string? Tag { get; set; }
+        //public string? Tag { get; set; }
 
         public string? UserId { get; set; } // foreign key
         public virtual AppUser? User { get; set; } // navigation property

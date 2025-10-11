@@ -7,27 +7,31 @@ namespace NoteAppMVCPattern.Repo
     public class NoteRepository : INoteRepository
     {
         private readonly AppDBContext _dbContext;
+
         public NoteRepository(AppDBContext dbContext)
         {
             _dbContext = dbContext;
         }
-            
-        public async Task<List<Note>> GetAllByUserIdAsync(string userId, string tag = null, string sortOrder = null)
-        {
-            var notesQuery = _dbContext.Notes.Where(n => n.UserId == userId);
 
-            // Eğer bir etiket filtresi varsa, uygula.
-            if (!string.IsNullOrEmpty(tag))
+        public async Task<List<Note>> GetAllByUserIdAsync(string userId, List<int> tagIds = null, string sortOrder = null)
+        {
+            // Notları kullanıcıya göre filtrele ve Tag ilişkisini dahil et
+            var notesQuery = _dbContext.Notes
+                .Include(n => n.Tags)
+                .Where(n => n.UserId == userId);
+
+            // Etiket filtreleme
+            if (tagIds != null && tagIds.Any())
             {
-                notesQuery = notesQuery.Where(n => n.Tag == tag);
+                notesQuery = notesQuery.Where(n => n.Tags.Any(t => tagIds.Contains(t.Id)));
             }
 
-            // Sıralama mantığını uygula.
+            // Sıralama mantığı
             notesQuery = sortOrder switch
             {
                 "date_asc" => notesQuery.OrderBy(n => n.updatedDate),
                 "date_desc" => notesQuery.OrderByDescending(n => n.updatedDate),
-                _ => notesQuery.OrderByDescending(n => n.updatedDate) // Varsayılan sıralama
+                _ => notesQuery.OrderByDescending(n => n.updatedDate)
             };
 
             return await notesQuery.ToListAsync();
@@ -35,20 +39,21 @@ namespace NoteAppMVCPattern.Repo
 
         public async Task<Note> GetByIdAsync(int id, string userId)
         {
-            return await _dbContext.Notes.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
-        }
-
-        public async Task<List<string>> GetTags(string userId)
-        {
-            return await _dbContext.Notes.Where(x=> x.UserId == userId && x.Tag != null)
-                .Select(x => x.Tag)
-                .Distinct()
-                .ToListAsync();
+            // Tag’lerle birlikte getiriyoruz ki ilişkili veriler boş kalmasın
+            return await _dbContext.Notes
+                .Include(n => n.Tags)
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
         }
 
         public async Task Add(Note note)
         {
             _dbContext.Notes.Add(note);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Update(Note note)
+        {
+            _dbContext.Notes.Update(note);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -58,10 +63,15 @@ namespace NoteAppMVCPattern.Repo
             await _dbContext.SaveChangesAsync();
         }
 
-       public async Task Update(Note note)
+        public async Task<List<Tag>> GetTags(string userId)
         {
-            _dbContext.Notes.Update(note);
-            await _dbContext.SaveChangesAsync();
+            return await _dbContext.Notes
+                .Include(n => n.Tags)
+                .Where(n => n.UserId == userId)
+                .SelectMany(n => n.Tags)
+                .Distinct()
+                .ToListAsync();
         }
     }
+
 }
