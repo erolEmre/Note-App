@@ -49,7 +49,7 @@
                         @foreach (var tag in Model.Tags)
                         {
                             @* Filtreleme için Tag ID'sini kullanmak daha güvenlidir *@
-                            <li><a class="dropdown-item" asp-action="Index" asp-route-selectedTagIds="@tag.Id">@tag.TagName</a></li>
+                            <li><a class="dropdown-item" asp-action="Index" asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
                         }
                     }
                 </ul>
