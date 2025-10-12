@@ -1,185 +1,36 @@
 ﻿@model List<NoteAppMVCPattern.Models.AppUser>
+
+@{
+    // 💡 1. BU SAYFA İÇİN ÖZEL LAYOUT KULLAN
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Hoş Geldiniz";
+}
+
+@* 2. TempData mesajları bazen Layout'ta olduğu için, burada tekrar partial çağırmaya gerek kalmayabilir *@
 @await Html.PartialAsync("_TempDataMessage")
 
 
-<div class="text-center">
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <h2 class="text-center">Welcome to the Note App</h2>
+@* ... (Mevcut kodlarınız) ... *@
 
-    <a asp-controller="User" asp-action="Register" class="btn btn-primary fw-bold">Kayıt Ol</a>
-    <a asp-controller="User" asp-action="Login" class="btn btn-success fw-bold">Giriş Yap</a>
-</div>
+<div class="container-fluid">
+    <div class="row align-items-center" style="min-height: 100vh;">
 
+        @* <div class="col-md-6 text-center text-white">
+            <h1 class="display-3 fw-bold">DÜZEN SENİN ZİHNİNDE BAŞLAR.</h1>
+            <p class="lead mt-4 d-none d-md-block">Notlarını dijital evrende kaybetmeden, şeffaf bir zihinle yaşa.</p>
+        </div> *@
 
-@* @if (TempData["Message"] != null)
-{
-    <div id="successMsg" class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                var msg = document.getElementById('successMsg');
-                if (msg) {
-                    msg.style.transition = 'opacity 0.5s ease';
-                    msg.style.opacity = '0';
-                    setTimeout(function() {
-                        msg.remove();
-                    }, 500);
-                }
-            }, 2000);
-        });
-    </script>
-} *@
-@* @if (TempData["Message"] != null)
-{
+        <div class="frosted-glass-container mx-auto" style="width: 500px; min-width: 300px;">
 
-var type = TempData["MessageType"]?.ToString() ?? "info";
-    var alertClass = type switch
-    {
-        "success" => "alert-success",
-        "error" => "alert-danger",
-        "info" => "alert-info",
-        _ => "alert-secondary"
-    };
-  
-    <div class="alert @alertClass alert-dismissible fade show text-center" id="Message" role="alert">        
-        @TempData["Message"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                var msg = document.getElementById('Message');
-                if (msg) {
-                    msg.style.transition = 'opacity 0.5s ease';
-                    msg.style.opacity = '0';
-                    setTimeout(function() {
-                        msg.remove();
-                    }, 500);
-                }
-            }, 2000);
-        });
-    </script>
-} *@
+            <h2 class="mb-5 text-center">Welcome to the Note App</h2>
 
-@* <a asp-action="Create" class="btn btn-primary">Yeni Kullanıcı</a>
-@if (TempData["Message"] != null)
-{
-    <div id="successMsg" class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            setTimeout(function () {
-                $('#successMsg').fadeOut(500, function () {
-                    // Burada istersen başka işlemler de yapabilirsin
-                });
-            }, 2000);
-        });
-    </script>
-} *@
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>Giriş Yap</th>
-            <th>Kayıt Ol</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@string.Join(", ", user.Notes.Select(n => n.Title))</td>
-                <td>@user.UserName</td>
-                <td>
-                    <a asp-action="Register" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Giriş Yap</a>
+            <div class="d-grid gap-3 mx-auto" style="width: 70%;">
 
-                    <!-- Basit JavaScript Confirm ile Silme -->
-                    <form asp-action="Login" asp-route-id="@user.Id" method="post" style="display: inline;"
-                          onsubmit="return confirm('@user.UserName kullanıcısını silmek istediğinizden emin misiniz?')">
-                        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table> *@
+                <a asp-controller="User" asp-action="Register" class="btn btn-primary btn fw-bold w-80">Kayıt Ol</a>
+                <a asp-controller="User" asp-action="Login" class="btn btn-success btn fw-bold w-80">Giriş Yap</a>
 
-
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>İsim</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Id</td>
-                <td>@user.UserName</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Düzenle</a>
-                    <button type="button" class="btn btn-danger btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal"
-                            data-user-id="@user.Id"
-                            data-user-name="@user.UserName">
-                        Sil
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
- *@
-@* <!-- Silme Onay Modalı -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Silme Onayı</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <span id="deleteUserName"></span> kullanıcısını silmek istediğinizden emin misiniz?
-                <br><small class="text-muted">Bu işlem geri alınamaz.</small>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
-                <!-- Form ile POST request gönder -->
-                <form id="deleteForm" asp-action="Delete" asp-controller="User" method="post" style="display: inline;">
-                    <input type="hidden" id="deleteUserId" name="id" value="" />
-                    <button type="submit" class="btn btn-danger">Evet, Sil</button>
-                </form>
             </div>
         </div>
+
     </div>
-</div> *@
-
-@* <script>
-    // Modal açıldığında kullanıcı bilgilerini ayarla
-    document.addEventListener('DOMContentLoaded', function() {
-        var deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var userId = button.getAttribute('data-user-id');
-            var userName = button.getAttribute('data-user-name');
-
-            var userNameSpan = deleteModal.querySelector('#deleteUserName');
-            var deleteForm = deleteModal.querySelector('#deleteForm');
-            var userIdInput = deleteModal.querySelector('#deleteUserId');
-
-            userNameSpan.textContent = userName;
-            userIdInput.value = userId;
-        });
-    });
-</script> *@
+</div>
