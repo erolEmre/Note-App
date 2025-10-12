@@ -99,6 +99,32 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
 
         }
+        [HttpGet]
+        // [ValidateAntiForgeryToken] ! Bu varken çalışmıyor..
+        public IActionResult NoteDetails(int noteId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId != null)
+                {
+                    var user = _userManager.Users
+                        .Include(u => u.Notes)
+                        .ThenInclude(t=> t.Tags)
+                        .FirstOrDefault(u => u.Id == Guid.Parse(userId).ToString());
+                    
+                        foreach (var note in user.Notes)
+                        {
+                            if (note.Id == noteId)
+                            {
+                                return PartialView("_noteDetailsPartial", note);
+                            }
+                        }
+                    
+                }
+            }
+                    return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
