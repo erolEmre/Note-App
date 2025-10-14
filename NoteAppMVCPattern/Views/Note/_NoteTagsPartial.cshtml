@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Tag>
+
+@if (Model != null && Model.Any())
+{
+    <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
+        @foreach (var tag in Model)
+        {
+            <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
+        }
+    </div>
+}

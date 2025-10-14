@@ -6,6 +6,18 @@
     ViewData["Title"] = "Hoş Geldiniz";
 }
 
+@* <div class="background-videos-container">
+    <video autoplay muted loop playsinline class="bg-video top-left-video">
+        <source src="~/vids/space.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <video autoplay muted loop playsinline class="bg-video bottom-right-video">
+        <source src="~/vids/baloon.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    @* Diğer videolarınızı buraya ekleyebilirsiniz 
+</div> *@
+
 @* 2. TempData mesajları bazen Layout'ta olduğu için, burada tekrar partial çağırmaya gerek kalmayabilir *@
 @await Html.PartialAsync("_TempDataMessage")
 

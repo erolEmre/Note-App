@@ -20,9 +20,22 @@
     <a asp-controller="User" asp-action="Index" class="btn btn-danger">Geri dön</a> 
 </form>
 
+
 @section Scripts {
 @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         Layout = "_Layout";
-    }
+  }
+
+}
+
+@section Styles {
+    <style>
+        body {
+            background-image: url('/bg-images/lamp.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 }

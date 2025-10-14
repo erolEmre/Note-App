@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NoteAppMVCPattern.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NoteAppMVCPattern.Models
@@ -11,6 +12,10 @@ namespace NoteAppMVCPattern.Models
         public string? Content { get; set; }
         [Display(Name = "Başlık")]
         public string? Title { get; set; }
+        public NoteStatus Status { get; set; } = NoteStatus.None;
+        public DateTime? PlannedDate { get; set; }
+        [NotMapped]
+        public string StatusName => Status.ToString();
         public DateTime CreateDate {  get; set; }
         public DateTime updatedDate { get; set; }
         [NotMapped]

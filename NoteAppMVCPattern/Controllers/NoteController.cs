@@ -223,7 +223,24 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
         }
 
-
+        public async Task<IActionResult> MarkAsDone(int noteId)
+        {
+            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            note.Status = Models.Enums.NoteStatus.None;
+            return View();
+        }
+        public async Task<IActionResult> MarkAsToDo(int noteId)
+        {
+            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            note.Status = Models.Enums.NoteStatus.Todo;
+            return View();
+        }
+        public async Task<IActionResult> MarkAsPlanned(int noteId,DateTime dateTime)
+        {
+            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            note.Status = Models.Enums.NoteStatus.Planned;
+            return View();
+        }
         public async Task<IActionResult> Share(int id)
         {
             return null;

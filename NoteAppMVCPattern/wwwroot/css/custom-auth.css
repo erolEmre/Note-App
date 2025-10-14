@@ -38,28 +38,28 @@
     }
 
 /* Input alanlarının şeffaflığı */
-.form-control {
+/*.form-control {
     background-color: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.4);
     color: #fff;
 }
 
-    .form-control::placeholder { /* Yer tutucu metni beyaz yap */
-        color: rgba(255, 255, 255, 0.7);
+    .form-control::placeholder {*/ /* Yer tutucu metni beyaz yap */
+        /*color: rgba(255, 255, 255, 0.7);
     }
 
     .form-control:focus {
         background-color: rgba(255, 255, 255, 0.3);
         box-shadow: none;
         border-color: rgba(255, 255, 255, 0.8);
-    }
+    }*/
 /* -- custom-auth.css -- */
 
 /* Metinlerin okunurluğunu artırmak için genel stil */
-.text-white {
+/*.text-white {*/
     /* Gölgelendirme ile koyu arka planlarda daha belirgin hale getirir */
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
-}
+    /*text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+}*/
 
 /* Sadece Mobil Ekranlarda Sol Tarafı Gizleme */
 /* Sol taraftaki mesajı mobil cihazlarda kaldırmak için (isteğe bağlı) */
@@ -68,30 +68,92 @@
         display: none;
     }
 }
-.btn-primary {
-    background-color: #00C9FF !important; /* Canlı Mavi */
-    border-color: #00C9FF !important;
-    color: #000000 !important; /* Metin rengini siyah yapalım, parlak mavi üzerinde daha iyi okunur */
-    transition: all 0.3s ease;
+/*.btn-primary {
+    background-color: #00C9FF !important;*/ /* Canlı Mavi */
+    /*border-color: #00C9FF !important;
+    color: #000000 !important;*/ /* Metin rengini siyah yapalım, parlak mavi üzerinde daha iyi okunur */
+    /*transition: all 0.3s ease;
 }
 
     .btn-primary:hover {
-        background-color: #1E90FF !important; /* Hover'da daha koyu mavi */
-        border-color: #1E90FF !important;
-        box-shadow: 0 0 15px rgba(0, 201, 255, 0.7); /* Neon parıltı efekti */
-    }
+        background-color: #1E90FF !important;*/ /* Hover'da daha koyu mavi */
+        /*border-color: #1E90FF !important;
+        box-shadow: 0 0 15px rgba(0, 201, 255, 0.7);*/ /* Neon parıltı efekti */
+    /*}*/
 
 
 /* 2. İkincil Buton (Giriş Yap) - Turkuaz Tonu */
-.btn-success {
-    background-color: #00A389 !important; /* Koyu Turkuaz */
-    border-color: #00A389 !important;
-    color: #ffffff !important; /* Metin rengi beyaz kalsın */
-    transition: all 0.3s ease;
+/*.btn-success {
+    background-color: #00A389 !important;*/ /* Koyu Turkuaz */
+    /*border-color: #00A389 !important;
+    color: #ffffff !important;*/ /* Metin rengi beyaz kalsın */
+    /*transition: all 0.3s ease;
 }
 
     .btn-success:hover {
-        background-color: #008771 !important; /* Hover'da daha koyu turkuaz */
-        border-color: #008771 !important;
-        box-shadow: 0 0 15px rgba(0, 163, 137, 0.7); /* Hafif parıltı efekti */
-    }
+        background-color: #008771 !important;*/ /* Hover'da daha koyu turkuaz */
+        /*border-color: #008771 !important;
+        box-shadow: 0 0 15px rgba(0, 163, 137, 0.7);*/ /* Hafif parıltı efekti */
+    /*}*/
+/* Video kapsayıcısını tüm ekranı kaplaması için */
+
+                                            
+                                                    /* Videolar */
+
+/*.background-videos-container {
+    position: fixed;*/ /* Ekranın sabit bir yerinde durur */
+    /*top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;*/ /* Taşmaları gizler */
+    /*z-index: -2;*/ /* Arka planda kalsın */
+/*}*/
+
+/* Her bir videonun genel stili */
+/*.bg-video {
+    position: absolute;*/ /* Kapsayıcıya göre konumlandır */
+    /*object-fit: cover;*/ /* Videoyu tam dolduracak şekilde ölçekle */
+    /*opacity: 0.15;*/ /* Çok saydam yap (isterseniz artırabilirsiniz) */
+    /*filter: blur(2px);*/ /* Hafif bulanıklık ekleyebiliriz (isteğe bağlı) */
+    /*pointer-events: none;*/ /* Üzerine tıklanamaz yapsın */
+/*}*/
+
+/* Videoların özel konumları ve boyutları */
+/*.top-left-video {
+    top: 0%;
+    left: 0%;
+    width: 40%;*/ /* Ekran genişliğinin %40'ı */
+    /*height: 30%;*/ /* Ekran yüksekliğinin %30'u */
+    /*transform: translate(-10%, -10%);*/ /* Hafifçe dışarı taşır */
+/*}
+
+.bottom-right-video {
+    bottom: 0%;
+    right: 0%;
+    width: 35%;
+    height: 25%;
+    transform: translate(10%, 10%);
+}*/
+
+/* Ana içeriğin video üzerinde görünmesi için */
+/*.content-wrapper {
+    position: relative;
+    z-index: -1;*/ /* Video kapsayıcısından bir tık önde olsun */
+    /*width: 100vw;
+    height: 100vh;
+    display: flex;*/ /* İçeriği ortalamak için */
+    /*justify-content: center;
+    align-items: center;
+}*/
+
+/* Body'deki eski background-image stillerini kaldırın veya etkisizleştirin */
+/*.auth-page-body {
+    background-image: none !important;*/ /* Artık video kullanacağımız için */
+    /*background-color: #000000 !important;*/ /* Videoların altındaki renk (eğer videoda boşluk kalırsa) */
+    /* ... diğer body stilleri ... */
+/*}*/
+    /* auth-page-body::before pseudoelementini de kaldırın eğer arka plan blur oradan geliyorsa */
+    /*.auth-page-body::before {
+        display: none !important;
+    }*/

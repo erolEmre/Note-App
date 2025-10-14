@@ -1,0 +1,28 @@
+﻿.noteIndex-page-body {
+    /* Buraya, seçtiğiniz "Wind Turbines" görselinin yolunu koyun */
+    background-image: url('/bg-images/bicycle.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    /*height: 100vh;
+    width: 100vw;*/ /* Tam ekran genişliği */
+    display: flex;
+    justify-content: center; /* İçeriği yatayda ortala */
+    align-items: center; /* İçeriği dikeyde ortala */
+    margin: 0;
+    padding: 0;
+    /* Eğer navigasyon çubuğu (navbar) görünüyorsa, onu gizlemek için */
+}
+
+/* Şeffaf Kutunun Stili (Frosted Glass) */
+.frosted-glass-container {
+    background-color: rgba(255, 255, 255, 0.0);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(1px);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9); Biraz daha belirgin gölge
+    padding: 3.5rem; Biraz daha boşluk 
+     Yeterli genişlik vermezseniz bozulur 
+    min-width: 350px;
+}
