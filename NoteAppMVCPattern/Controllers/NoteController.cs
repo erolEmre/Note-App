@@ -26,12 +26,13 @@ namespace NoteAppMVCPattern.Controllers
         private readonly INoteService _noteService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IValidator<Note> _validator;
-
-        public NoteController(INoteService noteService, UserManager<AppUser> userManager, IValidator<Note> validator)
+        private readonly ITagService _tagService;
+        public NoteController(ITagService tagService,INoteService noteService, UserManager<AppUser> userManager, IValidator<Note> validator)
         {
             _noteService = noteService;
             _userManager = userManager;
             _validator = validator;
+            _tagService = tagService;
         }
         [Authorize]
         public async Task<IActionResult> Index(string viewMode = "grid", string sortOrder = null, List<int> tagIds = null)
@@ -183,8 +184,12 @@ namespace NoteAppMVCPattern.Controllers
         {
             var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             userId = _userId;
-            await _noteService.DeleteTag(noteId,userId,tagId);
 
+
+            var status = TagUpdateStatus.Decrement;
+            await _tagService.UpdateTagCount(tagId, status);
+            await _noteService.DeleteTag(noteId,userId,tagId);
+            
             TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
 
@@ -200,11 +205,10 @@ namespace NoteAppMVCPattern.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _noteService.AddToExistingTag(noteId, tagId, userId);
             var note = await _noteService.GetNoteById(noteId, userId);
-            
+
             // Gelecek videonun konusu
-            
-            //Tag tag = _noteService.GetTag(tagId);
-            //tag.TagUsageCount++;
+            var status = TagUpdateStatus.Increment; 
+            await _tagService.UpdateTagCount(tagId,status);
             
             // ...
             return RedirectToAction("Index");
@@ -217,8 +221,14 @@ namespace NoteAppMVCPattern.Controllers
             // ... mantık: yeni Tag'i oluştur, sonra noteId ile nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _noteService.CreateAndAdd(noteId, tagName, userId);
-           
-            // ...
+            
+            // Henüz eklenmedi hata veriyor
+            
+            var status = TagUpdateStatus.Increment;
+            // await kısmına bak,biri bitmeden diğer başladı diye hata fırlatıyor.
+            var tag = await _tagService.GetTagByName(tagName);
+             _tagService.UpdateTagCount(tag.Id,status);
+            
             return RedirectToAction("Index");
         }
 

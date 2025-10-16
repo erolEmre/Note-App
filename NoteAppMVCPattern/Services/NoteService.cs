@@ -43,12 +43,12 @@ namespace NoteAppMVCPattern.Services
                     foreach (var tag in newTags)
                     {
                         tag.TagColor = "bg-secondary";
+                        tag.TagUsageCount++;
                     }
 
                     note.Tags = matchedTags.Concat(newTags).ToList();
                 }
             }
-
             await _noteRepository.Add(note);
         }
 
@@ -174,6 +174,7 @@ namespace NoteAppMVCPattern.Services
             foreach (var tag in newTags)
             {
                 tag.TagColor = "bg-primary";
+                tag.TagUsageCount++;
             }
 
             existingNote.Tags = matchedTags.Concat(newTags).ToList();

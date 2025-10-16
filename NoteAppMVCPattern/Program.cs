@@ -64,6 +64,8 @@ namespace NoteAppMVCPattern
 
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();
+            builder.Services.AddScoped<ITagRepository, TagRepository>();    
+            builder.Services.AddScoped<ITagService, TagService>();
 
             builder.Services.AddControllersWithViews().
             AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
