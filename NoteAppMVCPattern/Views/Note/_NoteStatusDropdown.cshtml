@@ -1,18 +1,41 @@
-﻿@model Note
+﻿<!-- CSRF Token form -->
+<form id="csrfForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
 
-<div class="position-absolute top-0 end-0 m-2">
-    <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-toggle="dropdown">
-        <i class="bi bi-calendar-date"></i>
+<div class="card position-relative">
+    <div class="position-absolute top-0 end-0 m-0">
+    <button type="button" class="btn btn-sm" style="font-size: 1.5rem; color: white;" data-bs-toggle="dropdown">
+        <i class="bi bi-calendar"></i>
     </button>
-    <div class="dropdown-menu dropdown-menu-end">
-        <a class="dropdown-item" asp-action="SetStatus" asp-route-id="@Model.Id" asp-route-status="Done">
+    @* <div class="dropdown-menu dropdown-menu-end">
+        <a class="dropdown-item" href="#" onclick="markAsDone('@Model.Id'); return false;">
             <i class="bi bi-calendar-check"></i> Yapıldı
         </a>
-        <a class="dropdown-item" asp-action="SetStatus" asp-route-id="@Model.Id" asp-route-status="Planned">
+        <a class="dropdown-item" asp-action="MarkAsPlanned" asp-route-noteId="@Model.Id" asp-route-status="Planned">
             <i class="bi bi-clock-history"></i> Planlandı
         </a>
-        <a class="dropdown-item" asp-action="SetStatus" asp-route-id="@Model.Id" asp-route-status="Pending">
+        <a class="dropdown-item" asp-action="MarkAsToDo" asp-route-noteId="@Model.Id" asp-route-status="Pending">
+            <i class="bi bi-hourglass-split"></i> Yapılacak
+        </a>
+    </div> *@
+
+    <div class="dropdown-menu dropdown-menu-end">
+        <a class="dropdown-item" href="#" onclick="markAsDone('@Model.Id'); return false;">
+            <i class="bi bi-calendar-check"></i> Yapıldı
+        </a>
+        <a class="dropdown-item" href="#" onclick="markAsPlanned('@Model.Id'); return false;">
+            <i class="bi bi-clock-history"></i> Planlandı
+        </a>
+        <a class="dropdown-item" href="#" onclick="markAsToDo('@Model.Id'); return false;">
             <i class="bi bi-hourglass-split"></i> Yapılacak
         </a>
     </div>
+
+    </div>
 </div>
+@section Scripts{
+<script>
+
+</script>
+}

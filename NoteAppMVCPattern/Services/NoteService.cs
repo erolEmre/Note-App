@@ -218,6 +218,15 @@ namespace NoteAppMVCPattern.Services
             await _noteRepository.Update(note);
         }
 
+        public Tag GetTag(int tagId)
+        {
+           if(tagId < 0)
+            {
+                throw new Exception();
+            }
+           else return _noteRepository.GetTag(tagId);
+        }
+
         //async Task<List<Tag>> INoteService.GetTags(string userId)
         //{
         //    var tags = await _noteRepository.GetTags(userId);

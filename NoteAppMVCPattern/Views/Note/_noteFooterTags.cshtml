@@ -1,0 +1,22 @@
+﻿@using NoteAppMVCPattern.Models.ViewModel;
+@* @model NoteIndexVM
+ *@
+@model NoteFooterVM
+
+@{
+    var availableTags = Model.Tags
+        .Where(t => !Model.Note.Tags.Any(nt => nt.Id == t.Id))
+        .ToList();
+}
+@foreach (var tag in availableTags)
+{
+    <li>
+        <form asp-controller="Note" asp-action="AddTag" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="noteId" value="@Model.Note.Id" />
+            <input type="hidden" name="tagId" value="@tag.Id" />
+            <button type="submit" class="dropdown-item text-truncate">@tag.TagName</button>
+        </form>
+    </li>
+}
+

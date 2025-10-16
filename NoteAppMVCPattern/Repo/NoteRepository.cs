@@ -12,7 +12,7 @@ namespace NoteAppMVCPattern.Repo
         {
             _dbContext = dbContext;
         }
-
+       
         public async Task<List<Note>> GetAllByUserIdAsync(string userId, List<int> tagIds = null, string sortOrder = null)
         {
             // Notları kullanıcıya göre filtrele ve Tag ilişkisini dahil et
@@ -71,6 +71,13 @@ namespace NoteAppMVCPattern.Repo
                 .SelectMany(n => n.Tags)
                 .Distinct()
                 .ToListAsync();
+        }
+
+        public Tag GetTag(int tagId)
+        {
+            return _dbContext.Tag
+                 .FirstOrDefault(t=> t.Id == tagId);
+                
         }
     }
 

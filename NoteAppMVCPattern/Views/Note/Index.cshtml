@@ -1,5 +1,6 @@
 ﻿@model NoteAppMVCPattern.Models.ViewModel.NoteIndexVM
 @using System.Linq
+@using NoteAppMVCPattern.Models.ViewModel;
 
 @{
     Layout = "_noteIndexLayout";
@@ -57,69 +58,19 @@
             </div>
         </div>
 
-        <div class="row g-3">
+        <div class="container mt-3">
             @if (Model.ViewMode == "grid")
             {
                 <div class="row g-3">
                     @foreach (var note in Model.Notes)
                     {
-                        <partial name="_NoteCard" model="note" />
+                        <partial name="_NoteCard" model="new NoteFooterVM 
+                                {Note = note, Tags = Model.Tags}" />
                     }
 
-                </div>
+                </div>                        
             }
-            // Kısa süreliğine else koydum bu kodu parçalayıp sınıflara bölmek gerekiyor.
-            // Index iyice çorba oldu
-            else
-            {
-                @foreach (var note in Model.Notes)
-                {
-                    <div class="col-12 col-sm-6 col-md-4 mb-4">
-                        <div class="card h-100 text-white bg-dark border-4 position-relative">
-                            
-                            @* <div>
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="bi bi-calendar-date"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id"> <i class="bi bi-calendar-check"></i>Yapıldı</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id"> <i class="bi bi-clock-history"></i>Planlandı</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id" asp-route-dateTime="@note.PlannedDate"> <i class="bi bi-hourglass-split"></i>Yapılacak</a>
-                                    <a class="dropdown-item"> </a>
-                                </div>
-                            </div> *@
-
-                                                        @* Tag alanı *@
-                            @if (note.Tags != null && note.Tags.Any())
-                            {
-                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
-                                    
-                                    @foreach (var tag in note.Tags)
-                                    {
-                                        // TagName'e göre renk ataması
-                                        @* if (!tagColorPairs.ContainsKey(tag.TagName))
-                                        {
-                                            tagColorPairs[tag.TagName] = colors[colorIndex % colors.Count];
-                                            colorIndex++;
-                                        } *@
-                                        @* var color = tagColorPairs[tag.TagName]; *@
-                                        @* var color = "bg-primary"; *@
-
-                                        <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
-                                    }
-                                </div>
-                            }
-
-                                                    @* Kart Body İçeriği burda*@
-                          
-
-                                                            @* Footer içerik *@
-
-                        </div>
-                    </div>
-                }
-                }
-            }
+           
             @* List View (Sadeleştirilmiş) *@
             @* else (Model.ViewMode == "list")
             {
@@ -193,14 +144,3 @@
 
     </script>
 }
-@* @section Styles {
-    <style>
-        body {
-            background-image: url('/bg-images/night.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-    </style>
-}
- *@

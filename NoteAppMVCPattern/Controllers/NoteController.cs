@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Migrations;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
+using NoteAppMVCPattern.Repo;
 using NoteAppMVCPattern.Services;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
@@ -25,7 +26,6 @@ namespace NoteAppMVCPattern.Controllers
         private readonly INoteService _noteService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IValidator<Note> _validator;
-         
 
         public NoteController(INoteService noteService, UserManager<AppUser> userManager, IValidator<Note> validator)
         {
@@ -62,6 +62,7 @@ namespace NoteAppMVCPattern.Controllers
                 SortOrder = sortOrder
                 // CurrentTag özelliği artık kullanılmamalıdır.
             };
+           
 
             return View(vm);
         }
@@ -174,18 +175,8 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
 
         }
-        [HttpGet]
-        //public IActionResult FilterByTag(string tag)
-        //{
-
-        //    var filteredNotes = _noteService.GetUserTags(userId);
-
-        //    NoteIndexVM noteIndexVM = new NoteIndexVM();
-        //    noteIndexVM.Notes = filteredNotes;
-
-        //    return View("Index", noteIndexVM);
-
-        //}
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTag(int noteId,string userId,int tagId)
@@ -207,7 +198,14 @@ namespace NoteAppMVCPattern.Controllers
         {
             // ... mantık: noteId ve tagId ile mevcut Tag'i nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.AddToExistingTag(noteId, tagId, userId); 
+            await _noteService.AddToExistingTag(noteId, tagId, userId);
+            var note = await _noteService.GetNoteById(noteId, userId);
+            
+            // Gelecek videonun konusu
+            
+            //Tag tag = _noteService.GetTag(tagId);
+            //tag.TagUsageCount++;
+            
             // ...
             return RedirectToAction("Index");
         }
@@ -219,120 +217,67 @@ namespace NoteAppMVCPattern.Controllers
             // ... mantık: yeni Tag'i oluştur, sonra noteId ile nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _noteService.CreateAndAdd(noteId, tagName, userId);
+           
             // ...
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsDone(int noteId)
         {
-            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
-            note.Status = Models.Enums.NoteStatus.None;
-            return View();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var note = await _noteService.GetNoteById(noteId,userId);
+            if (note == null)
+            {
+                return NotFound(); // veya uygun bir hata mesajı döndür
+            }
+            note.Status = Models.Enums.NoteStatus.Done;
+            TempData["Message"] = $"Not durumu  ile güncellendi.";
+            //TempData["MessageType"] = "success";
+
+            return Json(new {success=true});
         }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsToDo(int noteId)
         {
             var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (note == null)
+            {
+                return NotFound(); // veya uygun bir hata mesajı döndür
+            }
             note.Status = Models.Enums.NoteStatus.Todo;
-            return View();
+            // { note.Status.ToString("yapıldı")} bu kısım hataya sebep oluyor 
+            TempData["Message"] = $"Not durumu ile güncellendi.";
+            TempData["MessageType"] = "success";
+
+
+            return Json(new { success = true });
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsPlanned(int noteId,DateTime dateTime)
         {
             var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (note == null)
+            {
+                return NotFound(); // veya uygun bir hata mesajı döndür
+            }
             note.Status = Models.Enums.NoteStatus.Planned;
-            return View();
+            // { note.Status.ToString("planlandı")}
+            TempData["Message"] = $"Not durumu ile güncellendi.";
+            TempData["MessageType"] = "success";
+
+
+            return Json(new { success = true });
         }
         public async Task<IActionResult> Share(int id)
         {
             return null;
-        }
-        //public class NoteController : Controller
-        //{
-        //    private readonly AppDBContext _dbContext;
-        //    public NoteController(AppDBContext dbContext)
-        //    {
-        //        _dbContext = dbContext;
-        //    }
-        //    public IActionResult Index()
-        //    {
-        //        var notes = _dbContext.Notes.Include(n => n.User).ToList();
-        //        return View(notes);
-        //    }
-        //    public IActionResult Create()
-        //    {
-        //        ViewBag.UserList = new SelectList(_dbContext.Users, "Id", "Username");
-        //        return View();
-        //    }
-        //    [HttpPost]
-        //    public IActionResult Create(Note note)
-        //    {
-        //        //note.UserId = 1;
-        //        if (!ModelState.IsValid)
-        //        {
-        //            foreach (var key in ModelState.Keys)
-        //            {
-        //                var errors = ModelState[key].Errors;
-        //                foreach (var error in errors)
-        //                {
-        //                    Console.WriteLine($"Field: {key}, Error: {error.ErrorMessage}");
-        //                }
-        //            }
-        //            return View(note);
-        //        }
-
-        //        _dbContext.Notes.Add(note);
-        //        _dbContext.SaveChanges();
-        //        TempData["msg"] = "Notunuz başarıyla eklendi";
-        //        return RedirectToAction("Index");
-        //    }
-        //    [HttpPost]
-        //    public IActionResult Delete(int id)
-        //    {
-        //        var note = _dbContext.Notes.FirstOrDefault(x=> x.Id == id);
-        //        if (note != null)
-        //        {
-        //            _dbContext.Notes.Remove(note);
-        //            _dbContext.SaveChanges();
-        //            TempData["Message"] = $"{note.Title} silindi.";
-        //        }
-        //        else
-        //        {
-        //            TempData["Message"] = "Not bulunamadı.";
-        //        }
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    [HttpPost]
-        //    public IActionResult Update(Note note)
-        //    {
-        //        var existednote = _dbContext.Notes.FirstOrDefault(x => x.Id == note.Id);
-        //        if (note != null)
-        //        {
-        //            existednote.Title = note.Title;
-        //            existednote.Content = note.Content;
-        //        }
-        //        TempData["msg"] = "Güncelleme başarılı";
-        //        _dbContext.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    public IActionResult Update(int id)
-        //    {
-        //        var note = _dbContext.Notes.FirstOrDefault(u => u.Id == id);
-        //        if (note == null) return NotFound();
-        //        _dbContext.SaveChanges();
-        //        return View(note);
-        //    }
-        //    public IActionResult Details(int id)
-        //    {
-        //        var note = _dbContext.Notes.FirstOrDefault(x=>x.Id == id);
-        //        if (note != null)
-        //        {
-        //            return View(note);
-        //        }
-
-        //        return View(note);
-        //    }       
-        //}
-       
+        }             
         
     }
 }

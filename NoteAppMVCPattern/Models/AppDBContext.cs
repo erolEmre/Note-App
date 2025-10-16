@@ -7,6 +7,7 @@ namespace NoteAppMVCPattern.Models
     public class AppDBContext : IdentityDbContext<AppUser>
     {
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Tag> Tag { get; set; }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) 
         { 
         

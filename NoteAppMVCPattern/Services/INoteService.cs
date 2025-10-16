@@ -14,5 +14,7 @@ namespace NoteAppMVCPattern.Services
         public Task AddToExistingTag(int noteId, int tag, string userId);
         public Task DeleteTag(int noteId, string userId, int tagId);
         public Task CreateAndAdd(int noteId, string tagName,string userId);
+
+        public Tag GetTag(int tagId);
     }
 }

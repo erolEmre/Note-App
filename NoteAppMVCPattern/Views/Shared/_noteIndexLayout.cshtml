@@ -1,26 +1,72 @@
 ﻿<!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-bs-theme="dark" >
 <head>
     @RenderSection("Styles", required: false)
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Note App</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-
+    
     <link rel="stylesheet" href="~/css/_NoteIndexLayout.css" />
+        
+                                    @* Bootstrap *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+          rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> @* JS kodları için *@
 </head>
 
 @* 💡 BURAYA ÖZEL BODY SINIFIMIZI EKLEDİK *@
 <body class="noteIndex-page-body">
+    <header>
+        <nav class="navbar navbar-expand-sm border-bottom">
+            <div class="container">
 
-    @* Render Body tüm görünüm (View) içeriğini yükler *@
-    @RenderBody()
+                <!-- Brand + Toggle -->
+                <a class="navbar-brand" href="@(
+                                        User.Identity.IsAuthenticated
+                                            ? Url.Action("Index", "Note")
+                                            : Url.Action("Index", "User")
+                                        )">
+                    Note App
+                </a>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+
+                <!-- Sağdaki Çıkış Butonu -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-controller="User" asp-action="Logout" method="post"
+                          class="d-flex align-items-center ms-auto">
+                        <button type="submit" class="btn btn-link d-flex align-items-center">
+                            <i class="bi bi-box-arrow-left me-1"></i>
+                            Çıkış
+                        </button>
+                    </form>
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    @* Render Body tüm görünüm (View) içeriğini yükler *@   
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+@section Scripts {
+<script>
+        
+        </script>
+}

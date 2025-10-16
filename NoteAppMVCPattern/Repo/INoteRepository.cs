@@ -15,6 +15,7 @@ namespace NoteAppMVCPattern.Repo
         Task Add(Note note);
         Task Update(Note note);
         Task Delete(Note note);
+        Tag GetTag(int tagId);
     }
 
 }
