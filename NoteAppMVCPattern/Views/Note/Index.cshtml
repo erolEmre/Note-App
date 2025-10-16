@@ -48,7 +48,8 @@
                     @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
                     @if (Model.Tags != null)
                     {
-                        @foreach (var tag in Model.Tags)
+                        var tags = Model.Tags.OrderByDescending(t => t.TagUsageCount).Take(5).ToList();
+                        @foreach (var tag in tags)
                         {
                             @* Filtreleme için Tag ID'sini kullanmak daha güvenlidir *@
                             <li><a class="dropdown-item" asp-action="Index" asp-route-tagIds="@tag.Id">@tag.TagName</a></li>

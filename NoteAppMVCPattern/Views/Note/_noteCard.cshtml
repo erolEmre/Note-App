@@ -57,7 +57,12 @@
                 @if (Model.Note.Tags != null && Model.Note.Tags.Any())
                 {
                     <li class="dropdown-header">Mevcut Tag'ler (Sil)</li>
-                    @foreach (var tag in Model.Note.Tags)
+                    {
+                            var tags = Model.Tags
+                            .Where(t => Model.Note.Tags.Any(nt => nt.Id == t.Id)).OrderBy(t => t.TagUsageCount).Take(3)
+                            .ToList();
+                        
+                        @foreach (var tag in tags)
                     {
                         <li class="mb-1">
                             <form asp-controller="Note" asp-action="DeleteTag" method="post" style="display:inline;">
@@ -69,6 +74,7 @@
                                 </button>
                             </form>
                         </li>
+                    }
                     }
                     <li><hr class="dropdown-divider my-2"></li>
                 }

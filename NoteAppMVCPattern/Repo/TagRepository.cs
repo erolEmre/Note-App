@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Models;
+using NoteAppMVCPattern.Services;
 
 namespace NoteAppMVCPattern.Repo
 {
@@ -18,9 +19,14 @@ namespace NoteAppMVCPattern.Repo
             if (TagUpdateStatus.Increment == status)
             {
                 tag.TagUsageCount++;
-            } if (TagUpdateStatus.Decrement == status && tag.TagUsageCount > 0)
+            } if (TagUpdateStatus.Decrement == status)
             {
+                if(tag.TagUsageCount > 0)
                 tag.TagUsageCount--;
+                else
+                {
+
+                }
             }
             await _dbContext.SaveChangesAsync();
         }
