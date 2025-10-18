@@ -21,11 +21,12 @@ namespace NoteAppMVCPattern.Repo
                 tag.TagUsageCount++;
             } if (TagUpdateStatus.Decrement == status)
             {
-                if(tag.TagUsageCount > 0)
+                if(tag.TagUsageCount > 0 && tag.TagUsageCount != 1)
                 tag.TagUsageCount--;
                 else
                 {
-
+                    tag.TagUsageCount--;
+                    _dbContext.Tag.Remove(tag);
                 }
             }
             await _dbContext.SaveChangesAsync();

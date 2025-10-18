@@ -37,12 +37,12 @@ namespace NoteAppMVCPattern.Services
             if (tagToAdd == null)
                 throw new Exception("Tag not found.");
 
-            //// 3. Kontrol: Tag zaten notta ekli mi?
-            //if (note.Tags.Any(t => t.Id == tagId))
-            //{
-            //    // Tag zaten ekli, işlem yapmaya gerek yok.
-            //    return;
-            //}
+            // 3. Kontrol: Tag zaten notta ekli mi?
+            if (note.Tags.Any(t => t.Id == tagId))
+            {
+                // Tag zaten ekli, işlem yapmaya gerek yok.
+                return;
+            }
 
             // 4. Tag'i koleksiyona ekle (EF Core ara tabloyu otomatik güncelleyecektir)
             foreach (var tag in tagToAdd)
