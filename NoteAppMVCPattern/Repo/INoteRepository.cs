@@ -9,13 +9,12 @@ namespace NoteAppMVCPattern.Repo
         // Bir kullanıcıya ait tüm notları filtreleme ve sıralama seçenekleriyle getirir
         Task<List<Note>> GetAllByUserIdAsync(string userId, List<int> tagIds = null, string sortOrder = null);
 
-        // Kullanıcıya ait benzersiz (distinct) etiketleri getirir
-        Task<List<Tag>> GetTags(string userId);
+        // Kullanıcıya ait benzersiz (distinct) etiketleri getirir      
 
         Task Add(Note note);
         Task Update(Note note);
         Task Delete(Note note);
-        Tag GetTag(int tagId);
+
     }
 
 }

@@ -46,7 +46,7 @@ namespace NoteAppMVCPattern.Controllers
 
             // 3. Kullanıcının sahip olduğu tüm etiketleri getir (List<Tag> dönmelidir)
             // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
-            var tags = await _noteService.GetTags(userId);
+            var tags = await _tagService.GetTags(userId);
 
             // 4. ViewModel oluştur
             var vm = new NoteIndexVM
@@ -188,7 +188,7 @@ namespace NoteAppMVCPattern.Controllers
 
             var status = TagUpdateStatus.Decrement;
             await _tagService.UpdateTagCount(tagId, status);
-            await _noteService.DeleteTag(noteId,userId,tagId);
+            await _tagService.DeleteTag(noteId,userId,tagId);
             
             TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
@@ -203,7 +203,7 @@ namespace NoteAppMVCPattern.Controllers
         {
             // ... mantık: noteId ve tagId ile mevcut Tag'i nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.AddToExistingTag(noteId, tagId, userId);
+            await _tagService.AddToExistingTag(noteId, tagId, userId);
             var note = await _noteService.GetNoteById(noteId, userId);
 
             // Gelecek videonun konusu
@@ -220,7 +220,7 @@ namespace NoteAppMVCPattern.Controllers
         {
             // ... mantık: yeni Tag'i oluştur, sonra noteId ile nota ekle
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.CreateAndAdd(noteId, tagName, userId);
+            await _tagService.CreateAndAdd(noteId, tagName, userId);
             
             // Henüz eklenmedi hata veriyor
             

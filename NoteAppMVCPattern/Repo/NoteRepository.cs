@@ -63,22 +63,7 @@ namespace NoteAppMVCPattern.Repo
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Tag>> GetTags(string userId)
-        {
-            return await _dbContext.Notes
-                .Include(n => n.Tags)
-                .Where(n => n.UserId == userId)
-                .SelectMany(n => n.Tags)
-                .Distinct()
-                .ToListAsync();
-        }
-
-        public Tag GetTag(int tagId)
-        {
-            return _dbContext.Tag
-                 .FirstOrDefault(t=> t.Id == tagId);
-                
-        }
+        
     }
 
 }
