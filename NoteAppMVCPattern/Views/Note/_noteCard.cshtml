@@ -10,7 +10,7 @@
  
 
          @*Tag alanı *@
-        <partial name="_NoteTagsPartial" model="Model.Note.Tags" />
+        <partial name="_NoteHeaderTagsPartial" model="Model.Note.Tags" />
        
                                                          @* Kart içeriği *@
 
@@ -81,8 +81,8 @@
 
                 @* 2. Var Olan Taglerden Ekleme *@
 
-                                    <partial name="_NoteFooterTags" 
-                                        model="new NoteFooterVM {Note = Model.Note, Tags = Model.Tags.ToList()}" />
+                    <partial name="_noteAvailableTagsPartial"
+                             model="new NoteFooterVM {Note = Model.Note, Tags = Model.Tags.ToList()}" />
                 
                 @* 3. Yeni Tag Oluşturup Ekleme *@
                 <li class="mb-2">

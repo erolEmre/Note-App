@@ -6,10 +6,14 @@
         <div class="modal-content p-3">
 
             <div class="d-flex flex-wrap gap-2">
-              
-            @foreach (var tag in Model.Tags)
+                @{var availableTags = Model.Tags
+                .OrderByDescending(t=> t.TagUsageCount)
+                .ToList();
+                
+            @foreach (var tag in availableTags)
             {
                 <span class="badge @tag.TagColor">@tag.TagName</span>
+            }
             }
             </div>
                 <!-- Modal Header -->

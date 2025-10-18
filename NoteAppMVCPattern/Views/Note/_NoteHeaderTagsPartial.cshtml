@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Tag>
+
+@if (Model != null && Model.Any())
+{
+    var Tagcount = 4;
+    var tagList = Model.OrderByDescending(t => t.TagUsageCount).ToList();
+    var tagsToBeTaken = tagList.Take(Tagcount);
+    string tagColor = "";
+
+    <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
+        @foreach (var tag in tagsToBeTaken)
+        {            
+                <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
+                tagColor = tag.TagColor;
+        }
+            @if (tagList.Count > Tagcount)
+            {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill @tagColor">
+                +@(tagList.Count - @Tagcount)
+                <span class="visually-hidden">unread messages</span>
+            </span>
+            }
+    </div>
+}
