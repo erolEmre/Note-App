@@ -3,7 +3,7 @@
 
 @{
     List<string> colors = new() { "bg-warning", "bg-primary", "bg-danger", "bg-success", 
-    "bg-info","bg-secondary","bg-light","bg-dark","bg-white" };
+    "bg-info","bg-secondary","bg-dark","bg-white"};
     //string colorToChange = "";
 }
 
@@ -29,7 +29,7 @@
                         <button type="submit" class="btn border-0 p-0 open-tag-color">
                             <span class="text-black badge rounded-pill @item" style="cursor:pointer; ">                              
                                 <span class="visually-hidden">unread messages</span>
-                                Your Tag!
+                                @Model.TagName
                                 </span>
                         </button>
                     </form>
