@@ -17,5 +17,13 @@ namespace NoteAppMVCPattern.Models.ViewModel
 
         public NoteStatus Status => Note.Status;
 
+        public string NoteStatusTurkce => Note.Status switch
+        {
+            NoteStatus.None => "Boş",
+            NoteStatus.Planned => "planlandı",
+            NoteStatus.Done => "yapıldı",
+            NoteStatus.Todo => "yapılacak",
+            _ => ""
+        };
     }
 }

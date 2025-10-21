@@ -206,11 +206,9 @@ namespace NoteAppMVCPattern.Controllers
             await _tagService.AddToExistingTag(noteId, tagId, userId);
             var note = await _noteService.GetNoteById(noteId, userId);
 
-            // Gelecek videonun konusu
             var status = TagUpdateStatus.Increment; 
             await _tagService.UpdateTagCount(tagId,status);
             
-            // ...
             return RedirectToAction("Index");
         }
 
@@ -236,56 +234,71 @@ namespace NoteAppMVCPattern.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsDone(int noteId)
         {
-
+            NoteFooterVM note = new NoteFooterVM();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var note = await _noteService.GetNoteById(noteId,userId);
+            
+            note.Note = await _noteService.GetNoteById(noteId,userId);
             if (note == null)
             {
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
-            note.Status = Models.Enums.NoteStatus.Done;
-            _tagService.SaveChanges();
-            TempData["Message"] = $"Not durumu  ile güncellendi.";
-            //TempData["MessageType"] = "success";
+            
+            note.Note.Status = Models.Enums.NoteStatus.Done;
+            _tagService.SaveChanges(); 
+            
+            // View'e gidecek mesaj
 
-            return Json(new {success=true});
+            TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi";
+            TempData["MessageType"] = "info";
+
+            return RedirectToAction("Index");
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsToDo(int noteId)
         {
-            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            NoteFooterVM note = new NoteFooterVM();
+            note.Note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
             if (note == null)
             {
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
-            note.Status = Models.Enums.NoteStatus.Todo;
+            
+            note.Note.Status = Models.Enums.NoteStatus.Todo;
             _tagService.SaveChanges();
-            // { note.Status.ToString("yapıldı")} bu kısım hataya sebep oluyor 
-            TempData["Message"] = $"Not durumu ile güncellendi.";
-            TempData["MessageType"] = "success";
+
+            // View'e gidecek mesaj
+
+            TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi.";
+            TempData["MessageType"] = "info";
 
 
-            return Json(new { success = true });
+            return RedirectToAction("Index");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsPlanned(int noteId,DateTime dateTime)
         {
-            var note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            NoteFooterVM note = new NoteFooterVM();
+            note.Note = await _noteService.GetNoteById(noteId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
             if (note == null)
             {
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
-            note.Status = Models.Enums.NoteStatus.Planned;
+            
+            note.Note.Status = Models.Enums.NoteStatus.Planned;
             _tagService.SaveChanges();
-            // { note.Status.ToString("planlandı")}
-            TempData["Message"] = $"Not durumu ile güncellendi.";
-            TempData["MessageType"] = "success";
+
+            // View'e gidecek mesaj
+
+            TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi.";
+            TempData["MessageType"] = "info";
 
 
-            return Json(new { success = true });
+            return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult TagColorPage(int tagId)
