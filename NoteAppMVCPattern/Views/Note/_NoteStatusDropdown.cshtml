@@ -1,22 +1,24 @@
-﻿<!-- CSRF Token form -->
+﻿@using NoteAppMVCPattern.Models.ViewModel;
+@model NoteFooterVM;
+<!-- CSRF Token form -->
 <form id="csrfForm" style="display:none;">
     @Html.AntiForgeryToken()
 </form>
 
-<div class="card position-relative ">   
+<div class="card position-relative">   
     <div class="position-absolute top-0 end-0 m-0">
     <button type="button" class="btn btn" data-bs-toggle="dropdown">
-        <i class="bi bi-calendar"></i>
+        <i class="@Model.IconClass"></i>
     </button>   
     <div class="dropdown-menu dropdown-menu-end">
-        <a class="dropdown-item" href="#" onclick="markAsDone('@Model.Id'); return false;">
-            <i class="bi bi-calendar-check"></i> Yapıldı
+        <a class="dropdown-item" href="#" onclick="markAsDone('@Model.Note.Id'); return false;">
+                <i class="bi bi-check-lg"></i> Yapıldı
         </a>
-        <a class="dropdown-item" href="#" onclick="markAsPlanned('@Model.Id'); return false;">
-            <i class="bi bi-clock-history"></i> Planlandı
+        <a class="dropdown-item" href="#" onclick="markAsToDo('@Model.Note.Id'); return false;">
+                <i class="bi bi-hourglass-split"></i> Yapılacak
         </a>
-        <a class="dropdown-item" href="#" onclick="markAsToDo('@Model.Id'); return false;">
-            <i class="bi bi-hourglass-split"></i> Yapılacak
+        <a class="dropdown-item" href="#" onclick="markAsPlanned('@Model.Note.Id'); return false;">
+                <i class="bi bi-clock-history"></i> Planlandı
         </a>
     </div>
 

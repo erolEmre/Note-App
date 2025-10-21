@@ -1,9 +1,21 @@
-﻿namespace NoteAppMVCPattern.Models.ViewModel
+﻿using NoteAppMVCPattern.Models.Enums;
+
+namespace NoteAppMVCPattern.Models.ViewModel
 {
     public class NoteFooterVM
     {
         public Note Note { get; set; }
         public List<Tag> Tags { get; set; }
-        //public List<Note> Notes { get; set; } = null;
+        public string IconClass => Status switch
+        {
+            NoteStatus.None => "bi bi-calendar",
+            NoteStatus.Planned => "bi bi-clock-history",
+            NoteStatus.Done => "bi bi-check-lg",
+            NoteStatus.Todo => "bi bi-hourglass-split",
+            _ => "bi bi-question-circle"
+        };
+
+        public NoteStatus Status => Note.Status;
+
     }
 }
