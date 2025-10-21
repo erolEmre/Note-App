@@ -119,7 +119,7 @@ namespace NoteAppMVCPattern.Controllers
                         {
                             if (note.Id == noteId)
                             {
-                                return PartialView("_noteDetailsPartial", note);
+                                return PartialView("_noteModalPartial", note);
                             }
                         }
                     
