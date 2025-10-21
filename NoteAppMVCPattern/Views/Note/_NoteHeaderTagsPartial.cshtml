@@ -19,7 +19,7 @@
         }
             @if (tagList.Count > Tagcount)
             {
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill @tagColor">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-black @tagColor">
                 +@(tagList.Count - @Tagcount)
                 <span class="visually-hidden">unread messages</span>
             </span>

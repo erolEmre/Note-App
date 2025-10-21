@@ -52,5 +52,9 @@ namespace NoteAppMVCPattern.Repo
                  .FirstOrDefault(t => t.Id == tagId);
 
         }
+        public void SaveChanges()
+        {
+            _dbContext.SaveChanges();
+        }
     }
 }

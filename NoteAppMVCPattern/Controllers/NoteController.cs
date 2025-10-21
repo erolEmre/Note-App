@@ -296,8 +296,21 @@ namespace NoteAppMVCPattern.Controllers
             { 
                 return NotFound(); 
 
+            }         
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> tagColorUpdate(int tagId,string tagColor)
+        {
+            Tag tag = _tagService.GetTag(tagId);
+            if (tag != null)
+            {
+                tag.TagColor = tagColor;
+                _tagService.SaveChanges();
+                return RedirectToAction("Index");
             }
-            
+            return BadRequest();
+
         }
         public async Task<IActionResult> Share(int id)
         {

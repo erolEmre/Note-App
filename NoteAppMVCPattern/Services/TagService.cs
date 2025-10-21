@@ -137,5 +137,9 @@ namespace NoteAppMVCPattern.Services
             }
             else return _tagRepository.GetTag(tagId);
         }
+        public void SaveChanges()
+        {
+            _tagRepository.SaveChanges();
+        }
     }
 }

@@ -7,11 +7,10 @@
     //string colorToChange = "";
 }
 
-<div class="modal fade" id="tagColorUpdate" tabindex="">
+<div class="modal fade" id="tagColorUpdate">
     <div class="modal-dialog modal-lg">
         <div class="modal-content p-3">
            
-            </div>
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">@Model.TagName için renk seçimi yapın</h4>
@@ -19,7 +18,7 @@
             </div>
 
             <!-- Modal body -->
-            <div class="modal-body" id="tagColorUpdateBody">
+            <div class="modal-body d-flex flex-wrap gap-2 justify-content-center" id="tagColorUpdateBody">
                 @{ 
                 @foreach(var item in colors)
                 {
@@ -28,8 +27,10 @@
                         <input type="hidden" name="tagId" value="@Model.Id" />
                         <input type="hidden" name="tagColor" value="@item" />
                         <button type="submit" class="btn border-0 p-0 open-tag-color">
-                            <span class="translate-middle badge rounded-pill @item" style="cursor:pointer;">                              
+                            <span class="text-black badge rounded-pill @item" style="cursor:pointer; ">                              
                                 <span class="visually-hidden">unread messages</span>
+                                Your Tag!
+                                </span>
                         </button>
                     </form>
                 }
@@ -43,5 +44,5 @@
             </div>
 
         </div>
-    </div>
+    </div>   
 </div>
