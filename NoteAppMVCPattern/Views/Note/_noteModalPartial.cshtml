@@ -1,4 +1,5 @@
-﻿@model NoteAppMVCPattern.Models.Note
+﻿@using NoteAppMVCPattern.Models.Enums;
+@model NoteAppMVCPattern.Models.Note
 {
 <!-- The Modal -->
 <div class="modal fade" id="myModal">
@@ -28,7 +29,21 @@
             </div>
 
             <!-- Modal footer -->
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-between align-items-center">
+                <div>
+                    @{
+                        if (Model.Status != NoteStatus.None)
+                        {
+                            <h5>@Model.StatusName</h5>
+                            if (Model.Status == NoteStatus.Planned)
+                            {
+                                <h5>Model.PlannedDate</h5>
+                            }
+                        }
+                    }
+                    <h6>@Model.CreateDate.ToLongDateString()</h6> 
+                    <h6>@Model.CreateDate.ToLongTimeString()</h6>
+                </div>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
 

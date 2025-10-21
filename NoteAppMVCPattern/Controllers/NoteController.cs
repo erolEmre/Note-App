@@ -244,6 +244,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             note.Status = Models.Enums.NoteStatus.Done;
+            _tagService.SaveChanges();
             TempData["Message"] = $"Not durumu  ile güncellendi.";
             //TempData["MessageType"] = "success";
 
@@ -260,6 +261,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             note.Status = Models.Enums.NoteStatus.Todo;
+            _tagService.SaveChanges();
             // { note.Status.ToString("yapıldı")} bu kısım hataya sebep oluyor 
             TempData["Message"] = $"Not durumu ile güncellendi.";
             TempData["MessageType"] = "success";
@@ -277,6 +279,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             note.Status = Models.Enums.NoteStatus.Planned;
+            _tagService.SaveChanges();
             // { note.Status.ToString("planlandı")}
             TempData["Message"] = $"Not durumu ile güncellendi.";
             TempData["MessageType"] = "success";
