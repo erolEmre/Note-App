@@ -284,6 +284,21 @@ namespace NoteAppMVCPattern.Controllers
 
             return Json(new { success = true });
         }
+        [HttpGet]
+        public IActionResult TagColorPage(int tagId)
+        {
+            Tag tag = _tagService.GetTag(tagId);
+            if(tag != null)
+            {
+                return PartialView("_tagColorUpdate",tag);
+            }
+            else 
+            { 
+                return NotFound(); 
+
+            }
+            
+        }
         public async Task<IActionResult> Share(int id)
         {
             return null;

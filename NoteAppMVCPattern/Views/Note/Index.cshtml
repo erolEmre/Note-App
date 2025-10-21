@@ -141,7 +141,14 @@
             // örnek: filtreleme veya AJAX çağrısı
             console.log("Seçilen tag ID:", tagId);
             window.location.href = `/Note/Index?tagIds=${tagId}`;
-        }
-
+            }
+                     $(document).on("click", ".tag-color-partial", function () {
+            const id = $(this).data("id");            
+            $.get(`/Note/TagColorPage?tagId=${id}`, function (data) {
+                $("#modal-container").html(data);
+                const modal = new bootstrap.Modal(document.getElementById('tagColorUpdate'));
+                modal.show();
+            });              
+                     });
     </script>
 }

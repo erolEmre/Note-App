@@ -5,7 +5,8 @@
 
 @{
     var availableTags = Model.Tags
-        .Where(t => !Model.Note.Tags.Any(nt => nt.Id == t.Id)).OrderByDescending(t=> t.TagUsageCount).Take(3)
+        .Where(t => !Model.Note.Tags.Any(nt => nt.Id == t.Id))
+        .OrderByDescending(t=> t.TagUsageCount).Take(3)
         .ToList();
 }
 @foreach (var tag in availableTags)

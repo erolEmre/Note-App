@@ -1,0 +1,47 @@
+﻿@using NoteAppMVCPattern.Models;
+@model Tag;
+
+@{
+    List<string> colors = new() { "bg-warning", "bg-primary", "bg-danger", "bg-success", 
+    "bg-info","bg-secondary","bg-light","bg-dark","bg-white" };
+    //string colorToChange = "";
+}
+
+<div class="modal fade" id="tagColorUpdate" tabindex="">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content p-3">
+           
+            </div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Model.TagName için renk seçimi yapın</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="tagColorUpdateBody">
+                @{ 
+                @foreach(var item in colors)
+                {
+                    <form asp-action="tagColorUpdate" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="tagId" value="@Model.Id" />
+                        <input type="hidden" name="tagColor" value="@item" />
+                        <button type="submit" class="btn border-0 p-0 open-tag-color">
+                            <span class="translate-middle badge rounded-pill @item" style="cursor:pointer;">                              
+                                <span class="visually-hidden">unread messages</span>
+                        </button>
+                    </form>
+                }
+
+            }
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>

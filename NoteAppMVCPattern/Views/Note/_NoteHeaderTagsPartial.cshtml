@@ -9,9 +9,13 @@
 
     <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
         @foreach (var tag in tagsToBeTaken)
-        {            
-                <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
-                tagColor = tag.TagColor;
+        {
+            <span class="badge tag-color-partial text-dark @tag.TagColor"
+                  data-id="@tag.Id"
+                  style="cursor:pointer;">
+                #@tag.TagName
+            </span>
+            tagColor = tag.TagColor;
         }
             @if (tagList.Count > Tagcount)
             {
