@@ -1,6 +1,6 @@
 ﻿using NoteAppMVCPattern.Models;
 
-namespace NoteAppMVCPattern.Repo
+namespace NoteAppMVCPattern.Repo.User
 {
     public class UserRepository : IUserRepository
     {

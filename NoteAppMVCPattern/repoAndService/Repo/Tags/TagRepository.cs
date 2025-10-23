@@ -2,7 +2,7 @@
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Services;
 
-namespace NoteAppMVCPattern.Repo
+namespace NoteAppMVCPattern.Repo.Tags
 {
     public class TagRepository : ITagRepository
     {

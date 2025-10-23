@@ -7,8 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo;
-using NoteAppMVCPattern.Services;
+using NoteAppMVCPattern.Repo.Note;
+using NoteAppMVCPattern.Repo.Tag;
+using NoteAppMVCPattern.Services.Note;
+using NoteAppMVCPattern.Services.Tag;
 using System;
 using System.Text;
 
@@ -39,7 +41,18 @@ namespace NoteAppMVCPattern
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
 
-           // FluentValidation kaydý
+            builder.Services.AddDbContext<AppDBContext>(options =>
+            {
+                #if DEBUG
+                options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
+                #else
+                options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
+                #endif
+            });
+
+
+
+            // FluentValidation kaydý
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddScoped<IValidator<AppUser>, UserValidator>();
             builder.Services.AddScoped<IValidator<Note>, NoteValidator>();
@@ -59,8 +72,8 @@ namespace NoteAppMVCPattern
             //    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //}
 
-            builder.Services.AddDbContext<AppDBContext>(opt =>
-             opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<AppDBContext>(opt =>
+            // opt.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB")));
 
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();

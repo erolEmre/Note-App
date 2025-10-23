@@ -1,7 +1,7 @@
 ﻿using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo;
+using NoteAppMVCPattern.Repo.User;
 
-namespace NoteAppMVCPattern.Services
+namespace NoteAppMVCPattern.Services.User
 {
     // Services/UserService.cs
     public class UserService

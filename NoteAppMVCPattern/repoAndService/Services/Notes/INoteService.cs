@@ -1,6 +1,6 @@
 ﻿using NoteAppMVCPattern.Models;
 
-namespace NoteAppMVCPattern.Services
+namespace NoteAppMVCPattern.Services.Notes
 {
     public interface INoteService
     {

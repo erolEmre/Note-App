@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         // Tag alanı eklenebilir.. Çoka çok ilişki
         public ICollection<Note> Notes { get; set; }

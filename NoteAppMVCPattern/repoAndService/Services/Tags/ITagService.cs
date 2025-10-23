@@ -1,6 +1,6 @@
 ﻿using NoteAppMVCPattern.Models;
 
-namespace NoteAppMVCPattern.Services
+namespace NoteAppMVCPattern.Services.Tags
 {
     public interface ITagService
     {

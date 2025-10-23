@@ -1,7 +1,8 @@
 ﻿using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo;
+using NoteAppMVCPattern.Repo.Notes;
+using NoteAppMVCPattern.Services.Tags;
 
-namespace NoteAppMVCPattern.Services
+namespace NoteAppMVCPattern.Repo.Tags
 {
     public class TagService : ITagService
     {

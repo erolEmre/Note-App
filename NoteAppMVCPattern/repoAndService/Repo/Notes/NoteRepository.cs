@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Models;
 using System.Threading.Tasks;
+using NoteAppMVCPattern.Repo.Notes;
 
-namespace NoteAppMVCPattern.Repo
+namespace NoteAppMVCPattern.Services.Notes
 {
     public class NoteRepository : INoteRepository
     {

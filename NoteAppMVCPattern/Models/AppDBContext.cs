@@ -22,6 +22,19 @@ namespace NoteAppMVCPattern.Models
                 .WithMany(u => u.Notes)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Notebook>()
+                .HasData(
+                new Notebook
+                {
+                    Id = 1,
+                    Name = "Default",
+                    Description = "varsayılan notebook açıklaması",
+                    Color = "bg-secondary",
+                    CreatedAt = new DateTime(2025, 10, 23, 0, 0, 0, DateTimeKind.Utc)
+                }
+
+                );
            
         }
     }

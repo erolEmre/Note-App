@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing;
 using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo;
+using NoteAppMVCPattern.Repo.Notes;
+using NoteAppMVCPattern.Repo.Tags;
 using System.Collections.Immutable;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
-namespace NoteAppMVCPattern.Services
+namespace NoteAppMVCPattern.Services.Notes
 {
     public class NoteService : INoteService
     {
