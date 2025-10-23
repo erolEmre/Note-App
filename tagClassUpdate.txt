@@ -1,0 +1,191 @@
+@model NoteAppMVCPattern.Models.ViewModel.NoteIndexVM
+@using System.Linq
+
+@await Html.PartialAsync("_TempDataMessage")
+
+<div class="container py-4">
+    @if (Model.Notes == null || Model.Notes.Count == 0)
+    {
+        <div class="text-center mt-5">
+            <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+            <p class="lead">Hiç notun yok.</p>
+            <a asp-action="Create" class="btn btn-lg btn-primary">
+                <i class="bi bi-journal-plus"></i> İlk Notunu Ekle
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            @if (Model.SelectedTagIds != null && Model.SelectedTagIds.Any())
+            {
+                <a class="btn btn-danger" asp-action="Index">Filtreyi Kaldır</a>
+            }
+
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-journal-plus"></i> Yeni Not
+            </a>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle me-3" data-bs-toggle="dropdown">
+                    Sırala
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="dropdown-header">Tag’e Göre Filtrele</li>
+
+                    @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
+                    @if (Model.Tags != null)
+                    {
+                        @foreach (var tag in Model.Tags)
+                        {
+                            @* Filtreleme için Tag ID'sini kullanmak daha güvenlidir *@
+                            <li><a class="dropdown-item" asp-action="Index" asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="row g-3 frosted-glass-container">
+            @if (Model.ViewMode == "grid")
+            {
+                @foreach (var note in Model.Notes)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                        <div class="card h-100 text-white bg-dark border-4 position-relative">
+                            <div>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-calendar-date"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id"> Yapıldı</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id"> </i>Planlandı</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-route-noteId="@note.Id" asp-route-dateTime="@note.PlannedDate"> Yapılacak</a>
+                                    <a class="dropdown-item"> </a>
+                                </div>
+                            </div>
+
+                                                        @* Tag alanı *@
+                            @if (note.Tags != null && note.Tags.Any())
+                            {
+                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
+                                    
+                                    @foreach (var tag in note.Tags)
+                                    {
+                                        // TagName'e göre renk ataması
+                                        @* if (!tagColorPairs.ContainsKey(tag.TagName))
+                                        {
+                                            tagColorPairs[tag.TagName] = colors[colorIndex % colors.Count];
+                                            colorIndex++;
+                                        } *@
+                                        @* var color = tagColorPairs[tag.TagName]; *@
+                                        @* var color = "bg-primary"; *@
+
+                                        <span class="badge @tag.TagColor text-dark">#@tag.TagName</span>
+                                    }
+                                </div>
+                            }
+
+                                                    @* Kart Body İçeriği burda*@
+
+                            <div class="card-body mt-4">
+                                @* Badges için üstten biraz boşluk bırakıldı *@
+                                <h5 class="card-title">@note.Title</h5>
+                                <p class="card-text text-truncate">@note.Content</p>
+                                <p class="card-subtitle text-white-50 text-end text-break">@note.CreateDate.ToShortDateString()</p>
+                            </div>
+
+                                                            @* Footer içerik *@
+
+                            <div class="card-footer  justify-content-between align-items-center">
+
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Update" asp-route-id="@note.Id" 
+                                    class="btn me-1 btn-primary btn-sm rounded">
+                                        <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                    </a>
+
+                                    <form asp-action="Delete" asp-route-id="@note.Id" method="post"
+                                          onsubmit="return confirm('@note.Title isimli notu silmek istediğinizden emin misiniz?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm rounded me-1">
+                                            <i class="bi bi-trash3"></i> Sil
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-success view-note rounded me-1" data-id="@note.Id">
+                                        <i class="bi bi-eye"></i> İncele
+                                    </button>
+                                
+                                                    @* Footer en sağ içerik - Sçenkeler *@
+
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                            data-bs-toggle="dropdown" style="min-width: 50px">
+                                        <i class="bi bi-gear"> Seç.</i> 
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 180px; max-width: 200px;">
+
+                                        @* 1. Notun Mevcut Taglerini Silme *@
+                                        @if (note.Tags != null && note.Tags.Any())
+                                        {
+                                            <li class="dropdown-header">Mevcut Tag'ler (Sil)</li>
+                                            @foreach (var tag in note.Tags)
+                                            {
+                                                <li class="mb-1">
+                                                    <form asp-controller="Note" asp-action="DeleteTag" method="post" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="noteId" value="@note.Id" />
+                                                        <input type="hidden" name="tagId"  value="@tag.Id" /> @* Tag'in ID'sini kullanıyoruz *@                                                                                                             
+                                                        <button type="submit" class="btn btn-danger btn-sm w-100 text-truncate">
+                                                            <i class="bi bi-bookmark-x"></i> Sil (#@tag.TagName)
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            }
+                                            <li><hr class="dropdown-divider my-2"></li>
+                                        }
+
+                                        @* 2. Var Olan Taglerden Ekleme *@
+                                        @if (Model.Tags != null)
+                                        {
+                                            <li class="dropdown-header">Var Olan Tag’ler (Ekle)</li>
+                                            @foreach (var tag in Model.Tags)
+                                            {
+                                                if (note.Tags == null || !note.Tags.Any(t => t.Id == tag.Id))
+                                                {
+                                                    <li>
+                                                        <form asp-controller="Note" asp-action="AddTag" method="post" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="noteId" value="@note.Id" />
+                                                            <input type="hidden" name="tagId" value="@tag.Id" /> @* **KRİTİK: Tag ID'si** *@
+                                                            <button type="submit" class="dropdown-item text-truncate">@tag.TagName</button>
+                                                        </form>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+
+                                        @* 3. Yeni Tag Oluşturup Ekleme *@
+                                        <li class="mb-2">
+                                            <form asp-controller="Note" asp-action="CreateAndAddTag" method="post">
+                                                @* **AKSIYON ADI DEĞİŞTİ** *@
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="noteId" value="@note.Id" />
+                                                <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="Yeni Tag Adı" required /> @* **KRİTİK: Tag Adı** *@
+                                                <button type="submit" class="btn btn-info btn-sm w-100">
+                                                    <i class="bi bi-bookmark-plus"></i> Oluştur & Ekle
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }            

@@ -1,6 +1,6 @@
 ﻿@using NoteAppMVCPattern.Models.Enums;
 @model NoteAppMVCPattern.Models.Note
-{
+
 <!-- The Modal -->
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg">
@@ -13,7 +13,7 @@
                 
             @foreach (var tag in availableTags)
             {
-                <span class="badge @tag.TagColor">@tag.TagName</span>
+                <span class="badge @tag.TagColor text-black">@tag.TagName</span>
             }
             }
             </div>
@@ -50,4 +50,3 @@
         </div>
     </div>
 </div>
-}
