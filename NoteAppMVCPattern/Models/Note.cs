@@ -23,8 +23,8 @@ namespace NoteAppMVCPattern.Models
 
         public string? UserId { get; set; } // foreign key
         public virtual AppUser? User { get; set; } // navigation property
-        //public Notebook Notebook { get; set; }
-        //public int NotebookId { get; set; }
+        public Notebook Notebook { get; set; }
+        public int NotebookId { get; set; }
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
