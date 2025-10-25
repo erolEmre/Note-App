@@ -28,6 +28,13 @@
         <div class="d-flex justify-content-end gap-2 mb-3">
             @if (Model.SelectedTagIds != null && Model.SelectedTagIds.Any())
             {
+                @if (Model.CurrentTag != null)
+                {
+                    var tagcolor = Model.CurrentTag.TagColor.Substring(3);
+                    var tagName = Model.CurrentTag.TagName;
+
+                    <a class="btn btn-@tagcolor" asp-action="Index">Aktif tag : @tagName</a>
+                }
                 <a class="btn btn-danger" asp-action="Index">Filtreyi Kaldır</a>
             }
 

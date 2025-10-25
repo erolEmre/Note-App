@@ -12,7 +12,7 @@ namespace NoteAppMVCPattern.Services.Tags
         public Task DeleteTag(int noteId, string userId, int tagId);
         public Task CreateAndAdd(int noteId, string tagName, string userId);
 
-        public Tag GetTag(int tagId);
+        public Task<Tag> GetTag(int tagId);
         public void SaveChanges();
     }
 }

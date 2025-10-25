@@ -48,22 +48,23 @@ namespace NoteAppMVCPattern.Controllers
             // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
             var tags = await _tagService.GetTags(userId);
 
-            // 4. ViewModel oluştur
-            var vm = new NoteIndexVM
-            {
-                Notes = notes,
 
-                // KRİTİK DÜZELTME: ViewModel'deki List<Tag> özelliğine atama
-                // Eski: Tags = tags, 
-                // Yeni: View model'inizdeki özelliğin adını 'AvailableTags' olarak değiştirdiğinizi varsayıyoruz.
-                Tags = tags,
+                // 4. ViewModel oluştur
+                var vm = new NoteIndexVM
+                {
+                    Notes = notes,
+                    Tags = tags,
 
-                SelectedTagIds = tagIds ?? new List<int>(),
-                ViewMode = viewMode,
-                SortOrder = sortOrder
-                // CurrentTag özelliği artık kullanılmamalıdır.
-            };
-           
+                    SelectedTagIds = tagIds ?? new List<int>(),
+                    ViewMode = viewMode,
+                    SortOrder = sortOrder,
+
+                };
+                
+                vm.CurrentTag = vm.SelectedTagIds.Any()
+                ? await _tagService.GetTag(vm.SelectedTagIds.First())
+                : null;
+
 
             return View(vm);
         }
@@ -301,9 +302,9 @@ namespace NoteAppMVCPattern.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult TagColorPage(int tagId)
+        public async Task<IActionResult> TagColorPage(int tagId)
         {
-            Tag tag = _tagService.GetTag(tagId);
+            Tag tag = await _tagService.GetTag(tagId);
             if(tag != null)
             {
                 return PartialView("_tagColorUpdate",tag);
@@ -318,7 +319,7 @@ namespace NoteAppMVCPattern.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> tagColorUpdate(int tagId,string tagColor)
         {
-            Tag tag = _tagService.GetTag(tagId);
+            Tag tag = await _tagService.GetTag(tagId);
             if (tag != null)
             {
                 tag.TagColor = tagColor;

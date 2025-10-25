@@ -130,7 +130,7 @@ namespace NoteAppMVCPattern.Repo.Tags
             await _noteRepository.Update(note);
         }
 
-        public Tag GetTag(int tagId)
+        public async Task<Tag> GetTag(int tagId)
         {
             if (tagId < 0)
             {
@@ -142,5 +142,6 @@ namespace NoteAppMVCPattern.Repo.Tags
         {
             _tagRepository.SaveChanges();
         }
+       
     }
 }
