@@ -60,7 +60,7 @@ namespace NoteAppMVCPattern
             //}
 
             builder.Services.AddDbContext<AppDBContext>(opt =>
-             opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+             opt.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB")));
 
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();
