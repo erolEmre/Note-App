@@ -9,15 +9,15 @@
         .OrderByDescending(t=> t.TagUsageCount).Take(3)
         .ToList();
 }
+<li class="dropdown-header text-center">Tag'e ekle</li>
 @foreach (var tag in availableTags)
-{
-    <li>
+{    
         <form asp-controller="Note" asp-action="AddTag" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="noteId" value="@Model.Note.Id" />
             <input type="hidden" name="tagId" value="@tag.Id" />
             <button type="submit" class="dropdown-item text-truncate">@tag.TagName</button>
-        </form>
-    </li>
+        </form>  
 }
+<li><hr class="dropdown-divider my-1"></li>
 
