@@ -10,13 +10,11 @@ Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve sile
 
 🔑 Kullanıcı Yönetimi: ASP.NET Core Identity ile kullanıcı kaydı ve giriş.
 
-📝 Not İşlemleri: Not ekleme, güncelleme, silme.
+📝 Not İşlemleri: Not ekleme, güncelleme, silme,inceleme.
 
-🏷 Etiketleme Sistemi: Notlara #tag ekleyerek filtreleme.
+🏷 Etiketleme Sistemi: Notlara bir veya birden fazla #tag ekleme.
 
 🔍 Filtreleme & Sıralama: Tarihe göre sıralama ve etiketlere göre filtreleme.
-
-🎭 View Modları: Notları grid veya liste görünümünde gösterme.
 
 ✅ Validation: FluentValidation ile kullanıcı ve not doğrulama.
 
