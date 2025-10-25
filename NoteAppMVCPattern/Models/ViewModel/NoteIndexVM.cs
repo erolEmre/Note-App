@@ -8,6 +8,7 @@
         public List<int> SelectedTagIds { get; set; }
         public string ViewMode { get; set; }
         public string SortOrder { get; set; }
+        public Tag CurrentTag { get; set; } 
 
     }
 
