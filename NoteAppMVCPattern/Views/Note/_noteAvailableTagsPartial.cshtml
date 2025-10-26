@@ -1,23 +1,40 @@
 ﻿@using NoteAppMVCPattern.Models.ViewModel;
-@* @model NoteIndexVM
- *@
+
 @model NoteFooterVM
 
 @{
     var availableTags = Model.Tags
         .Where(t => !Model.Note.Tags.Any(nt => nt.Id == t.Id))
-        .OrderByDescending(t=> t.TagUsageCount).Take(3)
+        .OrderByDescending(t=> t.TagUsageCount)
         .ToList();
-}
-<li class="dropdown-header text-center">Tag'e ekle</li>
+    <li class="dropdown-header text-center">Tag'e ekle</li>
+        
+    <li class="mb-2">
+        <input class="form-control form-control-sm tag-search-input"
+               data-note-id="@Model.Note.Id"
+               data-mode="add"
+               type="text"
+               placeholder="Tag ara...">
+    </li>
+    @*Tag oluşturma*@
+    int counter = 0;
+    string display = "inline";
+
+
+
 @foreach (var tag in availableTags)
-{    
+{           counter++;
+            if (counter > 3) display = "none";
+        <li class="mb-1 tag-add-item" data-index="@counter" style="display:@display">
         <form asp-controller="Note" asp-action="AddTag" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="noteId" value="@Model.Note.Id" />
             <input type="hidden" name="tagId" value="@tag.Id" />
             <button type="submit" class="dropdown-item text-truncate">@tag.TagName</button>
-        </form>  
+        </form>
+        </li>
 }
-<li><hr class="dropdown-divider my-1"></li>
+
+}
+
 

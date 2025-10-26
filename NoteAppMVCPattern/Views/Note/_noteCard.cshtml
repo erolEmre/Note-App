@@ -43,59 +43,73 @@
        
 
 
-                                                   @* Seçenekeler Kısmı*@
-
+                                                   @* Seçenekeler Kısmı*@               
         <div class="dropdown">
             <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
                     data-bs-toggle="dropdown" style="min-width: 50px">
                 <i class="bi bi-gear"> Seç.</i>
             </button>
+                   
+            <ul id="tagdropdown-@Model.Note.Id" class="dropdown-menu dropdown-menu-end p-2">  @*style="min-width: 180px; max-width: 200px;*@
 
-            <ul class="dropdown-menu dropdown-menu-end p-2"  style="min-width: 180px; max-width: 200px ;">
+                        @* 3. Yeni Tag Oluşturup Ekleme *@
+                        <li class="mb-2">
+                            <form asp-controller="Note" asp-action="CreateAndAddTag" method="post">
+                                @* **AKSIYON ADI DEĞİŞTİ** *@
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="noteId" value="@Model.Note.Id" />
+                                <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="Yeni Tag Adı" required /> @* **KRİTİK: Tag Adı** *@
+                                <button type="submit" class="btn btn-info btn-sm w-100">
+                                    <i class="bi bi-bookmark-plus"></i> Oluştur & Ekle
+                                </button>
+                            </form>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
 
                 @* 1. Notun Mevcut Taglerini Silme *@
                 @if (Model.Note.Tags != null && Model.Note.Tags.Any())
-                {
+                {                           
                     <li class="dropdown-header">Mevcut Tag'ler (Sil)</li>
                     {
                             var tags = Model.Tags
-                            .Where(t => Model.Note.Tags.Any(nt => nt.Id == t.Id)).OrderBy(t => t.TagUsageCount).Take(3)
+                            .Where(t => Model.Note.Tags.Any(nt => nt.Id == t.Id))
+                            .OrderBy(t => t.TagUsageCount)
                             .ToList();
-                        
-                        @foreach (var tag in tags)
+                            @* Arama *@
+                                <li class="mb-2">
+                                    <input class="form-control form-control-sm tag-search-input"
+                                           data-note-id="@Model.Note.Id"
+                                           data-mode="delete"
+                                           type="text"
+                                           placeholder="Tag ara...">
+                                </li>
+                                @*Tag oluşturma*@
+                                int counter = 0;
+                                string display = "inline";
+                                @foreach (var tag in tags)
                     {
-                        <li class="mb-1">
-                            <form asp-controller="Note" asp-action="DeleteTag" method="post" style="display:inline;">
+                        counter++;
+                                    if (counter > 3) display = "none";
+                                    <li class="mb-1 tag-delete-item" data-index="@counter" style="display:@display">
+                            <form asp-controller="Note" asp-action="DeleteTag" method="post" style="display:inline">
                                 @Html.AntiForgeryToken()                                    
                                     <input type="hidden" name="noteId" value="@Model.Note.Id" /> @* Note id yaz*@                                    
                                     <input type="hidden" name="tagId" value="@tag.Id" /> @* Tag'in ID'sini kullanıyoruz *@                                                                                                             
-                                   <button type="submit" class="btn btn-danger btn-sm w-100 text-truncate">
-                                    <i class="bi bi-bookmark-x"></i> Sil (#@tag.TagName)
+                                    <button type="submit" class="btn btn-danger btn-sm w-100 text-truncate">
+                                    <i class="bi bi-bookmark-x"></i> Sil (@tag.TagName)
                                 </button>
                             </form>
                         </li>
                     }
                     }
                     <li><hr class="dropdown-divider my-2"></li>
+                            
                 }
 
                 @* 2. Var Olan Taglerden Ekleme *@
-
                     <partial name="_noteAvailableTagsPartial"
                              model="new NoteFooterVM {Note = Model.Note, Tags = Model.Tags.ToList()}" />
                 
-                @* 3. Yeni Tag Oluşturup Ekleme *@
-                <li class="mb-2">
-                    <form asp-controller="Note" asp-action="CreateAndAddTag" method="post">
-                        @* **AKSIYON ADI DEĞİŞTİ** *@
-                        @Html.AntiForgeryToken()                        
-                                <input type="hidden" name="noteId" value="@Model.Note.Id" />
-                        <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="Yeni Tag Adı" required /> @* **KRİTİK: Tag Adı** *@
-                        <button type="submit" class="btn btn-info btn-sm w-100">
-                            <i class="bi bi-bookmark-plus"></i> Oluştur & Ekle
-                        </button>
-                    </form>
-                </li>
             </ul>
         </div>
             

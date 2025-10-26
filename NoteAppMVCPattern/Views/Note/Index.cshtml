@@ -157,5 +157,38 @@
                 modal.show();
             });              
                      });
+        //                              $(document).ready(function () {
+        //   $(".tag-search-input").on("keyup", function () {
+        //     const noteId = $(this).data("note-id");
+        //     const value = $(this).val().toLowerCase();
+        //     $(`#tagdropdown-delete-${noteId} .tag-item`).each(function () {
+        //       const text = $(this).text().toLowerCase();
+        //       $(this).toggle(text.includes(value));
+        //     });
+        //   });
+        // });
+
+                $(document).ready(function () {
+          $(".tag-search-input").on("keyup", function () {
+            const noteId = $(this).data("note-id");
+            const value = $(this).val().toLowerCase();
+            const mode = $(this).data("mode");
+            const items = $(`#tagdropdown-${noteId} .tag-${mode}-item`);
+
+            if (value === "") {
+              // Arama kutusu boşsa, sadece ilk 3 tag’i göster
+              items.each(function (index) {
+                $(this).css("display", index < 3 ? "block" : "none");
+              });
+            } else {
+              // Arama varsa, eşleşenleri göster
+              items.each(function () {
+                const text = $(this).text().toLowerCase();
+                $(this).css("display", text.includes(value) ? "block" : "none");
+              });
+            }
+          });
+        });
+
     </script>
 }
