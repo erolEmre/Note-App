@@ -73,7 +73,7 @@ Proje AWS Elastic Beanstalk üzerine deploy edilmiştir.
 
 📷 Ekran Görüntüleri
 
-![Login Sayfası](https://i.imgur.com/0De7u98.png)
+![Login Sayfası](https://i.imgur.com/WWxQT1a.png)
 ![İlk Giriş](https://i.imgur.com/2QJj8FW.png)
 ![Not Listesi](https://i.imgur.com/5RCurAP.png)
 ![Kayıt Sayfası](https://i.imgur.com/Qw8WdV1.png)
