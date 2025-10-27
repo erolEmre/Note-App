@@ -52,7 +52,7 @@ namespace NoteAppMVCPattern.Controllers
                     TempData["Message"] = "Kayıt başarılı.";
                     TempData["MessageType"] = "success"; 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Note");
+                    return RedirectToAction("Index", "Notebook");
                 }
 
                 foreach (var error in result.Errors)
@@ -89,7 +89,7 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     TempData["Message"] = "Giriş Başarılı";
                     TempData["MessageType"] = "success";
-                    return RedirectToAction("Index", "Note");
+                    return RedirectToAction("Index", "Notebook");
                 }
                
                 ModelState.AddModelError("", "Geçersiz giriş bilgileri.");              

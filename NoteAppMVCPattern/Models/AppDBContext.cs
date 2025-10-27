@@ -8,6 +8,7 @@ namespace NoteAppMVCPattern.Models
     {
         public DbSet<Note> Notes { get; set; }
         public DbSet<Tag> Tag { get; set; }
+        public DbSet<Notebook> Notebook { get; set; }
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) 
         { 
         

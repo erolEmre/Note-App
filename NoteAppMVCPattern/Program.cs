@@ -7,10 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo.Note;
-using NoteAppMVCPattern.Repo.Tag;
-using NoteAppMVCPattern.Services.Note;
-using NoteAppMVCPattern.Services.Tag;
+using NoteAppMVCPattern.Repo.Notebooks;
+using NoteAppMVCPattern.Repo.Notes;
+using NoteAppMVCPattern.Repo.Tags;
+using NoteAppMVCPattern.Services.Notebooks;
+using NoteAppMVCPattern.Services.Notes;
+using NoteAppMVCPattern.Services.Tags;
 using System;
 using System.Text;
 
@@ -75,10 +77,20 @@ namespace NoteAppMVCPattern
             //builder.Services.AddDbContext<AppDBContext>(opt =>
             // opt.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB")));
 
+                                // Note
+
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();
+            
+                                // Tag
+
             builder.Services.AddScoped<ITagRepository, TagRepository>();    
             builder.Services.AddScoped<ITagService, TagService>();
+            
+                                // Notebook
+
+            builder.Services.AddScoped<INotebookService, NotebookService>();
+            builder.Services.AddScoped<INotebookRepository, NotebookRepository>();
 
             builder.Services.AddControllersWithViews().
             AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
