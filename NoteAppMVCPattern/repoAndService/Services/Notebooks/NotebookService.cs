@@ -28,8 +28,7 @@ namespace NoteAppMVCPattern.Services.Notebooks
 
         public async Task<Notebook> Get(int id)
         {
-           return await _notebookRepository.
-                Get(id);
+           return await _notebookRepository.Get(id);
         }
 
         public async Task<Notebook> Get(Notebook notebook)
@@ -39,6 +38,19 @@ namespace NoteAppMVCPattern.Services.Notebooks
                 return await _notebookRepository.Get(notebook);
             }
             else return null;
+        }
+
+        public async Task<List<Notebook>> ListAll()
+        {
+            var list = await _notebookRepository.ListAll();
+            if (list != null)
+            {
+                return list;
+            }
+            else 
+            { 
+                return new List<Notebook>(); 
+            }
         }
 
         public async Task Update(Notebook notebook)

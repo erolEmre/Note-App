@@ -80,9 +80,9 @@ namespace NoteAppMVCPattern.Services.Notes
             return await _noteRepository.GetByIdAsync(id, userId);
         }
 
-        public async Task<List<Note>> GetNotes(string userId, List<int> tagIds, string sortOrder = null)
+        public async Task<List<Note>> GetNotes(int notebookId,string userId, List<int> tagIds, string sortOrder = null)
         {
-            return await _noteRepository.GetAllByUserIdAsync(userId, tagIds, sortOrder);           
+            return await _noteRepository.GetAllByUserIdAsync(notebookId,userId, tagIds, sortOrder);           
         }
 
         public async Task Update(Note updatedNote, string userId)

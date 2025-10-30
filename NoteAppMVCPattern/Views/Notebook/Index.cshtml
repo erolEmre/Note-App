@@ -5,7 +5,9 @@
     Layout = "_noteIndexLayout";
     ViewData["Title"] = "Note Defteri";
 }
+
 @await Html.PartialAsync("_TempDataMessage")
+
 <div class="container py-4">
 @if (Model.notebooks == null || Model.notebooks.Count == 0)
     {
@@ -17,7 +19,7 @@
             </a>
         </div>
     }
-{
+
 <div class="row">
     @foreach (var nb in Model.notebooks)
     {
@@ -26,13 +28,17 @@
                 <div class="card-body">
                     <h5 class="card-title">@nb.Name</h5>
                     <p class="card-text">@nb.Description</p>
-                    <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-outline-primary btn-sm">
+                    
+                    <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-primary btn-sm">
                         <i class="bi bi-eye"></i> Görüntüle
                     </a>
+                        <a asp-action="Create" class="btn btn-warning btn-sm">
+                            <i class="bi bi-journal-plus"></i> Not defteri oluştur
+                        </a>
                 </div>
             </div>
         </div>
     }
 </div>
-    }
+    
 </div>

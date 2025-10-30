@@ -35,14 +35,14 @@ namespace NoteAppMVCPattern.Controllers
             _tagService = tagService;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string viewMode = "grid", string sortOrder = null, List<int> tagIds = null)
+        public async Task<IActionResult> Index(int notebookId,string viewMode = "grid", string sortOrder = null, 
+            List<int> tagIds = null)
         {
             // 1. Kullanıcı ID'sini al
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             // 2. Notları getir (İlişkili Tags koleksiyonları dahil edilmelidir!)
             // _noteService.GetNotes metodu içinde .Include(n => n.Tags) kullandığınızdan emin olun.
-            var notes = await _noteService.GetNotes(userId, tagIds, sortOrder);
+            var notes = await _noteService.GetNotes(notebookId,userId, tagIds, sortOrder);
 
             // 3. Kullanıcının sahip olduğu tüm etiketleri getir (List<Tag> dönmelidir)
             // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
@@ -54,11 +54,10 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     Notes = notes,
                     Tags = tags,
-
                     SelectedTagIds = tagIds ?? new List<int>(),
                     ViewMode = viewMode,
                     SortOrder = sortOrder,
-
+                    NotebookID = notebookId
                 };
                 
                 vm.CurrentTag = vm.SelectedTagIds.Any()

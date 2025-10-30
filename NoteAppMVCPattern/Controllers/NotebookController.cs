@@ -16,12 +16,14 @@ namespace NoteAppMVCPattern.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var notebook = await _notebookService.Get(1);
+            var notebook = await _notebookService.ListAll();
 
             var NotebookVM = new NotebookVM();
-            NotebookVM.notebooks.Add(notebook);
+            foreach (var item in notebook)
+            {
+            NotebookVM.notebooks.Add(item);
+            }
             
-
             return View(NotebookVM);
         }
 
@@ -29,7 +31,24 @@ namespace NoteAppMVCPattern.Controllers
         public IActionResult NotebookDetails(int id)
         {
             var mynotebook = _notebookService.Get(id);
-            return View(mynotebook);
+            // Index,Note'daki isimde "notebookId" olmalı
+            return RedirectToAction("Index", "Note", new { notebookId = id });
         }
+        
+       
+        public IActionResult Create()
+        {
+            
+            return View(new Notebook());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Notebook notebook)
+        {
+            await _notebookService.Add(notebook);
+            return RedirectToAction("Index");
+        }
+
     }
 }

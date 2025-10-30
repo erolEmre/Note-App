@@ -37,6 +37,11 @@ namespace NoteAppMVCPattern.Repo.Notebooks
                 .ThenInclude(x => x.User).FirstOrDefaultAsync(x=> x.Id == notebook.Id);
         }
 
+        public async Task<List<Notebook>> ListAll()
+        {
+           return await _dbContext.Notebook.ToListAsync();
+        }
+
         public async Task Update(Notebook notebook)
         {
              _dbContext.Notebook.Update(notebook);

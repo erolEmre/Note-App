@@ -14,10 +14,12 @@ namespace NoteAppMVCPattern.Services.Notes
             _dbContext = dbContext;
         }
        
-        public async Task<List<Note>> GetAllByUserIdAsync(string userId, List<int> tagIds = null, string sortOrder = null)
+        public async Task<List<Note>> GetAllByUserIdAsync(int notebookId, string userId, List<int> tagIds = null, string sortOrder = null)
         {
             // Notları kullanıcıya göre filtrele ve Tag ilişkisini dahil et
-            var notesQuery = _dbContext.Notes
+            //var notebookQuery = _dbContext.Notebook.FirstOrDefault(x => x.Id == notebookId);
+            
+            var notesQuery = _dbContext.Notes.Where(x=> x.NotebookId == notebookId)
                 .Include(n => n.Tags)
                 .Where(n => n.UserId == userId);
 

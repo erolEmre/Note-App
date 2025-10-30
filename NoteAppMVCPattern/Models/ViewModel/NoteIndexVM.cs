@@ -9,7 +9,7 @@
         public string ViewMode { get; set; }
         public string SortOrder { get; set; }
         public Tag CurrentTag { get; set; } 
-
+        public int NotebookID { get; set; }
     }
 
 }

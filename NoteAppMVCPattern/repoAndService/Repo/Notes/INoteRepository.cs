@@ -7,7 +7,7 @@ namespace NoteAppMVCPattern.Repo.Notes
         Task<Note> GetByIdAsync(int id, string userId);
 
         // Bir kullanıcıya ait tüm notları filtreleme ve sıralama seçenekleriyle getirir
-        Task<List<Note>> GetAllByUserIdAsync(string userId, List<int> tagIds = null, string sortOrder = null);
+        Task<List<Note>> GetAllByUserIdAsync(int notebookId, string userId, List<int> tagIds = null, string sortOrder = null);
 
         // Kullanıcıya ait benzersiz (distinct) etiketleri getirir      
 

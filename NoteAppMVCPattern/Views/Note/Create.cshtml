@@ -1,4 +1,4 @@
-﻿@model NoteAppMVCPattern.Models.Note
+﻿@model NoteAppMVCPattern.Models.ViewModel.NoteVM;
 @{
     ViewData["Title"] = "Yeni Not";
 }
@@ -32,7 +32,7 @@
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
-        
+        <input type="hidden" name="NotebookId" value="@Model.NotebookId" />
 
     <div class="form-group">
         <div class="form-group mb-2 fw-bolder fs-4">
