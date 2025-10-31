@@ -39,7 +39,10 @@ namespace NoteAppMVCPattern.Repo.Notebooks
 
         public async Task<List<Notebook>> ListAll()
         {
-           return await _dbContext.Notebook.ToListAsync();
+           return await _dbContext.Notebook
+                .Include(x=> x.User)
+                .ThenInclude(n=> n.Notes)
+                .ToListAsync();
         }
 
         public async Task Update(Notebook notebook)

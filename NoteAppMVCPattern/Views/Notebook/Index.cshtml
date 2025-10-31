@@ -1,4 +1,5 @@
 ﻿@using NoteAppMVCPattern.Models.ViewModel
+@using System.Security.Claims
 @model NotebookVM;
 
 @{
@@ -23,12 +24,30 @@
 <div class="row">
     @foreach (var nb in Model.notebooks)
     {
-        <div class="col-md-4 mb-4">
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        <div class="col-md-4 mb-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">@nb.Name</h5>
+                    <h4 class="card-title">@nb.Name</h4>
                     <p class="card-text">@nb.Description</p>
-                    
+                    <div>
+                            @{
+                                var list = nb.User.Notes.ToList();
+
+                                var counter = 0;
+                                foreach (var item in list)
+                            {                                  
+                                if(counter<=3 && list != null)
+                                {
+                                    <ul>
+                                    <li> @item.Title    </li>
+                                    <li> @item.Content   </li>
+                                   </ul>
+                                }
+                                counter++;
+                            }
+                       }
+                    </div>
                     <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-primary btn-sm">
                         <i class="bi bi-eye"></i> Görüntüle
                     </a>

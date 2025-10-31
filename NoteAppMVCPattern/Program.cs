@@ -51,7 +51,15 @@ namespace NoteAppMVCPattern
                 options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
                 #endif
             });
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
+            
 
 
             // FluentValidation kaydý
@@ -129,7 +137,7 @@ namespace NoteAppMVCPattern
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

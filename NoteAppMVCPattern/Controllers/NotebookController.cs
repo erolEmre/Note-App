@@ -4,6 +4,7 @@ using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
 using NoteAppMVCPattern.Services;
 using NoteAppMVCPattern.Services.Notebooks;
+using System.Security.Claims;
 
 namespace NoteAppMVCPattern.Controllers
 {
@@ -17,6 +18,7 @@ namespace NoteAppMVCPattern.Controllers
         public async Task<IActionResult> Index()
         {
             var notebook = await _notebookService.ListAll();
+
 
             var NotebookVM = new NotebookVM();
             foreach (var item in notebook)
@@ -46,6 +48,9 @@ namespace NoteAppMVCPattern.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Notebook notebook)
         {
+            notebook.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //notebook.User = User.
+
             await _notebookService.Add(notebook);
             return RedirectToAction("Index");
         }

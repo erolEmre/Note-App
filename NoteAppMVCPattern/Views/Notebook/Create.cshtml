@@ -1,4 +1,5 @@
-﻿@model NoteAppMVCPattern.Models.Notebook
+﻿@using System.Security.Claims
+@model NoteAppMVCPattern.Models.Notebook
 
 @{
     ViewData["Title"] = "Yeni Not Defteri Oluştur";
@@ -29,6 +30,10 @@
                 <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            @{
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;            
+            <input type="hidden" name="userId" value="@userId" />  
+            }
 
             <div class="mb-3">
                 <input type="submit" value="Oluştur" class="btn btn-primary" />

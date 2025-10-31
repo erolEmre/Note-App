@@ -2,6 +2,7 @@
 using FluentValidation;
 using LinqKit;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -38,6 +39,7 @@ namespace NoteAppMVCPattern.Controllers
         public async Task<IActionResult> Index(int notebookId,string viewMode = "grid", string sortOrder = null, 
             List<int> tagIds = null)
         {
+            HttpContext.Session.SetInt32("NotebookId", notebookId);
             // 1. Kullanıcı ID'sini al
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             // 2. Notları getir (İlişkili Tags koleksiyonları dahil edilmelidir!)
@@ -68,11 +70,12 @@ namespace NoteAppMVCPattern.Controllers
             return View(vm);
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int notebookId)
         {
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+               
                 if (userId != null)
                 {
                     var user = _userManager.Users
@@ -81,7 +84,8 @@ namespace NoteAppMVCPattern.Controllers
 
                     var note = new Note
                     {
-                        User = user
+                        User = user,
+                        NotebookId = notebookId
                     };
 
                     return View(note);
@@ -94,11 +98,17 @@ namespace NoteAppMVCPattern.Controllers
         public async Task<IActionResult> Create(Note note)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            if (notebookId == null) return BadRequest("Notebook seçilmemiş.");
+
+            note.NotebookId = notebookId.Value;
+
             await _noteService.Add(note, userId);
 
             TempData["Message"] = "Not eklendi.";
             TempData["MessageType"] = "success";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index",new { notebookId = notebookId.Value });
 
         }
         [HttpGet]
@@ -112,7 +122,7 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     var user = _userManager.Users
                         .Include(u => u.Notes)
-                        .ThenInclude(t=> t.Tags)
+                        .ThenInclude(t => t.Tags)
                         .FirstOrDefault(u => u.Id == Guid.Parse(userId).ToString());
                     
                         foreach (var note in user.Notes)
@@ -145,8 +155,10 @@ namespace NoteAppMVCPattern.Controllers
             else
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-                await _noteService.Update(note, userId);                
-                return RedirectToAction("Index");
+                await _noteService.Update(note, userId);
+                int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+                return RedirectToAction("Index", new { NotebookId = notebookId.Value });
             }
         }
         [HttpGet]
@@ -172,8 +184,9 @@ namespace NoteAppMVCPattern.Controllers
 
             TempData["Message"] = "Not silindi.";
             TempData["MessageType"] = "success";
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
 
         }
         
@@ -193,8 +206,10 @@ namespace NoteAppMVCPattern.Controllers
             TempData["Message"] = "Tag silindi.";
             TempData["MessageType"] = "success";
 
-            
-            return RedirectToAction("Index");
+
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -208,8 +223,10 @@ namespace NoteAppMVCPattern.Controllers
 
             var status = TagUpdateStatus.Increment; 
             await _tagService.UpdateTagCount(tagId,status);
-            
-            return RedirectToAction("Index");
+
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -226,8 +243,10 @@ namespace NoteAppMVCPattern.Controllers
             // await kısmına bak,biri bitmeden diğer başladı diye hata fırlatıyor.
             var tag = await _tagService.GetTagByName(tagName);
              _tagService.UpdateTagCount(tag.Id,status);
-            
-            return RedirectToAction("Index");
+
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -251,7 +270,9 @@ namespace NoteAppMVCPattern.Controllers
             TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi";
             TempData["MessageType"] = "info";
 
-            return RedirectToAction("Index");
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
         
         [HttpPost]
@@ -275,7 +296,9 @@ namespace NoteAppMVCPattern.Controllers
             TempData["MessageType"] = "info";
 
 
-            return RedirectToAction("Index");
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -298,7 +321,9 @@ namespace NoteAppMVCPattern.Controllers
             TempData["MessageType"] = "info";
 
 
-            return RedirectToAction("Index");
+            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
         }
         [HttpGet]
         public async Task<IActionResult> TagColorPage(int tagId)
@@ -323,7 +348,9 @@ namespace NoteAppMVCPattern.Controllers
             {
                 tag.TagColor = tagColor;
                 _tagService.SaveChanges();
-                return RedirectToAction("Index");
+                int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+                return RedirectToAction("Index", new { NotebookId = notebookId.Value });
             }
             return BadRequest();
 
