@@ -4,29 +4,33 @@ using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
 using NoteAppMVCPattern.Services;
 using NoteAppMVCPattern.Services.Notebooks;
+using NoteAppMVCPattern.Services.Notes;
 using System.Security.Claims;
+using static Azure.Core.HttpHeader;
 
 namespace NoteAppMVCPattern.Controllers
 {
     public class NotebookController : Controller
     {
         private readonly INotebookService _notebookService;
-        public NotebookController(INotebookService notebookService) 
+        private readonly INoteService _noteService;
+        public NotebookController(INotebookService notebookService,INoteService noteService) 
         { 
+            _noteService = noteService;
             _notebookService = notebookService;
         }
         public async Task<IActionResult> Index()
         {
-            var notebook = await _notebookService.ListAll();
-
-
-            var NotebookVM = new NotebookVM();
-            foreach (var item in notebook)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var Notebooks = await _notebookService.ListAll(userId);
+            var Notes = Notebooks.SelectMany(x=> x.Notes ?? new List<Note>()).ToList();
+            NotebookVM notebook = new NotebookVM
             {
-            NotebookVM.notebooks.Add(item);
-            }
-            
-            return View(NotebookVM);
+                notebooks = Notebooks,
+                Notes = Notes
+            };
+           
+            return View(notebook);
         }
 
         [HttpGet]
@@ -52,8 +56,16 @@ namespace NoteAppMVCPattern.Controllers
             //notebook.User = User.
 
             await _notebookService.Add(notebook);
+            return RedirectToAction("Index","Note", new {notebookId = notebook.Id});
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var notebook = await _notebookService.Get(id);
+            await _notebookService.Delete(notebook);
             return RedirectToAction("Index");
         }
-
+        
     }
 }

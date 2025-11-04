@@ -26,6 +26,13 @@ namespace NoteAppMVCPattern.Services.Notebooks
             }
         }
 
+        public async Task<int> EnsureNotebook(string userId)
+        {
+            var item = await _notebookRepository.EnsureNotebook(userId);
+            if (item == -1) return -1;
+            return item;
+        }
+
         public async Task<Notebook> Get(int id)
         {
            return await _notebookRepository.Get(id);
@@ -40,9 +47,9 @@ namespace NoteAppMVCPattern.Services.Notebooks
             else return null;
         }
 
-        public async Task<List<Notebook>> ListAll()
+        public async Task<List<Notebook>> ListAll(string userId)
         {
-            var list = await _notebookRepository.ListAll();
+            var list = await _notebookRepository.ListAll(userId);
             if (list != null)
             {
                 return list;

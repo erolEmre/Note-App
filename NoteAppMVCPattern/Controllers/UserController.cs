@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Models;
 using NoteAppMVCPattern.Models.ViewModel;
+using NoteAppMVCPattern.Services.Notebooks;
 using System;
 using System.Security.Claims;
 using static NoteAppMVCPattern.Models.ViewModel.AppUserVM;
@@ -18,11 +19,14 @@ namespace NoteAppMVCPattern.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly AppDBContext _dbContext;
-        public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,AppDBContext context)
+        private readonly INotebookService _notebookService;
+        public UserController(UserManager<AppUser> userManager, 
+            SignInManager<AppUser> signInManager,AppDBContext context,INotebookService notebookService)
         {
             _dbContext = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _notebookService = notebookService;            
         }
 
         // GET: /Account/Register
@@ -50,9 +54,10 @@ namespace NoteAppMVCPattern.Controllers
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "Kayıt başarılı.";
-                    TempData["MessageType"] = "success"; 
+                    TempData["MessageType"] = "success";
+                    var Id = await _notebookService.EnsureNotebook(user.Id);
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Notebook");
+                    return RedirectToAction("Index", "Note", new {notebookId = Id} );
                 }
 
                 foreach (var error in result.Errors)
@@ -77,6 +82,7 @@ namespace NoteAppMVCPattern.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            var user = _userManager.Users.FirstOrDefault(x => x.UserName == model.UserName);
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(
@@ -89,7 +95,11 @@ namespace NoteAppMVCPattern.Controllers
                 {
                     TempData["Message"] = "Giriş Başarılı";
                     TempData["MessageType"] = "success";
-                    return RedirectToAction("Index", "Notebook");
+                    var Id = await _notebookService.EnsureNotebook(user.Id);
+                    var NotebookList = await _notebookService.ListAll(user.Id);
+                    if(NotebookList.Count == 1)
+                    return RedirectToAction("Index", "Note", new {notebookId = Id });
+                    else return RedirectToAction("Index", "Notebook");
                 }
                
                 ModelState.AddModelError("", "Geçersiz giriş bilgileri.");              

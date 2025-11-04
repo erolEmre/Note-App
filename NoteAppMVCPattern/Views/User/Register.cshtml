@@ -6,13 +6,13 @@
 <form asp-action="Register" method="post">
     <div class="form-group">
         <label asp-for="UserName" class="text-center"></label>
-        <input asp-for="UserName" class="form-control w-50" />
+        <input asp-for="UserName" class="form-control w-35" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Password" class="text-center"></label>
-        <input asp-for="Password" class="form-control w-50" />
+        <input asp-for="Password" class="form-control w-35" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="btn-group">
@@ -39,6 +39,9 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+        }
+        .w-35{
+            width:30% !important
         }
     </style>
 }

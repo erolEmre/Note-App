@@ -23,6 +23,29 @@ namespace NoteAppMVCPattern.Repo.Notebooks
             await _dbContext.SaveChangesAsync();                           
         }
 
+        public async Task<int> EnsureNotebook(string userId)
+        {
+            var defaultNotebook = _dbContext.Notebook
+                .FirstOrDefault(n => n.UserId == userId && n.Name == "Default");
+
+            if (defaultNotebook == null)
+            {
+                _dbContext.Notebook.Add(new Notebook
+                {
+                    Name = "Default",
+                    Description = "Varsayılan defteriniz",
+                    Color = "bg-secondary",
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = userId
+                });
+                _dbContext.SaveChanges();
+            }
+            var Id = _dbContext.Notebook.FirstOrDefault(x => x.UserId == userId).Id;
+            if (Id != null)
+                return Id;
+            else return -1;
+        }
+        
         public async Task<Notebook> Get(int id)
         {
            return await _dbContext.Notebook.Include(x=> x.Notes)
@@ -37,11 +60,12 @@ namespace NoteAppMVCPattern.Repo.Notebooks
                 .ThenInclude(x => x.User).FirstOrDefaultAsync(x=> x.Id == notebook.Id);
         }
 
-        public async Task<List<Notebook>> ListAll()
+        public async Task<List<Notebook>> ListAll(string userId)
         {
            return await _dbContext.Notebook
                 .Include(x=> x.User)
-                .ThenInclude(n=> n.Notes)
+                .ThenInclude(n => n.Notes)
+                .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
 

@@ -9,6 +9,7 @@ namespace NoteAppMVCPattern.Services.Notebooks
         public Task Update(Notebook notebook);
         public Task Delete(Notebook notebook);
         public Task Add(Notebook notebook);
-        public Task<List<Notebook>> ListAll();
+        public Task<List<Notebook>> ListAll(string userId);
+        public Task<int> EnsureNotebook(string userId);
     }
 }
