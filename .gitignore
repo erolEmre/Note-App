@@ -10,3 +10,4 @@ obj/
 *.cache
 *.json
 /git restore .
+/NotebookUpdate.txt
