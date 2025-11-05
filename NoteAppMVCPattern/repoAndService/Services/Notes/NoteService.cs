@@ -95,25 +95,33 @@ namespace NoteAppMVCPattern.Services.Notes
             existingNote.Content = updatedNote.Content;
             existingNote.updatedDate = DateTime.UtcNow;
 
-            // İçerikten tag’leri çek
-            var matches = Regex.Matches(updatedNote.Content ?? "", @"#(\w+)");
-            var tagNames = matches.Select(m => m.Groups[1].Value).ToList();
+            // İçerikten tag'leri çek
+            var matches = Regex.Matches(updatedNote.Content ?? "", @"#(\w+)"); 
+            // Güncelleme sırasında  "#" başlayanları çek
+            var tagNames = matches.Select(m => m.Groups[1].Value).ToList(); 
+            // # ile başlayan değerleri liste şeklinde tagNames'e at
 
-            var existingTags = await _tagRepository.GetTags(userId);
+            var existingTags = await _tagRepository.GetTags(userId); // Kullanıcıya ait tüm tagleri çek
+            // hatta buranın notebook içindeki tüm tagler olarak düzeltilmesi lazım
             var matchedTags = existingTags.Where(t => tagNames.Contains(t.TagName)).ToList();
+            // Existing içinde hali hazırda üretilmiş tag varsa bul liste olarak at.
+
+            var myNoteTags = await _tagRepository.GetTagsByNote(existingNote.Id);
 
             var newTags = tagNames
                 .Except(matchedTags.Select(t => t.TagName))
                 .Select(t => new Tag { TagName = t })
                 .ToList();
-
+            // NewTags'e sadece tagNames içindeki verileri çek diğerleri dışarıda tut
+            
             foreach (var tag in newTags)
             {
                 tag.TagColor = "bg-primary";
                 tag.TagUsageCount++;
             }
 
-            existingNote.Tags = matchedTags.Concat(newTags).ToList();
+            existingNote.Tags = myNoteTags.Concat(newTags).ToList(); //mynoteTags yerine matchedTags yazıyordu
+            // Uyuşan-match olan tagler ile yenileri birleştir
 
             await _noteRepository.Update(existingNote);
         }

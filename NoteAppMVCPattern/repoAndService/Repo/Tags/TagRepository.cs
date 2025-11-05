@@ -56,5 +56,11 @@ namespace NoteAppMVCPattern.Repo.Tags
         {
             _dbContext.SaveChanges();
         }
+
+        public async Task<List<Tag>> GetTagsByNote(int noteId)
+        {
+            var myNote = _dbContext.Notes.FirstOrDefault(x=> x.Id == noteId);
+            return myNote.Tags.ToList();
+        }
     }
 }

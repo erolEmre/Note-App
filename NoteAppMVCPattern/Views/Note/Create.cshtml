@@ -54,7 +54,7 @@
         <i class="bi bi-check-all"></i>
             <span class="pe-1">Kaydet</span>        
     </button>
-    <a asp-controller="Note" asp-action="Index" class="btn btn-danger">Geri dön</a>
+    <a asp-controller="Note" asp-action="Index" asp-route-notebookId="@Model.NotebookId" class="btn btn-danger">Geri dön</a>
     </div>
 </form>
 }

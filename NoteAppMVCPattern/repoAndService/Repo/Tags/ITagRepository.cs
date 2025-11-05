@@ -9,6 +9,7 @@ namespace NoteAppMVCPattern.Repo.Tags
         public Task<Tag> GetTagByName(string tagName);
         Task<List<Tag>> GetTags(string userId);
         Tag GetTag(int tagId);
+        public Task<List<Tag>> GetTagsByNote(int noteId);
         public void SaveChanges();
 
     }

@@ -158,7 +158,7 @@ namespace NoteAppMVCPattern.Controllers
                 await _noteService.Update(note, userId);
                 int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-                return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+                return RedirectToAction("Index", new { notebookId = notebookId.Value });
             }
         }
         [HttpGet]
@@ -186,7 +186,7 @@ namespace NoteAppMVCPattern.Controllers
             TempData["MessageType"] = "success";
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
 
         }
         
@@ -209,7 +209,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -226,7 +226,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -246,7 +246,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
 
         [HttpPost]
@@ -272,7 +272,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
         
         [HttpPost]
@@ -298,7 +298,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -323,7 +323,7 @@ namespace NoteAppMVCPattern.Controllers
 
             int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-            return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+            return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
         [HttpGet]
         public async Task<IActionResult> TagColorPage(int tagId)
@@ -350,7 +350,7 @@ namespace NoteAppMVCPattern.Controllers
                 _tagService.SaveChanges();
                 int? notebookId = HttpContext.Session.GetInt32("NotebookId");
 
-                return RedirectToAction("Index", new { NotebookId = notebookId.Value });
+                return RedirectToAction("Index", new { notebookId = notebookId.Value });
             }
             return BadRequest();
 

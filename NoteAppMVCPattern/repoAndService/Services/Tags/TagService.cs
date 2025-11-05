@@ -142,6 +142,10 @@ namespace NoteAppMVCPattern.Repo.Tags
         {
             _tagRepository.SaveChanges();
         }
-       
+
+        public Task<List<Tag>> GetTagByNote(int noteId)
+        {
+            return _tagRepository.GetTagsByNote(noteId);
+        }
     }
 }
