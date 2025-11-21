@@ -1,0 +1,66 @@
+﻿@model NoteAppMVCPattern.Models.Notebook
+
+@{
+    ViewData["Title"] = "Notebook Düzenle";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@* TempData mesajı varsa göster *@
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<form asp-action="Update" method="post" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
+
+    @* Id hidden (gerekirse) *@
+    <input asp-for="Id" type="hidden" />
+
+    @* UpdatedAt gizli alana şu anki zamanı set ediyoruz (ISO format) *@
+    <input asp-for="UpdatedAt" type="hidden" value="@DateTime.UtcNow.ToString("o")" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label fw-bold"></label>
+        <input asp-for="Name" class="form-control" maxlength="200" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label fw-bold"></label>
+        <textarea asp-for="Description" class="form-control" rows="4" maxlength="1000"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary d-flex align-items-center">
+            <i class="bi bi-check2-square me-1"></i> Kaydet
+        </button>
+
+        @* İptal düğmesi: NotebookDetails sayfasına dönüyor (id parametresini gönderiyoruz) *@
+        <a asp-controller="Notebook" asp-action="Index" class="btn btn-secondary d-flex align-items-center">
+            <i class="bi bi-x-lg me-1"></i> İptal
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Bootstrap 5 client-side form validation (gerekirse)
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

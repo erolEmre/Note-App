@@ -22,7 +22,7 @@
         </div>
     }
 else{
-<div class="row g-3">
+<div class="row g-2">
     @foreach (var nb in Model.notebooks)
     {
            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -55,12 +55,12 @@ else{
                       
                     </div>
                     <div class="btn-group">
-                        <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-primary 
+                        <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-success 
                                 btn-sm me-2 rounded">
                         <i class="bi bi-eye"></i> Görüntüle
                     </a>
                                 <a asp-action="Create" class="btn btn-warning btn-sm me-2 rounded">
-                            <i class="bi bi-journal-plus"></i> Not defteri oluştur
+                            <i class="bi bi-journal-plus"></i> Yeni defter
                         </a>
                      <form asp-action="Delete" asp-route-id="@nb.Id" method="post"
                          onsubmit="return confirm('@nb.Name isimli notu silmek istediğinizden emin misiniz?')">
@@ -68,6 +68,11 @@ else{
                                     <button type="submit" class="btn btn-danger btn-sm me-2 rounded">
                          <i class="bi bi-trash3"></i> Sil </button>
                      </form>
+                           
+                            <a asp-action="Update" asp-route-id="@nb.Id" class="btn btn-primary
+                                        btn-sm me-2 rounded">
+                                <i class="bi bi-eye"></i> Düzenle
+                            </a>
                             </div>
                 </div>
             </div>

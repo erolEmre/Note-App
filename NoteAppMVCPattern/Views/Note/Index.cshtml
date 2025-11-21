@@ -24,11 +24,15 @@
     }
     else
     {
-        <div class="d-flex justify-content-end gap-2 mb-3">
-           @if(Model.NotebookID != null)
+        @* 
+            Butonların başladığı yer 
+        *@
+
+        <div class="d-flex justify-content-end m-2 gap-2 mb-3">
+          @*  @if(Model.NotebookID != null)
             {
                 <a class="btn btn-danger" asp-action="Index" asp-controller="Notebook">Not defteri seç</a>
-            }
+            } *@
 
             @if (Model.SelectedTagIds != null && Model.SelectedTagIds.Any())
             {
@@ -37,9 +41,9 @@
                     var tagcolor = Model.CurrentTag.TagColor.Substring(3);
                     var tagName = Model.CurrentTag.TagName;
 
-                    <a class="btn btn-@tagcolor" asp-action="Index">Aktif tag : @tagName</a>
+                    <a class="btn btn-@tagcolor" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Aktif tag : @tagName</a>
                 }
-                <a class="btn btn-danger" asp-action="Index">Filtreyi Kaldır</a>
+                <a class="btn btn-danger" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Filtreyi Kaldır</a>
             }
 
             <a asp-action="Create" class="btn btn-primary">
@@ -52,25 +56,33 @@
                     Sırala
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li class="dropdown-header">Tag’e Göre Filtrele</li>
+                    <li class="dropdown-header">Tag'e Göre Filtrele</li>
 
                     @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
-                    @if (Model.Tags != null)
+                    @{
+                        var notebookTags = Model.Notebooks.FirstOrDefault(x=> x.Id == Model.NotebookID);
+
+                    
+                    @if (notebookTags != null)
                     {
-                        var tags = Model.Tags.OrderByDescending(t => t.TagUsageCount).Take(5).ToList();
+                        var tags = notebookTags.Notes.SelectMany(t => t.Tags)
+                        .OrderBy(t => t.TagUsageCount)
+                        .Take(5)
+                        .ToList();
                         @foreach (var tag in tags)
                         {          
-                            <li><a class="dropdown-item" asp-action="Index" asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
+                            <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID"  asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
                         }
+                    }
                     }
                 </ul>
             </div>
         </div>
 
-        <div class="container mt-3">
+        <div class="container mt-3 position-relative">
             @if (Model.ViewMode == "grid")
             {
                 <div class="row g-3">
@@ -193,6 +205,61 @@
             }
           });
         });
+
+                        function edit(el) {
+            const text = el.innerText;
+
+            // Input oluştur
+            const input = document.createElement('input');
+            input.id = 'editTitle';
+            input.value = text;
+            input.dataset.id = el.dataset.id;
+            input.classList.add('form-control'); // istersen bootstrap
+
+            // Eventler
+            input.onblur = () => save(input);
+            input.onkeydown = function(e) { if(e.key === 'Enter') save(input); };
+
+            // h5’i input ile değiştir
+            el.replaceWith(input);
+            input.focus();
+        }
+
+        function save(input) {
+            const newValue = input.value;
+            const id = input.dataset.id;
+
+            fetch('/Note/UpdateTitle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, title: newValue })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Başarılıysa input'u tekrar h5'e çevir
+                const h5 = document.createElement('h5');
+                h5.className = 'card-header text-center';
+                h5.style.cursor = 'pointer';
+                h5.dataset.id = id;
+                h5.innerText = newValue;
+                h5.onclick = function() { edit(h5); };
+
+                input.replaceWith(h5);
+            })
+            .catch(err => {
+                console.error(err);
+                // Hata olursa eski değeri geri koy
+                const h5 = document.createElement('h5');
+                h5.className = 'card-header text-center';
+                h5.style.cursor = 'pointer';
+                h5.dataset.id = id;
+                h5.innerText = input.value; // veya eski değeri saklayıp koyabilirsin
+                h5.onclick = function() { edit(h5); };
+
+                input.replaceWith(h5);
+            });
+        }
+
 
     </script>
 }

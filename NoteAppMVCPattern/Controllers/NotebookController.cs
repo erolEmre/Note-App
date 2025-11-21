@@ -32,6 +32,7 @@ namespace NoteAppMVCPattern.Controllers
            
             return View(notebook);
         }
+        
 
         [HttpGet]
         public IActionResult NotebookDetails(int id)
@@ -64,6 +65,22 @@ namespace NoteAppMVCPattern.Controllers
         {
             var notebook = await _notebookService.Get(id);
             await _notebookService.Delete(notebook);
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            var notebook = await _notebookService.Get(id);
+            if(notebook != null)
+            return View(notebook);
+            else return BadRequest();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(Notebook notebook)
+        {
+            if(notebook != null)
+            await _notebookService.Update(notebook);
             return RedirectToAction("Index");
         }
         

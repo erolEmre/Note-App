@@ -18,5 +18,5 @@
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger">Sil</button> |
-    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    <a asp-action="Index" asp-route-notebookId="@Model.NotebookId" class="btn btn-secondary">İptal</a>
 </form>

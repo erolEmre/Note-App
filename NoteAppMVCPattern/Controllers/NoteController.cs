@@ -9,8 +9,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NoteAppMVCPattern.Models;
+using NoteAppMVCPattern.Models.DTOs;
 using NoteAppMVCPattern.Models.ViewModel;
 using NoteAppMVCPattern.Repo;
+using NoteAppMVCPattern.Repo.Notebooks;
+using NoteAppMVCPattern.Services.Notebooks;
 using NoteAppMVCPattern.Services.Notes;
 using NoteAppMVCPattern.Services.Tags;
 using System.Security.Claims;
@@ -28,12 +31,15 @@ namespace NoteAppMVCPattern.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IValidator<Note> _validator;
         private readonly ITagService _tagService;
-        public NoteController(ITagService tagService,INoteService noteService, UserManager<AppUser> userManager, IValidator<Note> validator)
+        private readonly INotebookService _notebookService;
+        public NoteController(ITagService tagService,INoteService noteService, 
+            UserManager<AppUser> userManager, IValidator<Note> validator,INotebookService notebookService)
         {
             _noteService = noteService;
             _userManager = userManager;
             _validator = validator;
             _tagService = tagService;
+            _notebookService = notebookService;
         }
         [Authorize]
         public async Task<IActionResult> Index(int notebookId,string viewMode = "grid", string sortOrder = null, 
@@ -49,16 +55,17 @@ namespace NoteAppMVCPattern.Controllers
             // 3. Kullanıcının sahip olduğu tüm etiketleri getir (List<Tag> dönmelidir)
             // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
             var tags = await _tagService.GetTags(userId);
+            var notebook = await _notebookService.ListAll(userId);
 
-
-                // 4. ViewModel oluştur
-                var vm = new NoteIndexVM
+            // 4. ViewModel oluştur
+            var vm = new NoteIndexVM
                 {
                     Notes = notes,
                     Tags = tags,
                     SelectedTagIds = tagIds ?? new List<int>(),
                     ViewMode = viewMode,
                     SortOrder = sortOrder,
+                    Notebooks = notebook,
                     NotebookID = notebookId
                 };
                 
@@ -354,6 +361,17 @@ namespace NoteAppMVCPattern.Controllers
             }
             return BadRequest();
 
+        }
+        [HttpPost]       
+        public async Task<IActionResult> UpdateTitle([FromBody] NoteTitleDTO noteDTO)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var note = await _noteService.GetNoteById(noteDTO.Id, userId);
+            note.Title = noteDTO.Title;
+            await _noteService.Update(note, userId);
+
+           
+            return Ok();
         }
         public async Task<IActionResult> Share(int id)
         {

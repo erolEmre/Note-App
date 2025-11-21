@@ -30,8 +30,7 @@ namespace NoteAppMVCPattern
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("MYappsettings.json", optional: false, reloadOnChange: true);
 
-            //builder.Services.AddSingleton<IUserRepository, UserRepository>();
-            //builder.Services.AddSingleton<UserService>();
+            
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -90,6 +89,7 @@ namespace NoteAppMVCPattern
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();
             
+
                                 // Tag
 
             builder.Services.AddScoped<ITagRepository, TagRepository>();    

@@ -1,69 +1,93 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
-    @RenderSection("Styles", required: false)
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Note App</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/NoteAppMVCPattern.styles.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-          rel="stylesheet" />    
-        <link rel="stylesheet" href="~/css/custom-auth.css" />
+	@RenderSection("Styles", required: false)
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Note App</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/NoteAppMVCPattern.styles.css" asp-append-version="true" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+		  rel="stylesheet" />
+	<link rel="stylesheet" href="~/css/custom-auth.css" />
 
 </head>
 <body id="main-layout">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
+			<div class="container-fluid">
 
-                <!-- Brand + Toggle -->
-                <a class="navbar-brand" href="@(
-                                        User.Identity.IsAuthenticated
-                                            ? Url.Action("Index", "Note")
-                                                : Url.Action("Index", "User")
-                    )">
-                    Note App
-                </a>
 
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-              
+				@{
+					var notebookId = Context.Session.GetInt32("NotebookId")?.ToString();
+					string href;
 
-                    <!-- Sağdaki Çıkış Butonu -->
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <form asp-controller="User" asp-action="Logout" method="post"
-                              class="d-flex align-items-center ms-auto">
-                            <button type="submit" class="btn btn-link d-flex align-items-center">
-                                <i class="bi bi-box-arrow-left me-1"></i>
-                                Çıkış
-                            </button>
-                        </form>
-                    }
+					if (User.Identity.IsAuthenticated)
+					{
+						if (string.IsNullOrEmpty(notebookId))
+						{
+							href = Url.Action("Index", "Notebook");
+						}
+						else
+						{
+							href = Url.Action("Index", "Note", new { notebookId = notebookId });
+						}
+					}
+					else
+					{
+						href = Url.Action("Index", "User");
+					}
+				}
+				<!-- Brand + Toggle -->
+				<a class="navbar-brand" href="@href">
+					Note App
+				</a>
 
-                </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+				<button class="navbar-toggler" type="button"
+						data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Note App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+				@{
+
+					var allowedPages = new[] { "Index", "Notebook", "Home" };
+
+					var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+					<!-- Sağdaki Çıkış Butonu -->
+					@if (User.Identity.IsAuthenticated && allowedPages.Contains(currentAction))
+					{
+						<form asp-controller="User" asp-action="Logout" method="post"
+							  class="d-flex align-items-center ms-auto">
+							<button type="submit" class="btn btn-link d-flex align-items-center">
+								<i class="bi bi-box-arrow-left me-1"></i>
+								@Model.User.Identity.Name (Çıkış Yap)
+							</button>
+						</form>
+					}
+				}
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2025 - Note App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+	</footer>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

@@ -67,6 +67,10 @@ namespace NoteAppMVCPattern.Services.Notebooks
             {
                 oldNotebook.Name = notebook.Name;
                 oldNotebook.Description = notebook.Description;
+                if(notebook.Color == null)
+                {
+                    notebook.Color = "bg-primary";
+                }
                 oldNotebook.Color = notebook.Color;
                 oldNotebook.UpdatedAt = DateTime.UtcNow;
 

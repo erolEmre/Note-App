@@ -7,19 +7,24 @@
             @* Takvim dropdown*@  
             
          <partial name="_NoteStatusDropdown" model="@Model" />
- 
 
-         @*Tag alanı *@
-        <partial name="_NoteHeaderTagsPartial" model="Model.Note.Tags" />
+
+        <h5 class="card-header text-center" id="title"
+            style="cursor:pointer" onclick="edit(this)" data-id="@Model.Note.Id">
+            @Model.Note.Title
+        </h5>
+        
        
                                                          @* Kart içeriği *@
 
-
-        <div class="card-body mt-4">
+        <div class="card position-relative">
+            <div class="card-body mt-4">
             @* Badges için üstten biraz boşluk bırakıldı *@
-            <h5 class="card-title">@Model.Note.Title</h5>
+            @*Tag alanı *@
+            <partial name="_NoteHeaderTagsPartial" model="Model.Note.Tags" />
             <p class="card-text text-truncate">@Model.Note.Content</p>
             <p class="card-subtitle text-white-50 text-end text-break">@Model.Note.CreateDate.ToShortDateString()</p>
+            </div>
         </div>
         @* footer *@
         <div class="card-footer  justify-content-between align-items-center">
