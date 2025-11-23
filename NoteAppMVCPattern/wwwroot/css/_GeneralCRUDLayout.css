@@ -1,0 +1,43 @@
+﻿.general-crud-page-layout {
+    background-image: url('/bg-images/sky.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: rgba(0, 0, 0); /* %30 siyah */
+   
+}
+.container {
+    max-width: 960px;
+    margin: auto;
+}
+:root {
+    --form-bg: rgba(255, 255, 255, 0.05); /* Hafif beyaz arka plan */
+    --form-border: rgba(255, 255, 255, 0.3); /* Yumuşak kenarlık */
+    --form-focus: #0d6efd; /* Bootstrap primary */
+    --form-text: #f8f9fa; /* Açık metin rengi */
+    --form-placeholder: #adb5bd; /* Gri placeholder */
+}
+
+/*.form-control {
+    background-color: var(--form-bg);
+    border: 1px solid var(--form-border);
+    color: var(--form-text);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}*/
+    .form-control::placeholder {
+        color: var(--form-placeholder);
+    }
+input.form-control,
+textarea.form-control {
+    background-color: rgba(0, 5, 5, 0.4); /* Hafif beyaz iç renk */
+    color: #ffffff; /* Açık metin rengi */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+input.form-control:focus,
+textarea.form-control:focus {
+    background-color: rgba(5, 5, 5, 0.60); /* Hafif beyaz iç renk */
+    color: #fff; /* Açık metin rengi */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}

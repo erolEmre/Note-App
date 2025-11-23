@@ -1,19 +1,20 @@
 ﻿@model NoteAppMVCPattern.Models.Note
 @{
     ViewData["Title"] = "Notu Düzenle";
+	Layout = "_GeneralCRUDLayout"; 
 }
 <h2>Notu Düzenle</h2>
 <form asp-action="Update" method="post">
     <input type="hidden" asp-for="Id" />
     
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
+        <div class="mb-3">
+        <label asp-for="Title" class="form-label h6"></label>
+        <input asp-for="Title" class="form-control w-25" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="Content"></label>
-        <textarea asp-for="Content" class="form-control w-100 h-70" rows="6" style="resize: vertical;"></textarea>
+            <label asp-for="Content" class="form-label h5"></label>
+        <textarea asp-for="Content" class="form-control w-50 h-70" rows="6" style="resize: vertical;"></textarea>
     </div>
     
     <button type="submit" class="btn btn-primary">Güncelle</button>

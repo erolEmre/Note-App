@@ -1,6 +1,7 @@
 ﻿@model NoteAppMVCPattern.Models.Note;
 @{
     ViewData["Title"] = "Yeni Not";
+    Layout = "_GeneralCRUDLayout";
 }
 
 <h2 >Yeni Not Ekle</h2>
@@ -24,7 +25,7 @@
 @{
 <form asp-action="Create" method="post">
 
-    <div class="form-group fw-bolder fs-4">
+    <div class="mb-3 fw-bolder fs-4">
         <label asp-for="Title"></label>
         <input asp-for="Title"
                class="form-control w-50 "
@@ -34,8 +35,8 @@
 
         <input type="hidden" name="notebookId" value="@Model.NotebookId" />
 
-    <div class="form-group">
-        <div class="form-group mb-2 fw-bolder fs-4">
+    <div class="mb-3">
+        <div class="mb-3 mb-2 fw-bolder fs-4">
         <label asp-for="Content"></label>
                 @{
                     var placeholderText = Model.User.Notes.Count < 1 ? "# ile başlayan kelimeler notunuza tag olarak eklenecektir." : "";

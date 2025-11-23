@@ -1,27 +1,32 @@
 ﻿.noteIndex-page-body {
     /* Buraya, seçtiğiniz "Wind Turbines" görselinin yolunu koyun */
-    background-image: url('/bg-images/bicycle.jpg');
+    background-image: url('/bg-images/green-road.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     margin: 0;
     padding: 0;
     /* Eğer navigasyon çubuğu (navbar) görünüyorsa, onu gizlemek için */
+    
 }
 .navbar {
     background-color: rgba(0, 0, 0, 0.45); /* %50 siyah */
     backdrop-filter: blur(0.5px); /* Hafif blur efekti */
 }
-    /* Gerekirse tamamen en sağa yapıştırmak için ekstra */
-.container {
-    padding-left: 1rem;
-    padding-right: 0.5rem;
-}
+/* Gerekirse tamamen en sağa yapıştırmak için ekstra */
 .navbar {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    position: relative;
+    z-index: 1100;
 }
-    
+
+.dropdown-menu {
+    z-index: 2000;
+    min-width: 12rem;
+}
+
+.navbar .nav-link.pe-0 {
+    padding-right: 0;
+}
    
 /* sağ padding’i azaltır */
 /* Şeffaf Kutunun Stili (Frosted Glass) */

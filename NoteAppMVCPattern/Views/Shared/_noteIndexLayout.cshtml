@@ -42,20 +42,27 @@
                 <!-- Sağdaki Çıkış Butonu -->
                 @if (User.Identity.IsAuthenticated)
                 {                   
-                    <div class="collapse navbar-collapse">
+                    <div class="collapse navbar-collapse" id="mainNavbar">
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item dropdown ">
+                            <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle pe-0"
                                    href="#"
                                    id="profileMenu"
                                    role="button"
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> Profil
+                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
                                 </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
-                                    <li><a class="dropdown-item" href="#">Not Defteri Değiş</a></li>
-                                    <li><a class="dropdown-item" href="#">Çıkış</a></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Notebook">Not defteri seç</a>
+                                    </li>
+                                    <li>
+                                        <form asp-controller="User" asp-action="Logout" method="post" class="m-0">
+                                            <button type="submit" class="dropdown-item">Çıkış</button>
+                                        </form>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
