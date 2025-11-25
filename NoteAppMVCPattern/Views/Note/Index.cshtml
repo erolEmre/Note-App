@@ -24,6 +24,12 @@
     }
     else
     {
+            var notebookTags = Model.Notebooks.FirstOrDefault(x => x.Id == Model.NotebookID);
+            
+            var tags = notebookTags.Notes.SelectMany(t => t.Tags)
+            .OrderBy(t => t.TagUsageCount)
+            .Take(5)
+            .ToList();
         @* 
             Butonların başladığı yer 
         *@
@@ -63,15 +69,11 @@
 
                     @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
                     @{
-                        var notebookTags = Model.Notebooks.FirstOrDefault(x=> x.Id == Model.NotebookID);
-
+                        
                     
                     @if (notebookTags != null)
                     {
-                        var tags = notebookTags.Notes.SelectMany(t => t.Tags)
-                        .OrderBy(t => t.TagUsageCount)
-                        .Take(5)
-                        .ToList();
+                        
                         @foreach (var tag in tags)
                         {          
                             <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID"  asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
@@ -89,7 +91,7 @@
                     @foreach (var note in Model.Notes)
                     {
                         <partial name="_NoteCard" model="new NoteFooterVM 
-                                {Note = note, Tags = Model.Tags}" />
+                                {Note = note, Tags = tags }" />
                     }
 
                 </div>                        

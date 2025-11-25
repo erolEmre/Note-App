@@ -2,17 +2,18 @@
 @model RegisterViewModel
 
 <h2>Kayıt Ol</h2>
-
+<br />
 <form asp-action="Register" method="post">
-    <div class="mb-3">
-        <label asp-for="UserName" class="text-center"></label>
-        <input asp-for="UserName" class="form-control w-35" />
+    <div asp-validation-summary="All" class="text-white fw-bold"></div>
+    <div class="mb-3 h6">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control w-30" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="text-center"></label>
-        <input asp-for="Password" class="form-control w-35" />
+    <div class="mb-3 h6">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control w-30" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="btn-group">
@@ -23,7 +24,7 @@
         <a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
     
     </div>
-    <div asp-validation-summary="All" class="text-danger"></div>
+    
 </form>
 
 
@@ -40,8 +41,21 @@
             background-position: center;
             background-attachment: fixed;
         }
-        .w-35{
+        .w-30{
             width:30% !important
         }
+        input.form-control,
+        textarea.form-control {
+            background-color: rgba(244, 50, 11,0.1); /* Hafif beyaz iç renk */
+            color: #ffffff; /* Açık metin rengi */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+            input.form-control:focus,
+            textarea.form-control:focus {
+                background-color: rgba(5, 5, 5, 0.60); /* Hafif beyaz iç renk */
+                color: #fff; /* Açık metin rengi */
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
     </style>
 }

@@ -7,11 +7,11 @@ namespace NoteAppMVCPattern.Models
         public NoteValidator() 
         {
             RuleFor(t => t.Title).NotEmpty().WithMessage("Başlık boş geçilemez.Lütfen doldurun.")
-                .MinimumLength(1).WithMessage("Başlık en az 1 harf içermeli")
-                .MaximumLength(45).WithMessage("45 karakterden daha uzun başlık olamaz");
+                .MinimumLength(1).WithMessage("Başlık, en az 1 harf içermeli")
+                .MaximumLength(45).WithMessage("Başlık,45 harfen daha uzun olamaz");
 
             RuleFor(c => c.Content).NotEmpty().WithMessage("İçerik boş olamaz.")
-                .MaximumLength(3000).WithErrorCode("Mesaj sınır aşıldı hata kodu: 0001");
+                .MaximumLength(3000).WithMessage("Harf sınırı aşıldı.Maksimum 3000 harf kullanabilirsiniz.");
             
         }
     }

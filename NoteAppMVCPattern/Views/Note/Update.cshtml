@@ -10,11 +10,13 @@
         <div class="mb-3">
         <label asp-for="Title" class="form-label h6"></label>
         <input asp-for="Title" class="form-control w-25" />
+        <span asp-validation-for="Title" class="text-warning fw-bold"></span>
     </div>
 
     <div class="mb-3">
             <label asp-for="Content" class="form-label h5"></label>
         <textarea asp-for="Content" class="form-control w-50 h-70" rows="6" style="resize: vertical;"></textarea>
+        <span asp-validation-for="Content" class="text-warning fw-bold"></span>
     </div>
     
     <button type="submit" class="btn btn-primary">Güncelle</button>

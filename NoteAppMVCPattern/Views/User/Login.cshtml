@@ -7,15 +7,15 @@
     <div class="mb-3">
         <label asp-for="UserName" class="form-label"></label>
         <input asp-for="UserName" class="form-control w-25" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
+        <span asp-validation-for="UserName" class="text-danger fw-bold"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
         <input asp-for="Password" type="password" class="form-control w-25"/>
-        <span asp-validation-for="Password" class="text-danger"></span>        
+        <span asp-validation-for="Password" class="text-danger fw-bold"></span>        
     </div>
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-warning fw-bold"></div>
     <button type="submit" class="btn btn-primary">Giriş Yap</button>
     <a asp-controller="User" asp-action="Index" class="btn btn-danger">Geri dön</a> 
 </form>

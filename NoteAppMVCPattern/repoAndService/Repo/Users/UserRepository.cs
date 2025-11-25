@@ -5,7 +5,6 @@ namespace NoteAppMVCPattern.Repo.User
     public class UserRepository : IUserRepository
     {
         private readonly List<AppUser> _users = new();
-
         public void Add(AppUser user) => _users.Add(user);
         public AppUser Get(string id) => _users.FirstOrDefault(u => u.Id == id);
         public void Update(AppUser user)

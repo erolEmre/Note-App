@@ -25,29 +25,29 @@
 @{
 <form asp-action="Create" method="post">
 
-    <div class="mb-3 fw-bolder fs-4">
+    <div class="mb-3 fw-bold">
         <label asp-for="Title"></label>
         <input asp-for="Title"
-               class="form-control w-50 "
+               class="form-control w-25 "
                style="height: 2.5rem;" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <span asp-validation-for="Title" class="text-warning " ></span>
     </div>
 
         <input type="hidden" name="notebookId" value="@Model.NotebookId" />
 
     <div class="mb-3">
-        <div class="mb-3 mb-2 fw-bolder fs-4">
+        <div class="mb-3 mb-2 fw-bold">
         <label asp-for="Content"></label>
                 @{
                     var placeholderText = Model.User.Notes.Count < 1 ? "# ile başlayan kelimeler notunuza tag olarak eklenecektir." : "";
                 }
                 <textarea asp-for="Content"
-                          class="form-control w-100"
-                          rows="6"
+                          class="form-control w-50"
+                          rows="4"
                           style="resize: vertical;"
                           placeholder="@placeholderText">
         </textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
+        <span asp-validation-for="Content" class="text-warning"></span>
     </div>
             
     <button type="submit"
