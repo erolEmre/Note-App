@@ -24,11 +24,22 @@
             <div class="container">
 
                 <!-- Brand + Toggle -->
-                <a class="navbar-brand" href="@(
-                                        User.Identity.IsAuthenticated
-                                            ? Url.Action("Index", "Note")
-                                            : Url.Action("Index", "User")
-                                        )">
+                
+                @{
+                var notebookId = Context.Session.GetInt32("NotebookId")?.ToString();
+                string href;
+
+                if (User.Identity.IsAuthenticated)
+                {               
+                href = Url.Action("Index", "Notebook");                
+                }
+                else
+                {
+                href = Url.Action("Index", "User");
+                }
+                }
+                <!-- Brand + Toggle -->
+                <a class="navbar-brand" href="@href">
                     Note App
                 </a>
 
@@ -38,7 +49,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                @{
 
+                    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+					var currentUrl = currentController + "/" + currentAction;
                 <!-- Sağdaki Çıkış Butonu -->
                 @if (User.Identity.IsAuthenticated)
                 {                   
@@ -55,10 +70,13 @@
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Notebook">Not defteri seç</a>
-                                    </li>
-                                    <li>
+                                   @if(currentUrl != "Notebook/Index") 
+                                   {
+                                            <li>
+                                                <a class="dropdown-item" asp-action="Index" asp-controller="Notebook">Not defteri seç</a>
+                                            </li>
+                                   }
+                                        <li>
                                         <form asp-controller="User" asp-action="Logout" method="post" class="m-0">
                                             <button type="submit" class="dropdown-item">Çıkış</button>
                                         </form>
@@ -67,15 +85,7 @@
                             </li>
                         </ul>
                     </div>
-
-
-@* 
-                    <form asp-controller="User" asp-action="Logout" method="post"
-                          class="d-flex align-items-center ms-auto">
-                        <button type="submit" class="btn btn-link d-flex align-items-center btn-outline-danger">
-                            <i class="bi bi-person-circle"></i> @User.Identity.Name
-                        </button>
-                    </form> *@
+                }
                 }
             </div>
         </nav>

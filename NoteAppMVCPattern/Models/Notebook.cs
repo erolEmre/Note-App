@@ -1,9 +1,13 @@
-﻿namespace NoteAppMVCPattern.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NoteAppMVCPattern.Models
 {
     public class Notebook
     {
         public int Id { get; set; }
+        [Display(Name = "İsim")]
         public string Name { get; set; }
+        [Display(Name = "Açıklama")]
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }

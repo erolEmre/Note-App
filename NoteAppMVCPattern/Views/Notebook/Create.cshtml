@@ -7,7 +7,6 @@
 }
 
 <h2>Yeni Not Defteri</h2>
-<hr />
 
 <div class="row">
     <div class="col-md-6">
@@ -20,7 +19,7 @@
 
             <div class="mb-3">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control w-40" />
                 @* Hata mesajı bu input'un hemen altında belirir *@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
@@ -28,7 +27,7 @@
             <div class="mb-3">
                 <label asp-for="Description" class="form-label"></label>
                 @* Açıklama için <input> yerine <textarea> daha mantıklı *@
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             @{

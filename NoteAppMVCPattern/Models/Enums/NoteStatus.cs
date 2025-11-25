@@ -1,4 +1,6 @@
-﻿namespace NoteAppMVCPattern.Models.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NoteAppMVCPattern.Models.Enums
 {
     public enum NoteStatus
     {

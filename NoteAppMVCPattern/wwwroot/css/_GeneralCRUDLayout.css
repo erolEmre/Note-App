@@ -1,5 +1,5 @@
 ﻿.general-crud-page-layout {
-    background-image: url('/bg-images/sky.jpg');
+    background-image: url('/bg-images/faded-night.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -40,4 +40,7 @@ textarea.form-control:focus {
     background-color: rgba(5, 5, 5, 0.60); /* Hafif beyaz iç renk */
     color: #fff; /* Açık metin rengi */
     border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.w-40 {
+    width: 40% !important;
 }

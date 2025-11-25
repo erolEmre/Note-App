@@ -24,13 +24,13 @@
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label fw-bold"></label>
-        <input asp-for="Name" class="form-control" maxlength="200" required />
+        <input asp-for="Name" class="form-control w-25" maxlength="200"  required />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Description" class="form-label fw-bold"></label>
-        <textarea asp-for="Description" class="form-control" rows="4" maxlength="1000"></textarea>
+        <textarea asp-for="Description" class="form-control w-50" rows="4" maxlength="1000"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
