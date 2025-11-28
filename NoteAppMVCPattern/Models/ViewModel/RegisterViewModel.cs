@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NoteAppMVCPattern.Models.ViewModel
+namespace NoteApp.WebUI.Models.ViewModel
 {
     public class RegisterViewModel
     {

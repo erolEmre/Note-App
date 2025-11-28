@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using NoteAppMVCPattern.Models;
+using NoteApp.WebUI.Models;
 
-namespace NoteAppMVCPattern.Controllers
+namespace NoteApp.WebUI.Controllers
 {
     public class HomeController : Controller
     {

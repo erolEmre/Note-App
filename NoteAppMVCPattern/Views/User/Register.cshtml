@@ -1,61 +1,78 @@
-﻿@using NoteAppMVCPattern.Models.ViewModel
+﻿@using NoteApp.WebUI.Models.ViewModel
 @model RegisterViewModel
 
 <h2>Kayıt Ol</h2>
 <br />
 <form asp-action="Register" method="post">
-    <div asp-validation-summary="All" class="text-white fw-bold"></div>
-    <div class="mb-3 h6">
-        <label asp-for="UserName" class="form-label"></label>
-        <input asp-for="UserName" class="form-control w-30" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
-    </div>
+	<div asp-validation-summary="All" class="text-white fw-bold"></div>
+	<div class="mb-3 h6">
+		<label asp-for="UserName" class="form-label"></label>
+		<input asp-for="UserName" class="form-control w-30" />
+		<span asp-validation-for="UserName" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3 h6">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control w-30" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="btn-group">
-        <button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
-      
-        <a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
+	<div class="mb-3 h6">
+		<label asp-for="Password" class="form-label"></label>
+		<input asp-for="Password" class="form-control w-30" />
+		<span asp-validation-for="Password" class="text-danger"></span>
+	</div>
+	<div class="btn-group">
+		<button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
 
-        <a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
-    
-    </div>
-    
+		<a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
+
+		<a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
+
+	</div>
+
 </form>
 
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }
 @section Styles {
-    <style>
-        body {
-            background-image: url('/bg-images/bicycle.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .w-30{
-            width:30% !important
-        }
-        input.form-control,
-        textarea.form-control {
-            background-color: rgba(244, 50, 11,0.1); /* Hafif beyaz iç renk */
-            color: #ffffff; /* Açık metin rengi */
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+	<style>
+		body {
+			background-image: url('/bg-images/bicycle.jpg');
+			background-size: cover;
+			background-position: center;
+			background-attachment: fixed;
+		}
 
-            input.form-control:focus,
-            textarea.form-control:focus {
-                background-color: rgba(5, 5, 5, 0.60); /* Hafif beyaz iç renk */
-                color: #fff; /* Açık metin rengi */
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            }
-    </style>
+		.w-30 
+		{
+			width: 30% !important
+		}
+
+		input.form-control,
+		textarea.form-control 
+		{
+			background-color: rgba(244, 50, 11,0.1); /* Hafif beyaz iç renk */
+			color: #ffffff; /* Açık metin rengi */
+			border: 1px solid rgba(255, 255, 255, 0.3);
+		}
+
+		input.form-control:focus,
+		textarea.form-control:focus 
+		{
+			background-color: rgba(5, 5, 5, 0.60); /* Hafif beyaz iç renk */
+			color: #fff; /* Açık metin rengi */
+			border: 1px solid rgba(255, 255, 255, 0.3);			
+		}
+
+		.btn-danger {
+			background-color: rgba(255,0,0,1) !important; /* turkuaz */
+			border-color: rgba(255,5,5,1) !important;
+			color: #fff !important;
+		}
+
+		.btn-danger:hover {
+			background-color: rgba(255,0,0,1) !important; /* turkuaz */
+			border-color: rgba(255,5,5,1) !important;
+			color: #fff !important;
+		}
+	</style>
 }

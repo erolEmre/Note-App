@@ -1,6 +1,6 @@
-﻿using NoteAppMVCPattern.Models.Enums;
-
-namespace NoteAppMVCPattern.Models.ViewModel
+﻿using NoteApp.Core.Entities.Enums;
+using NoteApp.Core.Entities;
+namespace NoteApp.WebUI.Models.ViewModel
 {
     public class NoteFooterVM
     {

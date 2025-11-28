@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NoteAppMVCPattern.Models;
-
+using NoteApp.WebUI.Models;
+using NoteApp.Infrastructure.Models;
 #nullable disable
 
-namespace NoteAppMVCPattern.Migrations
+namespace NoteApp.WebUI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     partial class AppDBContextModelSnapshot : ModelSnapshot
@@ -155,7 +155,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.AppUser", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -220,7 +220,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Note", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,7 +261,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Notebook", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Notebook", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -307,7 +307,7 @@ namespace NoteAppMVCPattern.Migrations
                         });
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Tag", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -357,7 +357,7 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -366,7 +366,7 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -381,7 +381,7 @@ namespace NoteAppMVCPattern.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -390,22 +390,22 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Note", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Note", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.Notebook", "Notebook")
+                    b.HasOne("NoteApp.WebUI.Models.Notebook", "Notebook")
                         .WithMany("Notes")
                         .HasForeignKey("NotebookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", "User")
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -415,9 +415,9 @@ namespace NoteAppMVCPattern.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Notebook", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Notebook", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", "User")
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", "User")
                         .WithMany("Notebook")
                         .HasForeignKey("UserId");
 
@@ -426,27 +426,27 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("NoteTag", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.Note", null)
+                    b.HasOne("NoteApp.WebUI.Models.Note", null)
                         .WithMany()
                         .HasForeignKey("NotesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NoteAppMVCPattern.Models.Tag", null)
+                    b.HasOne("NoteApp.WebUI.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.AppUser", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.AppUser", b =>
                 {
                     b.Navigation("Notebook");
 
                     b.Navigation("Notes");
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Notebook", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Notebook", b =>
                 {
                     b.Navigation("Notes");
                 });

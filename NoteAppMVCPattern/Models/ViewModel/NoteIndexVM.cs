@@ -1,4 +1,5 @@
-﻿namespace NoteAppMVCPattern.Models.ViewModel
+﻿using NoteApp.Core.Entities;
+namespace NoteApp.WebUI.Models.ViewModel
 {
     public class NoteIndexVM
     {

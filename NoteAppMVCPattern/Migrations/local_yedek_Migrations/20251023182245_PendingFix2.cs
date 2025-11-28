@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace NoteAppMVCPattern.Migrations
+namespace NoteApp.WebUI.Migrations
 {
     /// <inheritdoc />
     public partial class PendingFix2 : Migration

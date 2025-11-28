@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NoteAppMVCPattern.Models;
+using NoteApp.WebUI.Models;
+using NoteApp.Infrastructure.Models;
 
 #nullable disable
 
-namespace NoteAppMVCPattern.Migrations
+namespace NoteApp.WebUI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     [Migration("20250823022310_CreateDate_Tags")]
@@ -158,7 +159,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.AppUser", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -223,7 +224,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Note", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,7 +267,7 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,7 +276,7 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -290,7 +291,7 @@ namespace NoteAppMVCPattern.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -299,16 +300,16 @@ namespace NoteAppMVCPattern.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", null)
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.Note", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.Note", b =>
                 {
-                    b.HasOne("NoteAppMVCPattern.Models.AppUser", "User")
+                    b.HasOne("NoteApp.WebUI.Models.AppUser", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -316,7 +317,7 @@ namespace NoteAppMVCPattern.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NoteAppMVCPattern.Models.AppUser", b =>
+            modelBuilder.Entity("NoteApp.WebUI.Models.AppUser", b =>
                 {
                     b.Navigation("Notes");
                 });

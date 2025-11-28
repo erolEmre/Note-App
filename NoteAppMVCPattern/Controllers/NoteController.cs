@@ -1,27 +1,18 @@
-﻿using Azure;
-using FluentValidation;
-using LinqKit;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Models.DTOs;
-using NoteAppMVCPattern.Models.ViewModel;
-using NoteAppMVCPattern.Repo;
-using NoteAppMVCPattern.Repo.Notebooks;
-using NoteAppMVCPattern.Services.Notebooks;
-using NoteAppMVCPattern.Services.Notes;
-using NoteAppMVCPattern.Services.Tags;
+using NoteApp.Application.Models.DTOs;
+using NoteApp.WebUI.Models.ViewModel;
+using NoteApp.Application.Services.Notebooks;
+using NoteApp.Application.Services.Notes;
+using NoteApp.Application.Services.Tags;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using NoteApp.Core.Entities;
+using NoteApp.Application.Services.User;
 
-
-namespace NoteAppMVCPattern.Controllers
+namespace NoteApp.WebUI.Controllers
 {
     [Authorize]
     
@@ -269,7 +260,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             
-            note.Note.Status = Models.Enums.NoteStatus.Done;
+            note.Note.Status = Core.Entities.Enums.NoteStatus.Done;
             _tagService.SaveChanges(); 
             
             // View'e gidecek mesaj
@@ -294,7 +285,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             
-            note.Note.Status = Models.Enums.NoteStatus.Todo;
+            note.Note.Status = Core.Entities.Enums.NoteStatus.Todo;
             _tagService.SaveChanges();
 
             // View'e gidecek mesaj
@@ -319,7 +310,7 @@ namespace NoteAppMVCPattern.Controllers
                 return NotFound(); // veya uygun bir hata mesajı döndür
             }
             
-            note.Note.Status = Models.Enums.NoteStatus.Planned;
+            note.Note.Status = Core.Entities.Enums.NoteStatus.Planned;
             _tagService.SaveChanges();
 
             // View'e gidecek mesaj

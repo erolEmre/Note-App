@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Models.ViewModel;
+using NoteApp.WebUI.Models;
+using NoteApp.WebUI.Models.ViewModel;
 using System;
 using System.Security.Claims;
+using NoteApp.Core.Entities;
+using NoteApp.Infrastructure.Models;
 
-
-namespace NoteAppMVCPattern.Controllers
+namespace NoteApp.WebUI.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]

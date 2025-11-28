@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteAppMVCPattern", "NoteAppMVCPattern\NoteAppMVCPattern.csproj", "{6549CB5F-B5C3-40D2-BE50-E9292FD1447B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteApp.WebUI", "NoteAppMVCPattern\NoteApp.WebUI.csproj", "{6549CB5F-B5C3-40D2-BE50-E9292FD1447B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteApp.Core", "NoteApp.Core\NoteApp.Core.csproj", "{99F863B3-2C81-4433-B3F7-9AC2DCBDA3E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteApp.Application", "NoteApp.Application\NoteApp.Application.csproj", "{1B6F00AA-CF5B-4625-8DC4-D54A83173A8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteApp.Infrastructure", "NoteApp.Infrastructure\NoteApp.Infrastructure.csproj", "{B6CCB7EB-15BA-438D-8C36-B6836D96B11B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{6549CB5F-B5C3-40D2-BE50-E9292FD1447B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6549CB5F-B5C3-40D2-BE50-E9292FD1447B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6549CB5F-B5C3-40D2-BE50-E9292FD1447B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F863B3-2C81-4433-B3F7-9AC2DCBDA3E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F863B3-2C81-4433-B3F7-9AC2DCBDA3E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F863B3-2C81-4433-B3F7-9AC2DCBDA3E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F863B3-2C81-4433-B3F7-9AC2DCBDA3E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6F00AA-CF5B-4625-8DC4-D54A83173A8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6F00AA-CF5B-4625-8DC4-D54A83173A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6F00AA-CF5B-4625-8DC4-D54A83173A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6F00AA-CF5B-4625-8DC4-D54A83173A8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6CCB7EB-15BA-438D-8C36-B6836D96B11B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6CCB7EB-15BA-438D-8C36-B6836D96B11B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6CCB7EB-15BA-438D-8C36-B6836D96B11B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6CCB7EB-15BA-438D-8C36-B6836D96B11B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

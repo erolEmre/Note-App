@@ -1,4 +1,4 @@
-﻿namespace NoteAppMVCPattern.Models.ViewModel
+﻿namespace NoteApp.WebUI.Models.ViewModel
 {
     public class NoteVM
     {

@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Models.ViewModel;
-using NoteAppMVCPattern.Services.Notebooks;
+using NoteApp.WebUI.Models;
+using NoteApp.WebUI.Models.ViewModel;
+using NoteApp.Application.Services.Notebooks;
 using System;
 using System.Security.Claims;
-using static NoteAppMVCPattern.Models.ViewModel.AppUserVM;
+using static NoteApp.Core.Entities.AppUser;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using NoteApp.Core.Entities;
+using NoteApp.Infrastructure.Models;
 
-namespace NoteAppMVCPattern.Controllers
+namespace NoteApp.WebUI.Controllers
 {
     [Authorize]
     public class UserController : Controller

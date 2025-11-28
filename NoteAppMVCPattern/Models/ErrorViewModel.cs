@@ -1,4 +1,4 @@
-namespace NoteAppMVCPattern.Models
+namespace NoteApp.WebUI.Models
 {
     public class ErrorViewModel
     {

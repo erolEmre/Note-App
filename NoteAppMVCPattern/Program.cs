@@ -1,22 +1,22 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using NoteApp.Core.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Repo.Notebooks;
-using NoteAppMVCPattern.Repo.Notes;
-using NoteAppMVCPattern.Repo.Tags;
-using NoteAppMVCPattern.Services.Notebooks;
-using NoteAppMVCPattern.Services.Notes;
-using NoteAppMVCPattern.Services.Tags;
-using System;
+using NoteApp.Infrastructure.Repo.Notebooks;
+using NoteApp.Infrastructure.Repo.Tags;
+using NoteApp.Application.Services.Notebooks;
+using NoteApp.Application.Services.Notes;
+using NoteApp.Application.Services.Tags;
 using System.Text;
+using NoteApp.Infrastructure.Models;
+using NoteApp.Application.Repo.Notes;
+using NoteApp.Application.Repo.Tags;
+using NoteApp.Application.Repo.Notebooks;
+using NoteApp.Infrastructure.Services.Notes;
 
-namespace NoteAppMVCPattern
+namespace NoteApp.WebUI
 {
     public class Program
     {
@@ -58,16 +58,19 @@ namespace NoteAppMVCPattern
                 options.Cookie.IsEssential = true;
             });
 
-            
 
 
+            builder.Services.AddControllersWithViews();
             // FluentValidation kaydý
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddScoped<IValidator<AppUser>, UserValidator>();
-            builder.Services.AddScoped<IValidator<Note>, NoteValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<NoteValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+
+            //builder.Services.AddScoped<IValidator<AppUser>, UserValidator>();
+            //builder.Services.AddScoped<IValidator<Note>, NoteValidator>();
 
             // Identity’ye FluentValidation adaptörü ekle
-            builder.Services.AddScoped<IUserValidator<AppUser>, FluentUserValidator>();
+            //builder.Services.AddScoped<IUserValidator<AppUser>, FluentUserValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<FluentUserValidator>();
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -99,9 +102,6 @@ namespace NoteAppMVCPattern
 
             builder.Services.AddScoped<INotebookService, NotebookService>();
             builder.Services.AddScoped<INotebookRepository, NotebookRepository>();
-
-            builder.Services.AddControllersWithViews().
-            AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
             builder.Services.AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>

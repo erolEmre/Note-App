@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NoteAppMVCPattern.Models;
-using NoteAppMVCPattern.Models.ViewModel;
-using NoteAppMVCPattern.Services;
-using NoteAppMVCPattern.Services.Notebooks;
-using NoteAppMVCPattern.Services.Notes;
+using NoteApp.WebUI.Models;
+using NoteApp.WebUI.Models.ViewModel;
+using NoteApp.Application.Services;
+using NoteApp.Application.Services.Notebooks;
+using NoteApp.Application.Services.Notes;
 using System.Security.Claims;
+using NoteApp.Core.Entities;
 using static Azure.Core.HttpHeader;
 
-namespace NoteAppMVCPattern.Controllers
+namespace NoteApp.WebUI.Controllers
 {
     public class NotebookController : Controller
     {
