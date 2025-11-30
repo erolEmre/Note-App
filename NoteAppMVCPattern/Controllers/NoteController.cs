@@ -16,7 +16,7 @@ namespace NoteApp.WebUI.Controllers
 {
     [Authorize]
     
-    public class NoteController : Controller
+    public class NoteController : BaseController
     {
         private readonly INoteService _noteService;
         private readonly UserManager<AppUser> _userManager;
@@ -38,15 +38,15 @@ namespace NoteApp.WebUI.Controllers
         {
             HttpContext.Session.SetInt32("NotebookId", notebookId);
             // 1. Kullanıcı ID'sini al
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
             // 2. Notları getir (İlişkili Tags koleksiyonları dahil edilmelidir!)
             // _noteService.GetNotes metodu içinde .Include(n => n.Tags) kullandığınızdan emin olun.
-            var notes = await _noteService.GetNotes(notebookId,userId, tagIds, sortOrder);
+            var notes = await _noteService.GetNotes(notebookId,UserId, tagIds, sortOrder);
 
             // 3. Kullanıcının sahip olduğu tüm etiketleri getir (List<Tag> dönmelidir)
             // Bu, dropdown menüde listelemek için kullanılacak tüm mevcut etiketlerdir.
-            var tags = await _tagService.GetTags(userId);
-            var notebook = await _notebookService.ListAll(userId);
+            var tags = await _tagService.GetTags(UserId); // Burası hatalı işlem yapıyor
+            var notebook = await _notebookService.ListAll(UserId);
 
             // 4. ViewModel oluştur
             var vm = new NoteIndexVM
@@ -84,8 +84,7 @@ namespace NoteApp.WebUI.Controllers
                     {
                         User = user,
                         NotebookId = notebookId
-                    };
-
+                    };                   
                     return View(note);
                 }
             }
@@ -95,14 +94,14 @@ namespace NoteApp.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Note note)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+
+            int? notebookId = NotebookId;
             if (notebookId == null) return BadRequest("Notebook seçilmemiş.");
 
             note.NotebookId = notebookId.Value;
 
-            await _noteService.Add(note, userId);
+            await _noteService.Add(note, UserId);
 
             TempData["Message"] = "Not eklendi.";
             TempData["MessageType"] = "success";
@@ -152,9 +151,9 @@ namespace NoteApp.WebUI.Controllers
             }
             else
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-                await _noteService.Update(note, userId);
-                int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+                 // NameIdentifier --> Id
+                await _noteService.Update(note, UserId);
+                int? notebookId = NotebookId;
 
                 return RedirectToAction("Index", new { notebookId = notebookId.Value });
             }
@@ -163,8 +162,8 @@ namespace NoteApp.WebUI.Controllers
         public async Task<IActionResult> Update(int id)
         {
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // NameIdentifier --> Id
-            var existedValue = await _noteService.GetNoteById(id, userId);
+             // NameIdentifier --> Id
+            var existedValue = await _noteService.GetNoteById(id, UserId);
 
             if (existedValue == null)
             {
@@ -177,12 +176,12 @@ namespace NoteApp.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _noteService.Delete(id, userId);
+            
+            await _noteService.Delete(id, UserId);
 
             TempData["Message"] = "Not silindi.";
             TempData["MessageType"] = "success";
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
 
@@ -205,7 +204,7 @@ namespace NoteApp.WebUI.Controllers
             TempData["MessageType"] = "success";
 
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -215,14 +214,14 @@ namespace NoteApp.WebUI.Controllers
         public async Task<IActionResult> AddTag(int noteId, int tagId)
         {
             // ... mantık: noteId ve tagId ile mevcut Tag'i nota ekle
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _tagService.AddToExistingTag(noteId, tagId, userId);
-            var note = await _noteService.GetNoteById(noteId, userId);
+            
+            await _tagService.AddToExistingTag(noteId, tagId, UserId);
+            var note = await _noteService.GetNoteById(noteId, UserId);
 
             var status = TagUpdateStatus.Increment; 
             await _tagService.UpdateTagCount(tagId,status);
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -232,8 +231,8 @@ namespace NoteApp.WebUI.Controllers
         public async Task<IActionResult> CreateAndAddTag(int noteId, string tagName)
         {
             // ... mantık: yeni Tag'i oluştur, sonra noteId ile nota ekle
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _tagService.CreateAndAdd(noteId, tagName, userId);
+            
+            await _tagService.CreateAndAdd(noteId, tagName, UserId);
             
             // Henüz eklenmedi hata veriyor
             
@@ -242,7 +241,7 @@ namespace NoteApp.WebUI.Controllers
             var tag = await _tagService.GetTagByName(tagName);
              _tagService.UpdateTagCount(tag.Id,status);
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -252,9 +251,9 @@ namespace NoteApp.WebUI.Controllers
         public async Task<IActionResult> MarkAsDone(int noteId)
         {
             NoteFooterVM note = new NoteFooterVM();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            note.Note = await _noteService.GetNoteById(noteId,userId);
+            
+            note.Note = await _noteService.GetNoteById(noteId, UserId);
             if (note == null)
             {
                 return NotFound(); // veya uygun bir hata mesajı döndür
@@ -268,7 +267,7 @@ namespace NoteApp.WebUI.Controllers
             TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi";
             TempData["MessageType"] = "info";
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -294,7 +293,7 @@ namespace NoteApp.WebUI.Controllers
             TempData["MessageType"] = "info";
 
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -319,7 +318,7 @@ namespace NoteApp.WebUI.Controllers
             TempData["MessageType"] = "info";
 
 
-            int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+            int? notebookId = NotebookId;
 
             return RedirectToAction("Index", new { notebookId = notebookId.Value });
         }
@@ -346,7 +345,7 @@ namespace NoteApp.WebUI.Controllers
             {
                 tag.TagColor = tagColor;
                 _tagService.SaveChanges();
-                int? notebookId = HttpContext.Session.GetInt32("NotebookId");
+                int? notebookId = NotebookId;
 
                 return RedirectToAction("Index", new { notebookId = notebookId.Value });
             }
@@ -356,10 +355,10 @@ namespace NoteApp.WebUI.Controllers
         [HttpPost]       
         public async Task<IActionResult> UpdateTitle([FromBody] NoteTitleDTO noteDTO)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
-            var note = await _noteService.GetNoteById(noteDTO.Id, userId);
+             
+            var note = await _noteService.GetNoteById(noteDTO.Id, UserId);
             note.Title = noteDTO.Title;
-            await _noteService.Update(note, userId);
+            await _noteService.Update(note, UserId);
 
            
             return Ok();

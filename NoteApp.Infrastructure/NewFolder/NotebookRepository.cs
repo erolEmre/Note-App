@@ -50,7 +50,7 @@ namespace NoteApp.Infrastructure.Repo.Notebooks
         
         public async Task<Notebook> Get(int id)
         {
-           return await _dbContext.Notebook.Include(x=> x.Notes)
+           return await _dbContext.Notebook.Include(x => x.Notes)
                 .Include(x => x.User).
                 FirstOrDefaultAsync(x => x.Id == id);
         }

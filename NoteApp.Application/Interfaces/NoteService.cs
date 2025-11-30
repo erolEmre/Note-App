@@ -70,17 +70,45 @@ namespace NoteApp.Application.Services.Notes
             }
         }
 
-        
+        public Task<List<Note>> GetAllNotes()
+        {
+            return _noteRepository.GetAllAsync();
+        }
 
         public async Task<Note> GetNoteById(int id, string userId)
         {
             return await _noteRepository.GetByIdAsync(id, userId);
         }
 
-        public async Task<List<Note>> GetNotes(int notebookId,string userId, List<int> tagIds, string sortOrder = null)
+        //public async Task<List<Note>> GetNotes(int notebookId,string userId, List<int> tagIds, string sortOrder = null)
+        //{
+        //    return await _noteRepository.GetAllByUserIdAsync(notebookId,userId, tagIds, sortOrder);           
+        //}
+
+        public async Task<List<Note>> GetNotes(int notebookId,string userId,List<int>? tagIds,string? sortOrder)
         {
-            return await _noteRepository.GetAllByUserIdAsync(notebookId,userId, tagIds, sortOrder);           
+            // 1) Repository’den ham veriyi al
+            var notes = await _noteRepository.GetByNotebookIdAsync(notebookId);
+
+            // 2) User filter (business logic)
+            notes = notes.Where(n => n.UserId == userId).ToList();
+
+            // 3) Tag filter
+            if (tagIds != null && tagIds.Any())
+                notes = notes.Where(n => n.Tags.Any(t => tagIds.Contains(t.Id))).ToList();
+
+            // 4) Sort
+            notes = sortOrder switch
+            {
+                "date_asc" => notes.OrderBy(n => n.updatedDate).ToList(),
+                "date_desc" => notes.OrderByDescending(n => n.updatedDate).ToList(),
+                "title" => notes.OrderBy(n => n.Title).ToList(),
+                _ => notes.OrderByDescending(n => n.updatedDate).ToList()
+            };
+
+            return notes;
         }
+
 
         public async Task Update(Note updatedNote, string userId)
         {
@@ -122,13 +150,6 @@ namespace NoteApp.Application.Services.Notes
 
             await _noteRepository.Update(existingNote);
         }
-
         
-
-        //async Task<List<Tag>> INoteService.GetTags(string userId)
-        //{
-        //    var tags = await _noteRepository.GetTags(userId);
-        //    return tags.Select(t => t.Id).ToList();
-        //}
     }
 }

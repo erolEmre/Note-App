@@ -24,12 +24,16 @@
     }
     else
     {
-            var notebookTags = Model.Notebooks.FirstOrDefault(x => x.Id == Model.NotebookID);
-            
-            var tags = notebookTags.Notes.SelectMany(t => t.Tags)
-            .OrderBy(t => t.TagUsageCount)
+          var notebookTags = Model.Notebooks.FirstOrDefault(x => x.Id == Model.NotebookID);
+
+
+		var tags = notebookTags?.Notes.SelectMany(x => x.Tags)
+            .Distinct()
+            .OrderByDescending(x => x.TagUsageCount)
             .Take(5)
             .ToList();
+
+            Console.WriteLine();
         @* 
             Butonların başladığı yer 
         *@
@@ -64,22 +68,20 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
                     <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
+                    @{Console.WriteLine();}
                     <li><hr class="dropdown-divider"></li>
                     <li class="dropdown-header">Tag'e Göre Filtrele</li>
 
                     @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
                     @{
                         
-                    
-                    @if (notebookTags != null)
-                    {
                         
                         @foreach (var tag in tags)
                         {          
                             <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID"  asp-route-tagIds="@tag.Id">@tag.TagName</a></li>
                         }
                     }
-                    }
+
                 </ul>
             </div>
         </div>

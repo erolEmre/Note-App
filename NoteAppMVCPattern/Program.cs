@@ -15,6 +15,7 @@ using NoteApp.Application.Repo.Notes;
 using NoteApp.Application.Repo.Tags;
 using NoteApp.Application.Repo.Notebooks;
 using NoteApp.Infrastructure.Services.Notes;
+using NoteApp.WebUI.Middleware;
 
 namespace NoteApp.WebUI
 {
@@ -134,7 +135,7 @@ namespace NoteApp.WebUI
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseGlobalExceptionMiddleware();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();

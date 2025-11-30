@@ -11,7 +11,7 @@ using static Azure.Core.HttpHeader;
 
 namespace NoteApp.WebUI.Controllers
 {
-    public class NotebookController : Controller
+    public class NotebookController : BaseController
     {
         private readonly INotebookService _notebookService;
         private readonly INoteService _noteService;
@@ -22,8 +22,8 @@ namespace NoteApp.WebUI.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var Notebooks = await _notebookService.ListAll(userId);
+            
+            var Notebooks = await _notebookService.ListAll(UserId);
             var Notes = Notebooks.SelectMany(x=> x.Notes ?? new List<Note>()).ToList();
             NotebookVM notebook = new NotebookVM
             {

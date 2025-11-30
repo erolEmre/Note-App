@@ -9,78 +9,97 @@ using System;
 using System.Security.Claims;
 using NoteApp.Core.Entities;
 using NoteApp.Infrastructure.Models;
+using NoteApp.Application.Repo.Notes;
+using NoteApp.Application.Services.Notes;
+using NoteApp.Application.Services.Notebooks;
 
 namespace NoteApp.WebUI.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("api/[controller]")]
-    public class NotesApiController : ControllerBase
+    public class NotesApiController : BaseController
     {
-        private readonly AppDBContext _context;
+        private readonly INoteService _noteService;
+        private readonly NoteValidator _noteValidator;
+        private readonly INotebookService _notebookService;
 
-        public NotesApiController(AppDBContext context)
+        public NotesApiController(INoteService noteService, NoteValidator noteValidator,INotebookService notebookService)
         {
-            _context = context;
+            _noteService = noteService;
+            _noteValidator = noteValidator;
+            _notebookService = notebookService;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var notes = _context.Notes.ToList();
+            var notes = await _noteService.GetAllNotes();
             return Ok(notes);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var note = _context.Notes.Find(id);
+            var note = await _noteService.GetNoteById(id, UserId);
             return note == null ? NotFound() : Ok(note);
         }
 
         [HttpPost]
-        public IActionResult Create(Note note)
+        public async Task<IActionResult> Create(Note note)
         {
-            _context.Notes.Add(note);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(Get), new { id = note.Id }, note);
+            var validationResult = _noteValidator.Validate(note);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            else
+            {
+                await _noteService.Add(note, UserId);
+                return CreatedAtAction(nameof(Get), new { id = note.Id }, note);
+            }
+            
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Note updated)
-        {
-            var note = _context.Notes.Find(id);
-            if (note == null) return NotFound();
-
-            note.Title = updated.Title;
-            note.Content = updated.Content;
-            //note.Tag = updated.Tag;
-            _context.SaveChanges();
-
+        public async Task<IActionResult> Update(int id, Note updated)
+        {            
+            var validationResult = _noteValidator.Validate(updated);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            else
+            {
+                await _noteService.Update(updated,UserId);
+            }
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var note = _context.Notes.Find(id);
-            if (note == null) return NotFound();
-
-            _context.Notes.Remove(note);
-            _context.SaveChanges();
+            if(_noteService.GetNoteById(id,UserId) == null)
+            {
+                return NotFound();
+            } else 
+            { 
+                await _noteService.Delete(id, UserId);
+            }
             return NoContent();
         }
         
         [Authorize]
-        [HttpGet("my")]
-        public async Task<IActionResult> GetMyNotes()
+        [HttpGet("notebooks/{id}/notes")]
+        public async Task<IActionResult> GetMyNotes(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notes = await _context.Notes
-                .Where(n => n.UserId == userId)
-                .ToListAsync();
-
-            return Ok(notes);
+            
+            var notebookNotes = await _notebookService.Get(id);
+            if(notebookNotes == null)
+            {
+                return Forbid();
+            }
+            return Ok(notebookNotes.Notes);
         }
     }
 }
