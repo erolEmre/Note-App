@@ -12,6 +12,8 @@ using NoteApp.Infrastructure.Models;
 using NoteApp.Application.Repo.Notes;
 using NoteApp.Application.Services.Notes;
 using NoteApp.Application.Services.Notebooks;
+using NoteApp.Application.NewFolder.DTOs;
+using NoteApp.Application.Models.DTOs;
 
 namespace NoteApp.WebUI.Controllers
 {
@@ -42,7 +44,21 @@ namespace NoteApp.WebUI.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var note = await _noteService.GetNoteById(id, UserId);
-            return note == null ? NotFound() : Ok(note);
+            return note == null ? NotFound() : Ok(new NoteDto
+            {
+                Id         = note.Id,
+                Title      = note.Title,
+                Content    = note.Content,
+                CreateDate = note.CreateDate.Date,
+                Tags = note.Tags.Select(t => new TagDto
+                {
+                    Id = t.Id,
+                    Name = t.TagName,
+                    Color = t.TagColor,
+                    TagUsageCount = t.TagUsageCount
+
+                }).ToList()
+            });
         }
 
         [HttpPost]
@@ -99,7 +115,25 @@ namespace NoteApp.WebUI.Controllers
             {
                 return Forbid();
             }
-            return Ok(notebookNotes.Notes);
+            return Ok(new NotebookDTO
+            {
+                Id = notebookNotes.Id,
+                Name = notebookNotes.Name,
+                NoteList = notebookNotes.Notes.Select(n => new NoteDto
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Content = n.Content,
+                    CreateDate = n.CreateDate,
+                    Tags = n.Tags.Select(t => new TagDto
+                    {
+                        Id = t.Id,
+                        Name = t.TagName,
+                        Color = t.TagColor,
+                        TagUsageCount = t.TagUsageCount
+                    }).ToList()
+                }).ToList()
+            });
         }
     }
 }

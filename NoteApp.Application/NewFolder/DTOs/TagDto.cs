@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NoteApp.Application.NewFolder.DTOs
+{
+    public class TagDto
+    {
+      public int Id { get; set; }
+      public string Name { get; set; }
+
+      public string Color { get; set; }
+
+      public int TagUsageCount { get; set; }
+
+    }
+}

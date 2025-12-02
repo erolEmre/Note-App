@@ -1,9 +1,10 @@
-﻿namespace NoteApp.Application.Models.DTOs
+﻿using NoteApp.Application.NewFolder.DTOs;
+
+namespace NoteApp.Application.Models.DTOs
 {
     public class NoteListDto
     {
         public List<NoteDto> Notes { get; set; } = new();
-        public List<string?> Tags { get; set; } = new();
-        public string? CurrentTag { get; set; }
+        public List<TagDto> Tags { get; set; } = new();
     }
 }
