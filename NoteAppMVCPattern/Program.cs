@@ -45,12 +45,18 @@ namespace NoteApp.WebUI
 
             builder.Services.AddDbContext<AppDBContext>(options =>
             {
-                #if DEBUG
-                options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
-                #else
-                options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
-                #endif
+                var env = builder.Environment;
+
+                if (env.IsDevelopment())
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
+                }
+                else
+                {
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
+                }
             });
+
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {

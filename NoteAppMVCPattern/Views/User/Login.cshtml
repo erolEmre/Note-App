@@ -1,8 +1,12 @@
-﻿@using NoteApp.WebUI.Models.ViewModel
+﻿@{
+    Layout = "_LayoutTemplate";
+}
+@using NoteApp.WebUI.Models.ViewModel
 @model LoginViewModel
-
+<br />
+<br />
 <h2>Giriş Yap</h2>
-
+<br />
 <form asp-action="Login" method="post">
     <div class="mb-3">
         <label asp-for="UserName" class="form-label"></label>
@@ -24,8 +28,7 @@
 @section Scripts {
 @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        Layout = "_Layout";
-  }
+    }
 
 }
 
@@ -35,15 +38,7 @@
             background-image: url('/bg-images/lamp.jpg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            /* height: 80vh;*/ /* Tarayıcı yüksekliğini tamamen kapla */
-            /* display: flex; /* Flexbox kullan */
-            /* flex-direction: column; /* İçeriği dikey sırala (Header, Main, Footer) */
-            /* justify-content: center; /* Dikeyde ortalama */
-            /* align-items: center; /* Yatayda ortalama */
-            /* Kalan marjinleri temizle */
-            /* margin: 0;
-            /* padding: 0; */
+            background-attachment: fixed;           
         }
 
     </style>
