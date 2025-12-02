@@ -9,5 +9,6 @@ namespace NoteApp.Application.Models.DTOs
         public string Content { get; set; }
         public DateTime CreateDate { get; set; }
         public List<TagDto> Tags { get; set; } = new();
+        public int NotebookId { get; set; }
     }
 }

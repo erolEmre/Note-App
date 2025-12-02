@@ -50,6 +50,7 @@ namespace NoteApp.WebUI.Controllers
                 Title      = note.Title,
                 Content    = note.Content,
                 CreateDate = note.CreateDate.Date,
+                NotebookId = note.NotebookId,
                 Tags = note.Tags.Select(t => new TagDto
                 {
                     Id = t.Id,
@@ -62,8 +63,15 @@ namespace NoteApp.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Note note)
+        public async Task<IActionResult> Create([FromBody] NoteDto noteDto)
         {
+            Note note = new Note
+            {
+                Title = noteDto.Title,
+                Content = noteDto.Content,
+                CreateDate = DateTime.Now,
+                NotebookId = noteDto.NotebookId
+            };
             var validationResult = _noteValidator.Validate(note);
             if (!validationResult.IsValid)
             {
@@ -72,24 +80,48 @@ namespace NoteApp.WebUI.Controllers
             else
             {
                 await _noteService.Add(note, UserId);
-                return CreatedAtAction(nameof(Get), new { id = note.Id }, note);
+                return CreatedAtAction(nameof(Get), new { id = noteDto.Id }, noteDto);
             }
             
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Note updated)
-        {            
-            var validationResult = _noteValidator.Validate(updated);
+        public async Task<IActionResult> Update(int id, [FromBody] NoteDto updated)
+        {
+            Note note = new Note
+            {
+                Id = id,
+                Title = updated.Title,
+                Content = updated.Content,
+                CreateDate = updated.CreateDate,
+                NotebookId = updated.NotebookId
+            };
+            var validationResult = _noteValidator.Validate(note);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
             else
             {
-                await _noteService.Update(updated,UserId);
+                await _noteService.Update(note,UserId);
             }
-            return NoContent();
+            var updatedNote = await _noteService.GetNoteById(id, UserId);
+            NoteDto updatedNoteDto = new NoteDto
+            {
+                Id = updatedNote.Id,
+                Title = updatedNote.Title,
+                Content = updatedNote.Content,
+                CreateDate = updatedNote.CreateDate,
+                NotebookId = updatedNote.NotebookId,
+                Tags = updatedNote.Tags.Select(t => new TagDto
+                {
+                    Id = t.Id,
+                    Name = t.TagName,
+                    Color = t.TagColor,
+                    TagUsageCount = t.TagUsageCount
+                }).ToList()
+            };
+            return Ok(updatedNoteDto);
         }
 
         [HttpDelete("{id}")]
@@ -124,7 +156,8 @@ namespace NoteApp.WebUI.Controllers
                     Id = n.Id,
                     Title = n.Title,
                     Content = n.Content,
-                    CreateDate = n.CreateDate,
+                    CreateDate = n.CreateDate, 
+                    NotebookId = n.NotebookId,
                     Tags = n.Tags.Select(t => new TagDto
                     {
                         Id = t.Id,
