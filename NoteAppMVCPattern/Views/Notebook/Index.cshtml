@@ -3,82 +3,91 @@
 @model NotebookVM;
 
 @{
-    Layout = "_noteIndexLayout";
-    ViewData["Title"] = "Note Defteri";
+	Layout = "_noteIndexLayout";
+	ViewData["Title"] = "Note Defteri";
 }
 
 @await Html.PartialAsync("_TempDataMessage")
 
 <div class="container py-4">
-@if (Model.notebooks == null || Model.notebooks.Count == 0 
-|| Model.Notes.Count == 0 || Model.Notes == null)
-    {
-        <div class="text-center mt-5">
-            <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
-            <p class="lead">Hiç notun yok.</p>
-            <a asp-action="Create" class="btn btn-lg btn-primary">
-                <i class="bi bi-journal-plus"></i> İlk Notunu Ekle
-            </a>
-        </div>
-    }
-else{
-<div class="row g-2">
-    @foreach (var nb in Model.notebooks)
-    {
-           
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title">@nb.Name</h4>
-                    <p class="card-text">@nb.Description</p>
-                    <div>
-                            
-                            @{
-                              if (nb.Notes != null)
-                              {
-                               var list = nb.Notes.ToList();
-                               
-                               var counter = 0;
-                            foreach (var item in list)
-                            {                                  
-                                if(counter<=3 && list != null)
-                                {
-                                    <ul>
-                                    <li> @item.Title    </li>
-                                    <li> @item.Content   </li>
-                                   </ul>
-                                }
-                                counter++;
-                            }
-                            }
-                       } 
-                      
-                    </div>
-                    <div class="btn-group">
-                        <a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-success 
-                                btn-sm me-2 rounded">
-                        <i class="bi bi-eye"></i> Görüntüle
-                    </a>
-                                <a asp-action="Create" class="btn btn-warning btn-sm me-2 rounded">
-                            <i class="bi bi-journal-plus"></i> Yeni defter
-                        </a>
-                     <form asp-action="Delete" asp-route-id="@nb.Id" method="post"
-                         onsubmit="return confirm('@nb.Name isimli notu silmek istediğinizden emin misiniz?')">
-                         @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger btn-sm me-2 rounded">
-                         <i class="bi bi-trash3"></i> Sil </button>
-                     </form>
-                           
-                            <a asp-action="Update" asp-route-id="@nb.Id" class="btn btn-primary
-                                        btn-sm me-2 rounded">
-                                <i class="bi bi-eye"></i> Düzenle
-                            </a>
-                            </div>
-                </div>
-            </div>
-        </div>
-    }
-    
-</div>   
-}
+	@if (Model.notebooks == null || Model.notebooks.Count == 0
+		|| Model.Notes.Count == 0 || Model.Notes == null)
+	{
+		<div class="text-center mt-5">
+			<i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+			<p class="lead">Hiç notun yok.</p>
+			<a asp-action="Create" class="btn btn-lg btn-primary">
+				<i class="bi bi-journal-plus"></i> İlk Notunu Ekle
+			</a>
+		</div>
+	}
+	else
+	{
+		<div class="row g-2">
+			@foreach (var nb in Model.notebooks)
+			{
+
+				<div class="col-md-4 mb-3">
+					<div class="card shadow-sm">
+						<div class="card-body">
+							<h4 class="card-title">@nb.Name</h4>
+							<p class="card-text">@nb.Description</p>
+							<div>
+
+								@{
+									if (nb.Notes != null)
+									{
+										var list = nb.Notes.ToList();
+
+										var counter = 0;
+										foreach (var item in list)
+										{
+											if (counter <= 3 && list != null)
+											{
+												var displayString = "";
+												@if (item.Content?.Length > 35)
+												{
+													displayString = item.Content.Substring(0,35)
+													+ "....";
+												} else
+												displayString = item.Content;
+												<ul>
+													<li> @item.Title</li>
+													<li> @displayString</li>
+												</ul>
+											}
+											counter++;
+										}
+									}
+								}
+
+							</div>
+							<div class="btn-group">
+								<a asp-action="NotebookDetails" asp-route-id="@nb.Id" class="btn btn-success
+		                                btn-sm me-2 rounded">
+									<i class="bi bi-eye"></i> Görüntüle
+								</a>
+								<a asp-action="Create" class="btn btn-warning btn-sm me-2 rounded">
+									<i class="bi bi-journal-plus"></i> Yeni defter
+								</a>
+								<form asp-action="Delete" asp-route-id="@nb.Id" method="post"
+									  onsubmit="return confirm('@nb.Name isimli notu silmek istediğinizden emin misiniz?')">
+									@Html.AntiForgeryToken()
+									<button type="submit" class="btn btn-danger btn-sm me-2 rounded">
+										<i class="bi bi-trash3"></i> Sil
+									</button>
+								</form>
+
+								<a asp-action="Update" asp-route-id="@nb.Id" class="btn btn-primary
+		                                        btn-sm me-2 rounded">
+									<i class="bi bi-eye"></i> Düzenle
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+
+		</div>
+	}
 </div>

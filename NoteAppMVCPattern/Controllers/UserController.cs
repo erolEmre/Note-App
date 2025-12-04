@@ -57,7 +57,7 @@ namespace NoteApp.WebUI.Controllers
                 {
                     TempData["Message"] = "Kayıt başarılı.";
                     TempData["MessageType"] = "success";
-                    var Id = await _notebookService.EnsureNotebook(user.Id);
+                    var Id = await _notebookService.EnsureNotebook(user.Id); // Geriye notebook Id dönüyor.
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Note", new {notebookId = Id} );
                 }
@@ -99,7 +99,7 @@ namespace NoteApp.WebUI.Controllers
                     TempData["MessageType"] = "success";
                     var Id = await _notebookService.EnsureNotebook(user.Id);
                     var NotebookList = await _notebookService.ListAll(user.Id);
-                    if(NotebookList.Count == 1)
+                    if (NotebookList.Count == 1)
                     return RedirectToAction("Index", "Note", new {notebookId = Id });
                     else return RedirectToAction("Index", "Notebook");
                 }

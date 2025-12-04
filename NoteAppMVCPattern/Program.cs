@@ -49,11 +49,13 @@ namespace NoteApp.WebUI
 
                 if (env.IsDevelopment())
                 {
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
+                    
                 }
                 else
                 {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
+                    // düzelt
+                    //options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
                 }
             });
 

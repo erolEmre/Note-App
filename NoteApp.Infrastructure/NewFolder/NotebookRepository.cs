@@ -25,28 +25,51 @@ namespace NoteApp.Infrastructure.Repo.Notebooks
             await _dbContext.SaveChangesAsync();                           
         }
 
-        public async Task<int> EnsureNotebook(string userId)
-        {
-            var defaultNotebook = _dbContext.Notebook
-                .FirstOrDefault(n => n.UserId == userId && n.Name == "Default");
-
-            if (defaultNotebook == null)
+        
+            public async Task<int> EnsureNotebook(string userId)
             {
-                _dbContext.Notebook.Add(new Notebook
-                {
-                    Name = "Default",
-                    Description = "Varsayılan defteriniz",
-                    Color = "bg-secondary",
-                    CreatedAt = DateTime.UtcNow,
-                    UserId = userId
-                });
-                _dbContext.SaveChanges();
+           
+            // 1. Kullanıcıya ait, adı "Default" olan bir defter var mı? (Normal akış)
+            var userNotebook = await _dbContext.Notebook
+                .FirstOrDefaultAsync(n => n.UserId == userId && n.Name == "Default");
+
+            if (userNotebook != null)
+            {
+                return userNotebook.Id; // Kullanıcının kendi defterini döndür.
             }
-            var Id = _dbContext.Notebook.FirstOrDefault(x => x.UserId == userId).Id;
-            if (Id != null)
-                return Id;
-            else return -1;
-        }
+
+            // 2. ID=1 olan anonim defter boşta mı? (UserId hala NULL mı?)
+            var anonymousNotebook = await _dbContext.Notebook
+                .FirstOrDefaultAsync(n => n.Id == 1 && n.UserId == null);
+
+            if (anonymousNotebook != null)
+            {
+                // 3. Anonim defteri kullanıcıya ata (CLAIM et)
+                // Bu adım, eski notları kullanan ilk gerçek kullanıcıya ID=1'i bağlar.
+                anonymousNotebook.UserId = userId;
+
+                // Bu defterin eski notları da bu kullanıcıya ait olduğu için tutarlı olur.
+                await _dbContext.SaveChangesAsync();
+
+                return anonymousNotebook.Id; // ID=1'i döndür.
+            }
+
+            // 4. (En kötü senaryo) Ne kullanıcının kendi defteri var, ne de ID=1 boşta. 
+            // Bu, ID=1'in başka bir kullanıcı tarafından claim edildiği anlamına gelir.
+            // Bu durumda yeni bir defter oluşturulmalıdır (sizin ID=2'niz buydu).
+            var newNotebook = new Notebook
+            {
+                Name = "Default",
+                Description = "Varsayılan defteriniz",
+                Color = "bg-secondary",
+                CreatedAt = DateTime.UtcNow,
+                UserId = userId
+            };
+
+            _dbContext.Notebook.Add(newNotebook);
+            await _dbContext.SaveChangesAsync();
+            return newNotebook.Id;
+        }       
         
         public async Task<Notebook> Get(int id)
         {
