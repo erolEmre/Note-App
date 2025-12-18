@@ -2,7 +2,6 @@
 
 Kullanıcıların giriş yaparak not ekleyebildiği, güncelleyebildiği ve silebildiği basit bir ASP.NET Core MVC uygulaması.
 
-👉 Demo Link: [NoteApp](http://noteapp-dev.eba-psh22n6f.eu-north-1.elasticbeanstalk.com)
 
 ⚠️ HTTPS sertifikası için ACM yapılandırması devam ediyor. Şu an uygulama HTTP üzerinden erişilebilir.
 
@@ -52,10 +51,6 @@ Uygulama varsayılan olarak https://localhost:5001 adresinde çalışır.
 
 ## 🌍 Deploy
 
-Proje AWS Elastic Beanstalk üzerine deploy edilmiştir.
-👉 Demo Link : [NoteApp AWS](http://noteapp-dev.eba-psh22n6f.eu-north-1.elasticbeanstalk.com)
-
-⚠️ HTTPS sertifikası için ACM yapılandırması devam ediyor. Şu an uygulama HTTP üzerinden erişilebilir.
 
 🗺 Yol Haritası
 
