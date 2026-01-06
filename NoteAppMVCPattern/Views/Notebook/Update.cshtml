@@ -1,7 +1,7 @@
 ﻿@model NoteApp.Core.Entities.Notebook
 
 @{
-    ViewData["Title"] = "Notebook Düzenle";
+    ViewData["Title"] = "Update the Notebook";
     Layout = "_GeneralCRUDLayout";
 }
 
@@ -36,12 +36,12 @@
 
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary d-flex align-items-center">
-            <i class="bi bi-check2-square me-1"></i> Kaydet
+            <i class="bi bi-check2-square me-1"></i> Save
         </button>
 
         @* İptal düğmesi: NotebookDetails sayfasına dönüyor (id parametresini gönderiyoruz) *@
         <a asp-controller="Notebook" asp-action="Index" class="btn btn-secondary d-flex align-items-center">
-            <i class="bi bi-x-lg me-1"></i> İptal
+            <i class="bi bi-x-lg me-1"></i> Go back
         </a>
     </div>
 </form>

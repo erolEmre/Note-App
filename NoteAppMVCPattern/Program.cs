@@ -1,21 +1,22 @@
 using FluentValidation;
-using NoteApp.Core.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NoteApp.Infrastructure.Repo.Notebooks;
-using NoteApp.Infrastructure.Repo.Tags;
+using NoteApp.Application.Repo.Notebooks;
+using NoteApp.Application.Repo.Notes;
+using NoteApp.Application.Repo.Tags;
 using NoteApp.Application.Services.Notebooks;
 using NoteApp.Application.Services.Notes;
 using NoteApp.Application.Services.Tags;
-using System.Text;
+using NoteApp.Core.Entities;
 using NoteApp.Infrastructure.Models;
-using NoteApp.Application.Repo.Notes;
-using NoteApp.Application.Repo.Tags;
-using NoteApp.Application.Repo.Notebooks;
+using NoteApp.Infrastructure.Repo.Notebooks;
+using NoteApp.Infrastructure.Repo.Tags;
 using NoteApp.Infrastructure.Services.Notes;
 using NoteApp.WebUI.Middleware;
+using System.Text;
 
 namespace NoteApp.WebUI
 {
@@ -43,21 +44,19 @@ namespace NoteApp.WebUI
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddDbContext<AppDBContext>(options =>
-            {
-                var env = builder.Environment;
+            //builder.Services.AddDbContext<AppDBContext>(options =>
+            //{
+            //    var env = builder.Environment;
 
-                if (env.IsDevelopment())
-                {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
-                    
-                }
-                else
-                {
-                    // düzelt
-                    //options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
-                }
-            });
+            //    if (env.IsDevelopment())
+            //    {
+            //        options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"));
+            //    }
+            //    else
+            //    {
+            //        options.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB"));
+            //    }
+            //});
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -86,17 +85,11 @@ namespace NoteApp.WebUI
                 options.LoginPath = "/User/Login";
             });
 
-            //var env = builder.Environment.EnvironmentName;
-            //if (env == "Development")
-            //{
-            //    builder.Services.AddDbContext<AppDBContext>(opt =>
-            //    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            //}
 
-            //builder.Services.AddDbContext<AppDBContext>(opt =>
-            // opt.UseNpgsql(builder.Configuration.GetConnectionString("CloudDB")));
+            builder.Services.AddDbContext<AppDBContext>(opt =>
+             opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-                                // Note
+            // Note
 
             builder.Services.AddScoped<INoteRepository, NoteRepository>(); 
             builder.Services.AddScoped<INoteService, NoteService>();
@@ -131,6 +124,18 @@ namespace NoteApp.WebUI
 
             var app = builder.Build();
 
+            // --- 1. ADIM: BU KODU EN TEPEYE KOYMALISIN ---
+            // Bu ayar, AWS Load Balancer'dan gelen "Ben aslýnda HTTPS'im" bilgisini okur.
+            // KnownNetworks ve KnownProxies listesini temizliyoruz çünkü AWS'nin IP'leri deðiþkendir.
+            
+            //var forwardedHeaderOptions = new ForwardedHeadersOptions
+            //{
+            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            //};
+            //forwardedHeaderOptions.KnownNetworks.Clear();
+            //forwardedHeaderOptions.KnownProxies.Clear();
+
+            //app.UseForwardedHeaders(forwardedHeaderOptions);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -144,6 +149,8 @@ namespace NoteApp.WebUI
 
             app.UseRouting();
             app.UseGlobalExceptionMiddleware();
+            // Düzenle
+            // app.UseForwardedHeaders();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();

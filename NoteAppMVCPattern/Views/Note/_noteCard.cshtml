@@ -32,18 +32,18 @@
 
                 <a asp-action="Update" asp-route-id="@Model.Note.Id"
                class="btn me-1 btn-primary btn-sm rounded">
-                <i class="bi bi-pencil-square me-1"></i> Düzenle
+                <i class="bi bi-pencil-square me-1"></i> Edit
             </a>
 
                 <form asp-action="Delete" asp-route-id="@Model.Note.Id" method="post"
                       onsubmit="return confirm('@Model.Note.Title isimli notu silmek istediğinizden emin misiniz?')">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-danger btn-sm rounded me-1">
-                    <i class="bi bi-trash3"></i> Sil
+                    <i class="bi bi-trash3"></i> Delete
                 </button>
             </form>
                 <button class="btn btn-success view-note rounded me-1" data-id="@Model.Note.Id">
-                <i class="bi bi-eye"></i> İncele
+                <i class="bi bi-eye"></i> Open
             </button>
        
 
@@ -52,7 +52,7 @@
         <div class="dropdown">
             <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
                     data-bs-toggle="dropdown" style="min-width: 50px">
-                <i class="bi bi-gear"> Seç.</i>
+                <i class="bi bi-gear"> Opt.</i>
             </button>
                    
             <ul id="tagdropdown-@Model.Note.Id" class="dropdown-menu dropdown-menu-end p-2">  @*style="min-width: 180px; max-width: 200px;*@
@@ -63,9 +63,9 @@
                                 @* **AKSIYON ADI DEĞİŞTİ** *@
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="noteId" value="@Model.Note.Id" />
-                                <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="Yeni tag adı" required /> @* **KRİTİK: Tag Adı** *@
+                                <input type="text" name="tagName" class="form-control form-control-sm mb-2" placeholder="New Tag name" required /> @* **KRİTİK: Tag Adı** *@
                                 <button type="submit" class="btn btn-info btn-sm w-100">
-                                    <i class="bi bi-bookmark-plus"></i> Oluştur & Ekle
+									<i class="bi bi-bookmark-plus"></i> Create and Add
                                 </button>
                             </form>
                         </li>
@@ -86,7 +86,7 @@
                                            data-note-id="@Model.Note.Id"
                                            data-mode="delete"
                                            type="text"
-                                           placeholder="Tag ara...">
+                                           placeholder="Search tags...">
                                 </li>
                                 @*Tag oluşturma*@
                                 int counter = 0;
@@ -101,7 +101,7 @@
                                     <input type="hidden" name="noteId" value="@Model.Note.Id" /> @* Note id yaz*@                                    
                                     <input type="hidden" name="tagId" value="@tag.Id" /> @* Tag'in ID'sini kullanıyoruz *@                                                                                                             
                                     <button type="submit" class="btn btn-danger btn-sm w-100 text-truncate">
-                                    <i class="bi bi-bookmark-x"></i> Sil (@tag.TagName)
+                                    <i class="bi bi-bookmark-x"></i> Remove Tag (@tag.TagName)
                                 </button>
                             </form>
                         </li>

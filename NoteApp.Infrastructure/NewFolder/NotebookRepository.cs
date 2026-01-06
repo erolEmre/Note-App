@@ -26,7 +26,7 @@ namespace NoteApp.Infrastructure.Repo.Notebooks
         }
 
         
-            public async Task<int> EnsureNotebook(string userId)
+      public async Task<int> EnsureNotebook(string userId)
             {
            
             // 1. Kullanıcıya ait, adı "Default" olan bir defter var mı? (Normal akış)
@@ -69,7 +69,7 @@ namespace NoteApp.Infrastructure.Repo.Notebooks
             _dbContext.Notebook.Add(newNotebook);
             await _dbContext.SaveChangesAsync();
             return newNotebook.Id;
-        }       
+       }       
         
         public async Task<Notebook> Get(int id)
         {

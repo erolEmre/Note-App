@@ -5,7 +5,7 @@
 @model LoginViewModel
 <br />
 <br />
-<h2>Giriş Yap</h2>
+<h2>Sign In</h2>
 <br />
 <form asp-action="Login" method="post">
     <div class="mb-3">
@@ -20,8 +20,8 @@
         <span asp-validation-for="Password" class="text-danger fw-bold"></span>        
     </div>
     <div asp-validation-summary="All" class="text-warning fw-bold"></div>
-    <button type="submit" class="btn btn-primary">Giriş Yap</button>
-    <a asp-controller="User" asp-action="Index" class="btn btn-danger">Geri dön</a> 
+    <button type="submit" class="btn btn-primary">Sign In</button>
+    <a asp-controller="User" asp-action="Index" class="btn btn-danger">Back</a>
 </form>
 
 

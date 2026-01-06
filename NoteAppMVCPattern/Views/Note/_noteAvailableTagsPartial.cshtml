@@ -7,14 +7,14 @@
         .Where(t => !Model.Note.Tags.Any(nt => nt.Id == t.Id))
         .OrderByDescending(t=> t.TagUsageCount)
         .ToList();
-    <li class="dropdown-header text-center">Tag'e ekle</li>
+    <li class="dropdown-header text-center">Add to the tag</li>
         
     <li class="mb-2">
         <input class="form-control form-control-sm tag-search-input"
                data-note-id="@Model.Note.Id"
                data-mode="add"
                type="text"
-               placeholder="Tag ara...">
+               placeholder="Search tags...">
     </li>
     @*Tag oluşturma*@
     int counter = 0;

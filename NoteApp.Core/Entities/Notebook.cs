@@ -5,9 +5,9 @@ namespace NoteApp.Core.Entities
     public class Notebook
     {
         public int Id { get; set; }
-        [Display(Name = "İsim")]
+        //[Display(Name = "İsim")]
         public string Name { get; set; }
-        [Display(Name = "Açıklama")]
+        //[Display(Name = "Açıklama")]
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }

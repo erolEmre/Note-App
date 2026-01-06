@@ -19,9 +19,10 @@
         <span asp-validation-for="Content" class="text-warning fw-bold"></span>
     </div>
     
-    <button type="submit" class="btn btn-primary">Güncelle</button>
-    @{var notebookId = Context.Session.GetInt32("NotebookId")?.ToString() ?? "";   
-    <a asp-controller="Note" asp-action="Index" asp-route-notebookId="@notebookId" class="btn btn-danger">Geri dön</a>
+    <button type="submit" class="btn btn-primary">Update</button>
+    @{
+        var notebookId = Context.Session.GetInt32("NotebookId")?.ToString() ?? "";   
+    <a asp-controller="Note" asp-action="Index" asp-route-notebookId="@notebookId" class="btn btn-danger">Go back</a>
     }
 </form>
 

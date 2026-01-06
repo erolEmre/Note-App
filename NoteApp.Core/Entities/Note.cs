@@ -8,9 +8,9 @@ namespace NoteApp.Core.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Display(Name = "Not İçeriği")]
+        //[Display(Name = "Not İçeriği")]
         public string? Content { get; set; }
-        [Display(Name = "Başlık")]
+        //[Display(Name = "Başlık")]
         public string? Title { get; set; }
         public NoteStatus Status { get; set; } = NoteStatus.None;
         public DateTime? PlannedDate { get; set; }

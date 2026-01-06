@@ -54,9 +54,7 @@ namespace NoteApp.WebUI.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
-                {
-                    TempData["Message"] = "Kayıt başarılı.";
-                    TempData["MessageType"] = "success";
+                {                    
                     var Id = await _notebookService.EnsureNotebook(user.Id); // Geriye notebook Id dönüyor.
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Note", new {notebookId = Id} );
@@ -94,9 +92,7 @@ namespace NoteApp.WebUI.Controllers
                     );
 
                 if (result.Succeeded)
-                {
-                    TempData["Message"] = "Giriş Başarılı";
-                    TempData["MessageType"] = "success";
+                {                    
                     var Id = await _notebookService.EnsureNotebook(user.Id);
                     var NotebookList = await _notebookService.ListAll(user.Id);
                     if (NotebookList.Count == 1)
@@ -104,7 +100,7 @@ namespace NoteApp.WebUI.Controllers
                     else return RedirectToAction("Index", "Notebook");
                 }
                
-                ModelState.AddModelError("", "Geçersiz giriş bilgileri.");              
+                ModelState.AddModelError("", "Username or password is invalid");              
             }
 
             return View(model);
@@ -136,7 +132,7 @@ namespace NoteApp.WebUI.Controllers
             var existedValue = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "There is no such user";
             }
             return View(existedValue);
         }
@@ -148,7 +144,7 @@ namespace NoteApp.WebUI.Controllers
             var existedValue = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (existedValue == null)
             {
-                TempData["Message"] = "Böyle bir değer bulunamadı";
+                TempData["Message"] = "There is no such user";
             }
             _dbContext.Users.Remove(existedValue);
             await _dbContext.SaveChangesAsync();

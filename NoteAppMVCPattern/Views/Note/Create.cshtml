@@ -1,10 +1,10 @@
 ﻿@model NoteApp.Core.Entities.Note;
 @{
-    ViewData["Title"] = "Yeni Not";
+    ViewData["Title"] = "New note";
     Layout = "_GeneralCRUDLayout";
 }
 
-<h2 >Yeni Not Ekle</h2>
+<h2 >Create a new Note</h2>
 
 @if (TempData["Message"] != null)
 {
@@ -53,12 +53,12 @@
     <button type="submit"
             class="btn btn-success d-inline-flex align-items-center pe-lg-2">
         <i class="bi bi-check-all"></i>
-            <span class="pe-1">Kaydet</span>        
+            <span class="pe-1">Save</span>        
     </button>
      @{
                var notebookId = Context.Session.GetInt32("NotebookId")?.ToString() ?? "";
     <a asp-controller="Note" asp-action="Index" asp-route-notebookId="@notebookId" class="btn btn-danger">
-    Geri dön</a>
+    Go back</a>
      }
     </div>
 </form>

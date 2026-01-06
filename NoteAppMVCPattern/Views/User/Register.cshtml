@@ -6,7 +6,7 @@
 @model RegisterViewModel
 <br />
 <br />
-<h2>Kayıt Ol</h2>
+<h2>Create an Account</h2>
 <br />
 <form asp-action="Register" method="post">
 	<div asp-validation-summary="All" class="text-white fw-bold"></div>
@@ -22,11 +22,11 @@
 		<span asp-validation-for="Password" class="text-danger"></span>
 	</div>
 	<div class="btn-group">
-		<button type="submit" class="btn btn-primary me-3 rounded">Kayıt Ol</button>
+		<button type="submit" class="btn btn-primary me-3 rounded">Sign Up</button>
 
-		<a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">Zaten üyeyim</a>
+		<a asp-controller="User" asp-action="Login" class="btn btn-success me-3 rounded">I already have an account </a>
 
-		<a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Geri dön</a>
+		<a asp-controller="User" asp-action="Index" class="btn btn-danger me-3 rounded">Home</a>
 
 	</div>
 

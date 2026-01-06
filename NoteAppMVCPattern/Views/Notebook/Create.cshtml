@@ -2,11 +2,11 @@
 @model NoteApp.Core.Entities.Notebook;
 
 @{
-    ViewData["Title"] = "Yeni Not Defteri Oluştur";
+    ViewData["Title"] = "Create a new Notebook";
     Layout = "_GeneralCRUDLayout";
 }
 
-<h2>Yeni Not Defteri</h2>
+<h2>New Notebook</h2>
 
 <div class="row">
     <div class="col-md-6">
@@ -36,8 +36,8 @@
             }
 
             <div class="mb-3">
-                <input type="submit" value="Oluştur" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary ms-2">Listeye Dön</a>
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary ms-2">Go Back to List</a>
             </div>
         </form>
     </div>

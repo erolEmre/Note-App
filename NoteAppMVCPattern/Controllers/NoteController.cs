@@ -103,7 +103,7 @@ namespace NoteApp.WebUI.Controllers
 
             await _noteService.Add(note, UserId);
 
-            TempData["Message"] = "Not eklendi.";
+            TempData["Message"] = "Your note has been added";
             TempData["MessageType"] = "success";
             return RedirectToAction("Index",new { notebookId = notebookId.Value });
 
@@ -167,7 +167,7 @@ namespace NoteApp.WebUI.Controllers
 
             if (existedValue == null)
             {
-                TempData["Message"] = "Aradık,aradık ama bulamadık.";
+                TempData["Message"] = "We've looked everywhere but couldn't find it";
                 TempData["MessageType"] = "info";
             }
             return View(existedValue);
@@ -179,7 +179,7 @@ namespace NoteApp.WebUI.Controllers
             
             await _noteService.Delete(id, UserId);
 
-            TempData["Message"] = "Not silindi.";
+            TempData["Message"] = "Note has been deleted.";
             TempData["MessageType"] = "success";
             int? notebookId = NotebookId;
 
@@ -200,7 +200,7 @@ namespace NoteApp.WebUI.Controllers
             await _tagService.UpdateTagCount(tagId, status);
             await _tagService.DeleteTag(noteId,userId,tagId);
             
-            TempData["Message"] = "Tag silindi.";
+            TempData["Message"] = "Tag has been deleted.";
             TempData["MessageType"] = "success";
 
 
@@ -264,7 +264,7 @@ namespace NoteApp.WebUI.Controllers
             
             // View'e gidecek mesaj
 
-            TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi";
+            TempData["Message"] = $"Your note status has changed to : {note.Status}";
             TempData["MessageType"] = "info";
 
             int? notebookId = NotebookId;
@@ -289,7 +289,7 @@ namespace NoteApp.WebUI.Controllers
 
             // View'e gidecek mesaj
 
-            TempData["Message"] = $"Not durumu {note.NoteStatusTurkce} olarak güncellendi.";
+            TempData["Message"] = $"Your note status has changed to : {note.Status}";
             TempData["MessageType"] = "info";
 
 

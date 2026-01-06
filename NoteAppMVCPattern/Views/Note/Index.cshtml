@@ -5,8 +5,6 @@
 @{
     Layout = "_noteIndexLayout";
     ViewData["Title"] = "Notlar";
-    // Bu dictionary, her Tag adına bir renk atamak için kullanılır.
-    
 }
 @await Html.PartialAsync("_TempDataMessage")
 
@@ -15,10 +13,10 @@
     {
         <div class="text-center mt-5">
             <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
-            <p class="lead">Hiç notun yok.</p>
+            <p class="lead">Let's get started</p>
             <a asp-action="Create" class="btn btn-lg btn-primary">
                 <input type="hidden" name="notebookId" value="@Model.NotebookID" />
-                <i class="bi bi-journal-plus"></i> İlk Notunu Ekle
+                <i class="bi bi-journal-plus"></i> Create your first note
             </a>
         </div>
     }
@@ -51,26 +49,26 @@
                     var tagcolor = Model.CurrentTag.TagColor.Substring(3);
                     var tagName = Model.CurrentTag.TagName;
 
-                    <a class="btn btn-@tagcolor" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Aktif tag : @tagName</a>
+                    <a class="btn btn-@tagcolor" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Active Tag : @tagName</a>
                 }
-                <a class="btn btn-danger" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Filtreyi Kaldır</a>
+                <a class="btn btn-danger" asp-action="Index" asp-route-notebookId="@Model.NotebookID">Remove Filter</a>
             }
 
             <a asp-action="Create" class="btn btn-primary">
                 <input type="hidden" name="notebookId" value="@Model.NotebookID" />
-                <i class="bi bi-journal-plus"></i> Yeni Not
+                <i class="bi bi-journal-plus"></i> Create
             </a>
             
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle me-3" data-bs-toggle="dropdown">
-                    Sırala
+                   Sort By
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_desc">Yeniden → Eskiye</a></li>
-                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_asc">Eskiden → Yeniye</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_desc">Newest First</a></li>
+                    <li><a class="dropdown-item" asp-action="Index" asp-route-notebookId="@Model.NotebookID" asp-route-sortOrder="date_asc">Oldest First</a></li>
                     @{Console.WriteLine();}
                     <li><hr class="dropdown-divider"></li>
-                    <li class="dropdown-header">Tag'e Göre Filtrele</li>
+                    <li class="dropdown-header">Filter By Tag</li>
 
                     @* Burada Model.AvailableTags (List<Tag>) kullanıldığını varsayıyoruz *@
                     @{
